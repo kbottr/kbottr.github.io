@@ -3,11 +3,59 @@
 body {
   font-size: 1.5em; /* currently ems cause chrome bug misinterpreting rems on body element */
   line-height: 1.6;
-  font-weight: 400;
-  color: #222;
-  font-family: 'Work Sans', "system-ui", "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  font-weight: 300;
+  background-color: #1a1a1a;
+  color: #B3B3B3;
+  font-family: 'Open Sans', "system-ui", "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}
+
+.row{
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 #hero {
-	margin-top: 50%;
+  vertical-align: middle;
+  padding-right: 20px;
+}
+
+#hero h1 {
+  font-size: 1.8em;
+  font-weight: 600;
+  color: #fff;
+}
+
+#hero p {
+  font-size: 1.4em;
+  line-height: 1.6;
+  font-weight: 400;
+  padding-bottom: 40px;
+}
+
+#hero a {
+  position: relative;
+  font-size: 1.4em;
+  line-height: 1.6;
+  font-weight: 400;
+  color: #fff;
+  text-decoration: none;
+  padding-bottom: 5px;
+}
+
+#hero a:after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0%;
+  border-bottom: 1px solid #fff;
+  transition: 0.5s;
+}
+
+#hero a:hover:after {
+  width: 100%;
+}
+.highlight {
+  color: #fff;
 }
