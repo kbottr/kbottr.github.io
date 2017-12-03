@@ -41,8 +41,8 @@ body {
 
 #hero a {
   position: relative;
-  font-size: 1.4em;
   line-height: 1.6;
+  font-size: 1em;
   font-weight: 400;
   color: #fff;
   text-decoration: none;
