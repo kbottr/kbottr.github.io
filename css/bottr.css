@@ -1,9 +1,9 @@
 /*custom css file for stupid solutions*/
 ::selection {
-  background: #ED8276; /* WebKit/Blink Browsers */
+  color: #ED8276; /* WebKit/Blink Browsers */
 }
 ::-moz-selection {
-  background: #ED8276; /* Gecko Browsers */
+  color: #ED8276; /* Gecko Browsers */
 }
 
 body {
