@@ -1,18 +1,18 @@
 /*custom css file for stupid solutions*/
 ::selection {
-  background: : #ED8276; /* WebKit/Blink Browsers */
+  background: : #000; /* WebKit/Blink Browsers */
 }
 ::-moz-selection {
-  background: : #ED8276; /* Gecko Browsers */
+  background: : #000; /* Gecko Browsers */
 }
 
 body {
-  font-size: 1.5em; /* currently ems cause chrome bug misinterpreting rems on body element */
+  font-size: 1.2rem; /* currently ems cause chrome bug misinterpreting rems on body element */
   line-height: 1.6;
   font-weight: 300;
-  background-color: #1a1a1a;
-  color: #B3B3B3;
-  font-family: 'Open Sans', "system-ui", "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  background-color: #000;
+  color: #fff;
+  font-family: 'IBM Plex Mono', 'monospace', "system-ui", "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 }
 
 .row{
@@ -27,13 +27,13 @@ body {
 }
 
 #hero h1 {
-  font-size: 1.8em;
+  font-size: 1.8rem;
   font-weight: 600;
   color: #fff;
 }
 
 #hero p {
-  font-size: 1.4em;
+  font-size: 1.4rem;
   line-height: 1.6;
   font-weight: 400;
   padding-bottom: 40px;
@@ -42,7 +42,7 @@ body {
 #hero a {
   position: relative;
   line-height: 1.6;
-  font-size: 1em;
+  font-size: 1rem;
   font-weight: 400;
   color: #fff;
   text-decoration: none;
