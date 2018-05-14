@@ -15,7 +15,15 @@ body {
   font-family: 'IBM Plex Mono', 'monospace', "system-ui", "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 }
 
-.row{
+#footer-row{
+  position: fixed;
+  bottom: 4%;
+  right: 4%;
+}
+.contact{
+  margin: 0 10px 0 0;
+}
+#row-hero{
   position: fixed;
   top: 50%;
   transform: translateY(-50%);
@@ -39,7 +47,7 @@ body {
   padding-bottom: 40px;
 }
 
-#hero a {
+a {
   position: relative;
   line-height: 1.6;
   font-size: 1rem;
@@ -49,7 +57,11 @@ body {
   padding-bottom: 5px;
 }
 
-#hero a:after {
+a:hover{
+  color: #fff;
+}
+
+a:after {
   content: '';
   position: absolute;
   bottom: 0;
@@ -57,9 +69,10 @@ body {
   width: 0%;
   border-bottom: 1px solid #fff;
   transition: 0.5s;
+  color: #fff;
 }
 
-#hero a:hover:after {
+a:hover:after {
   width: 100%;
 }
 .highlight {
