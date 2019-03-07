@@ -5,28 +5,39 @@
 ::-moz-selection {
   background: : #000; /* Gecko Browsers */
 }
-
-body {
-  font-size: 1.2rem; /* currently ems cause chrome bug misinterpreting rems on body element */
-  line-height: 1.6;
-  font-weight: 300;
-  background-color: #000;
+html {
+  font-size: 16px;
+  line-height: 1.5;
   color: #fff;
-  font-family: 'IBM Plex Mono', 'monospace', "system-ui", "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  background-color: #000;
+  font-family: "OakesGrotesk-Medium", "system-ui", "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}
+body {
+  font-size: 1rem;
+  color: #fff;
+}
+
+.container{
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  justify-content: center;
 }
 
 #footer-row{
-  position: fixed;
-  bottom: 4%;
-  right: 4%;
+  bottom: 2.5rem;
+  padding: 2.5rem 0;
+  align-self: flex-end;
+  display: flex;
 }
 .contact{
   margin: 0 10px 0 0;
 }
 #row-hero{
-  position: fixed;
-  top: 50%;
-  transform: translateY(-50%);
+  display: inline-flex;
+  align-items: center;
+  flex-grow: 1;
 }
 
 #hero {
@@ -35,16 +46,13 @@ body {
 }
 
 #hero h1 {
-  font-size: 1.8rem;
-  font-weight: 600;
-  color: #fff;
+  font-family: "OakesGrotesk-Bold";
+  font-size: 4rem;
 }
 
 #hero p {
-  font-size: 1.4rem;
-  line-height: 1.6;
-  font-weight: 400;
-  padding-bottom: 40px;
+  font-size: 1.125rem;
+  padding-bottom: 2.5rem;
 }
 
 a {
