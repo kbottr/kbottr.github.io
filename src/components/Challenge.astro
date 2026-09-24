@@ -1,5 +1,5 @@
 ---
-// A goal with a checkbox: empty (todo), accent outline (doing),
+// A challenge with a checkbox: empty (todo), accent outline (doing),
 // or filled with a check and struck-through text (done).
 import Icon from './Icon.astro';
 
@@ -10,7 +10,7 @@ const { status } = Astro.props;
 const statusText = { todo: 'to do', doing: 'in progress', done: 'done' }[status];
 ---
 
-<li class:list={['goal', status]}>
+<li class:list={['challenge', status]}>
   <span class="box" aria-hidden="true">
     {status === 'done' && <Icon name="check" size="sm" class="tick" />}
   </span>
@@ -19,7 +19,7 @@ const statusText = { todo: 'to do', doing: 'in progress', done: 'done' }[status]
 </li>
 
 <style>
-  .goal { display: flex; align-items: center; gap: var(--space-12); }
+  .challenge { display: flex; align-items: center; gap: var(--space-12); }
   .box {
     display: grid; place-items: center;
     width: var(--icon-sm); height: var(--icon-sm); flex-shrink: 0;

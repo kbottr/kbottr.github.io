@@ -15,7 +15,7 @@ Personal portfolio built with [Astro](https://astro.build), deployed to GitHub P
 | Write a journal post | Add a Markdown file to `src/content/journal/` |
 | Hide a project or post | Set `draft: true` in its frontmatter |
 | Add your portrait | Save it as `src/assets/portrait.jpg` |
-| Update experience / music / goals | Edit the lists in `src/data/*.yaml` (shown in file order). For music, paste share links as `spotify:` and `apple:` |
+| Update experience / music / challenges | Edit the lists in `src/data/*.yaml` (shown in file order). For music, paste share links as `spotify:` and `apple:` |
 | Add or change an icon | Pick one on [lucide.dev/icons](https://lucide.dev/icons/), then add it in `src/components/Icon.astro` |
 | Publish | Commit and push to `main` — GitHub Actions builds and deploys |
 
@@ -57,7 +57,7 @@ All design decisions live in **`src/styles/tokens.css`**. Components and pages o
 | `Lead` | Large intro paragraph that reveals line by line |
 | `Pill` | Small rounded tag ("present") |
 | `Track` | Music entry: cover, title, artist, Spotify / Apple Music links |
-| `Goal` | Goal with a checkbox: empty (todo), accent (doing), filled + struck through (done) |
+| `Challenge` | Challenge with a checkbox: empty (todo), accent (doing), filled + struck through (done) |
 | `Pager` | Back / next links at the end of a page |
 | `PageHeader` | Small title + description at the top of Work and Journal |
 | `MoreLink` | "all posts →" style link to a full list |

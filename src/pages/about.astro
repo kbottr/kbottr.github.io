@@ -10,7 +10,7 @@ import Link from '../components/Link.astro';
 import DateLabel from '../components/DateLabel.astro';
 import MoreLink from '../components/MoreLink.astro';
 import Track from '../components/Track.astro';
-import Goal from '../components/Goal.astro';
+import Challenge from '../components/Challenge.astro';
 import { site, url } from '../site';
 
 // Drop a photo at src/assets/portrait.jpg (or .png/.webp) and it appears here.
@@ -21,7 +21,7 @@ const initials = site.name.split(' ').map((n) => n[0]).join('');
 const byOrder = (a: { data: { order: number } }, b: { data: { order: number } }) => a.data.order - b.data.order;
 const experience = (await getCollection('experience')).sort(byOrder);
 const music = (await getCollection('music')).sort(byOrder);
-const goals = (await getCollection('goals')).sort(byOrder);
+const challenges = (await getCollection('challenges')).sort(byOrder);
 const posts = (await getCollection('journal', ({ data }) => !data.draft))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
   .slice(0, 3);
@@ -83,9 +83,9 @@ const posts = (await getCollection('journal', ({ data }) => !data.draft))
         </ul>
       </Section>
 
-      <Section label="goals" icon="flag">
-        <ul class="goals">
-          {goals.map(({ data }) => <Goal status={data.status}>{data.text}</Goal>)}
+      <Section label="challenges" icon="flag">
+        <ul class="challenges">
+          {challenges.map(({ data }) => <Challenge status={data.status}>{data.text}</Challenge>)}
         </ul>
       </Section>
     </div>
@@ -112,7 +112,7 @@ const posts = (await getCollection('journal', ({ data }) => !data.draft))
   .stack { display: grid; gap: var(--space-16); }
 
 
-  .goals { display: grid; gap: var(--space-8); }
+  .challenges { display: grid; gap: var(--space-8); }
 
   @media (max-width: 600px) {
     .intro { grid-template-columns: 1fr; gap: var(--space-16); }

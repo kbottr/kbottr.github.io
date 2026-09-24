@@ -66,8 +66,8 @@ const music = defineCollection({
   }),
 });
 
-const goals = defineCollection({
-  loader: yamlList('src/data/goals.yaml'),
+const challenges = defineCollection({
+  loader: yamlList('src/data/challenges.yaml'),
   schema: z.object({
     order: z.number(),
     text: z.string(),
@@ -75,4 +75,4 @@ const goals = defineCollection({
   }),
 });
 
-export const collections = { projects, journal, experience, music, goals };
+export const collections = { projects, journal, experience, music, challenges };
