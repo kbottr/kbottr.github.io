@@ -17,8 +17,9 @@ const { title, description = site.intro } = Astro.props;
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <link rel="icon" type="image/svg+xml" href={url('/favicon.svg')} />
-    <title>{title ? `${title} — ${site.name}` : site.title}</title>
+    <title>{title ? `${title} — ${site.brand}` : site.title}</title>
     <meta name="description" content={description} />
+    <meta name="author" content={site.name} />
     {Astro.site && <link rel="canonical" href={new URL(Astro.url.pathname, Astro.site)} />}
     <!-- Apply the saved theme before first paint to avoid a flash -->
     <script is:inline>
@@ -31,7 +32,7 @@ const { title, description = site.intro } = Astro.props;
   </head>
   <body>
     <header class="wrap site-header">
-      <a href={url('/')} class="name">{site.name}</a>
+      <a href={url('/')} class="brand">{site.brand}</a>
       <span class="muted">{site.role}</span>
     </header>
 
@@ -105,7 +106,7 @@ const { title, description = site.intro } = Astro.props;
     padding-bottom: clamp(40px, 7vh, 72px);
     line-height: 1.5;
   }
-  .name { font-weight: 500; width: fit-content; }
+  .brand { font-weight: 600; letter-spacing: -.02em; width: fit-content; }
   main { min-height: 60vh; }
   .site-footer {
     display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap;

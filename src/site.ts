@@ -1,8 +1,11 @@
 // Site-wide settings. Edit these first.
 export const site = {
+  // The "logo": shown top left and in browser tab titles.
+  brand: 'wilhelm',
+  // Your real name: used in the footer, on the About page and for search engines.
   name: 'Klaus Böttger',
   role: 'Product Designer',
-  title: 'Klaus Böttger — Product Designer',
+  title: 'wilhelm — Klaus Böttger, Product Designer',
   // One sentence on the home page.
   intro: 'Designing products that feel obvious — currently working on mobility, finance and everyday tools.',
   // Paragraphs on the About page.
