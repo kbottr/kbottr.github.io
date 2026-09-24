@@ -14,7 +14,12 @@
   --accent: #2f6bff;
   --accent-bg: #2f6bff1a;
   --dock-bg: #ffffffcc;
-  --shadow: 0 var(--space-8) var(--space-40) rgb(0 0 0 / .12);
+  /* Dock shadow. It sits 16px above the screen edge, so nothing may reach
+     further than 16px below it: a tight shadow underneath (2 + 12 = 14px)
+     plus a soft one lifted upward (24 − 8 = 16px). */
+  --shadow:
+    0 var(--space-2) var(--space-12) rgb(0 0 0 / .12),
+    0 calc(-1 * var(--space-8)) var(--space-24) rgb(0 0 0 / .08);
 
   /* ---------- Typography ----------
      Base 17px. Scale steps multiply by √φ ≈ 1.272, so every second
