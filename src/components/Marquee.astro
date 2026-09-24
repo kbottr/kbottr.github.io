@@ -1,0 +1,50 @@
+---
+// Big, endlessly scrolling title (Motto-style). The real <h1> stays for
+// screen readers and search engines; the moving copy is decorative.
+interface Props {
+  text: string;
+  repeat?: number;
+  seconds?: number;
+}
+const { text, repeat = 4, seconds = 18 } = Astro.props;
+const group = Array.from({ length: repeat });
+---
+
+<div class="marquee" style={`--dur:${seconds}s`}>
+  <h1 class="sr-only">{text}</h1>
+  <div class="track" aria-hidden="true">
+    {[0, 1].map(() => (
+      <div class="group">
+        {group.map(() => (
+          <span class="item">{text}<span class="star">✳</span></span>
+        ))}
+      </div>
+    ))}
+  </div>
+</div>
+
+<style>
+  .marquee {
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+    overflow: hidden;
+    padding-block: 2vh;
+    mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+  }
+  .track { display: flex; width: max-content; animation: scroll var(--dur) linear infinite; }
+  .marquee:hover .track { animation-play-state: paused; }
+  .group { display: flex; flex-shrink: 0; }
+  .item {
+    display: flex; align-items: center;
+    font: 500 clamp(64px, 13vw, 180px)/1 var(--sans);
+    letter-spacing: -.055em;
+    white-space: nowrap;
+    padding-right: .3em;
+  }
+  .star { font-weight: 300; font-size: .7em; margin-left: .3em; color: var(--muted); }
+  @keyframes scroll { to { transform: translateX(-50%); } }
+
+  /* Slide in from below on page load */
+  .marquee { animation: rise 1s var(--ease) both; }
+  @keyframes rise { from { opacity: 0; transform: translateY(30px); } }
+</style>

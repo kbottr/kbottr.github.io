@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import Dock from '../components/Dock.astro';
 import { site, url } from '../site';
 
 interface Props {
@@ -14,39 +15,96 @@ const { title, description = site.intro } = Astro.props;
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <link rel="icon" type="image/svg+xml" href={url('/favicon.svg')} />
-    <title>{title ? `${title} — ${site.name}` : site.title}</title>
+    <title>{title ? `${title} — ${site.brand}` : site.title}</title>
     <meta name="description" content={description} />
+    <meta name="author" content={site.name} />
+    {Astro.site && <link rel="canonical" href={new URL(Astro.url.pathname, Astro.site)} />}
+    <script is:inline>document.documentElement.classList.add('js');</script>
   </head>
   <body>
-    <nav class="nav">
-      <a class="logo" href={url('/')}>{site.name}</a>
-      <ul>
-        <li><a href={url('/')}>Work</a></li>
-        <li><a href={url('/#about')}>About</a></li>
-        <li><a href={`mailto:${site.email}`}>Contact</a></li>
-      </ul>
-    </nav>
+    <header class="wrap site-header">
+      <a href={url('/')} class="brand">{site.brand}</a>
+      <span class="muted">{site.role}</span>
+    </header>
 
-    <slot />
+    <main>
+      <slot />
+    </main>
 
-    <footer>© {new Date().getFullYear()} {site.name}</footer>
+    <footer class="wrap site-footer muted">
+      <span>© {new Date().getFullYear()} {site.name}</span>
+      <span class="links">
+        {site.socials.map((s) => <a class="link" href={s.href}>{s.label}</a>)}
+      </span>
+    </footer>
+
+    <Dock />
+
+    <script>
+      // Line-by-line reveal for elements marked data-lines.
+      // Splits plain text into lines, slides each up from a mask,
+      // then restores the original text so it reflows normally.
+      const els = document.querySelectorAll<HTMLElement>('[data-lines]');
+      const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      function split(el: HTMLElement, delay = 0) {
+        const original = el.innerHTML;
+        const words = (el.textContent ?? '').trim().split(/\s+/);
+        el.textContent = '';
+        const spans = words.map((w, i) => {
+          const s = document.createElement('span');
+          s.textContent = w;
+          el.append(s, i < words.length - 1 ? ' ' : '');
+          return s;
+        });
+        const lines: string[][] = [];
+        let top: number | null = null;
+        for (const s of spans) {
+          if (s.offsetTop !== top) { lines.push([]); top = s.offsetTop; }
+          lines[lines.length - 1].push(s.textContent ?? '');
+        }
+        el.textContent = '';
+        lines.forEach((words, i) => {
+          const line = document.createElement('span');
+          line.className = 'line';
+          const inner = document.createElement('span');
+          inner.textContent = words.join(' ');
+          inner.style.animationDelay = `${delay + i * 90}ms`;
+          line.append(inner);
+          el.append(line);
+        });
+        el.classList.add('split-done');
+        const last = el.querySelector<HTMLElement>('.line:last-child > span');
+        last?.addEventListener('animationend', () => { el.innerHTML = original; }, { once: true });
+      }
+
+      if (reduced) {
+        els.forEach((el) => el.classList.add('split-done'));
+      } else {
+        document.fonts.ready.then(() => {
+          els.forEach((el) => split(el, Number(el.dataset.delay ?? 0)));
+        });
+      }
+    </script>
   </body>
 </html>
 
 <style>
-  .nav {
-    view-transition-name: nav;
-    position: sticky; top: 0; z-index: 10;
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 20px var(--gutter);
-    background: color-mix(in srgb, var(--bg) 80%, transparent);
-    backdrop-filter: blur(12px);
+  .site-header {
+    view-transition-name: header;
+    display: flex; flex-direction: column;
+    padding-top: clamp(40px, 8vh, 80px);
+    padding-bottom: clamp(40px, 7vh, 72px);
+    line-height: 1.5;
   }
-  .logo { font-weight: 600; letter-spacing: -.01em; }
-  ul { display: flex; gap: 28px; list-style: none; padding: 0; font-size: 15px; color: var(--muted); }
-  ul a:hover { color: var(--fg); }
-  footer { padding: 40px var(--gutter); color: var(--muted); font-size: 14px; border-top: 1px solid var(--line); }
-  @media (max-width: 480px) { ul { gap: 16px; } }
+  .brand { font-weight: 600; letter-spacing: -.02em; width: fit-content; }
+  main { min-height: 60vh; }
+  .site-footer {
+    display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+    padding-top: 96px; padding-bottom: 120px; /* room for the dock */
+    font-size: 13px;
+  }
+  .links { display: flex; gap: 16px; }
 </style>

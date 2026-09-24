@@ -1,0 +1,44 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import { url, shortMonthYear } from '../../site';
+
+const posts = (await getCollection('journal', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+---
+
+<Base title="Journal" description="Thoughts, notes and things I'm learning.">
+  <div class="wrap">
+    <h1 data-lines>journal</h1>
+    <p class="muted fade-in">Thoughts, notes and things I'm learning.</p>
+
+    {posts.length > 0 ? (
+      <ul class="list fade-in">
+        {posts.map((post) => (
+          <li>
+            <a href={url(`/journal/${post.id}/`)}>
+              <span class="title">{post.data.title}</span>
+              <time class="mono muted" datetime={post.data.date.toISOString()}>{shortMonthYear(post.data.date)}</time>
+            </a>
+          </li>
+        ))}
+      </ul>
+    ) : (
+      <p class="muted empty">Nothing here yet.</p>
+    )}
+  </div>
+</Base>
+
+<style>
+  h1 { font-size: 15px; font-weight: 500; }
+  .list { margin-top: 40px; margin-inline: -8px; }
+  .list a {
+    display: flex; justify-content: space-between; align-items: baseline; gap: 24px;
+    padding: 6px 8px; border-radius: 6px;
+    transition: background .2s;
+  }
+  .list a:hover { background: var(--subtle); }
+  .title { min-width: 0; }
+  time { flex-shrink: 0; }
+  .empty { margin-top: 40px; }
+</style>

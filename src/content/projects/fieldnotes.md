@@ -1,11 +1,10 @@
 ---
 title: Fieldnotes
 kind: Journaling app
-year: 2024
-lede: A calmer place to think out loud.
+date: 2024-06-01
+summary: "A calmer place to think out loud. No streaks, no counters — just 30-second entries and a weekly look back."
 role: Product Designer
 team: Solo, with 2 engineers
-order: 2
 colors: ['#e9d9c3', '#f2a65a', '#b6523a']
 ---
 

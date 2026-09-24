@@ -1,0 +1,84 @@
+---
+import Icon from './Icon.astro';
+import { site, url } from '../site';
+
+// Which section is active, based on the current path.
+const path = Astro.url.pathname.replace(import.meta.env.BASE_URL.replace(/\/$/, ''), '') || '/';
+const section = path.startsWith('/journal') ? 'journal' : path.startsWith('/about') ? 'about' : 'work';
+
+const items = [
+  { id: 'work', label: 'Work', href: url('/'), icon: 'home' },
+  { id: 'journal', label: 'Journal', href: url('/journal/'), icon: 'journal' },
+  { id: 'about', label: 'About', href: url('/about/'), icon: 'user' },
+] as const;
+---
+
+<nav class="dock" aria-label="Main">
+  {items.map((item) => (
+    <a
+      href={item.href}
+      class:list={['btn', { active: section === item.id }]}
+      aria-current={section === item.id ? 'page' : undefined}
+      data-label={item.label}
+    >
+      <Icon name={item.icon} />
+      <span class="sr-only">{item.label}</span>
+    </a>
+  ))}
+  <span class="sep" aria-hidden="true"></span>
+  <a href={`mailto:${site.email}`} class="btn" data-label="Email">
+    <Icon name="mail" />
+    <span class="sr-only">Email</span>
+  </a>
+</nav>
+
+<style>
+  .dock {
+    view-transition-name: dock;
+    position: fixed; z-index: 50;
+    left: 50%; bottom: max(20px, env(safe-area-inset-bottom));
+    translate: -50% 0;
+    display: flex; align-items: center; gap: 6px;
+    padding: 6px;
+    background: var(--dock-bg);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    backdrop-filter: blur(16px) saturate(1.4);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, .12);
+    animation: dock-in .7s .3s var(--ease) both;
+  }
+  @keyframes dock-in { from { opacity: 0; translate: -50% 24px; } }
+
+  .btn {
+    position: relative;
+    display: grid; place-items: center;
+    width: 42px; height: 42px;
+    border: 0; border-radius: 50%;
+    background: transparent; color: var(--muted);
+    cursor: pointer;
+    transition: background .2s, color .2s, transform .35s var(--ease);
+  }
+  .btn:hover { background: var(--subtle); color: var(--fg); transform: translateY(-2px); }
+  .btn.active { background: var(--subtle); color: var(--fg); }
+  .btn.active::after {
+    content: ''; position: absolute; bottom: -3px; left: 50%;
+    width: 4px; height: 4px; margin-left: -2px; border-radius: 50%;
+    background: var(--fg);
+  }
+
+  /* Tooltip label */
+  .btn::before {
+    content: attr(data-label);
+    position: absolute; bottom: calc(100% + 12px); left: 50%;
+    translate: -50% 4px;
+    padding: 3px 8px; border-radius: 6px;
+    background: var(--fg); color: var(--bg);
+    font: 12px/1.4 var(--sans); white-space: nowrap;
+    opacity: 0; pointer-events: none;
+    transition: opacity .15s, translate .25s var(--ease);
+  }
+  .btn:hover::before, .btn:focus-visible::before { opacity: 1; translate: -50% 0; }
+
+  .sep { width: 1px; height: 22px; background: var(--line); margin-inline: 2px; }
+
+</style>

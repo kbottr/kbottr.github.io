@@ -1,34 +1,81 @@
-/* Page transitions between pages, with no JavaScript. */
+@import '@fontsource-variable/geist';
+@import '@fontsource-variable/geist-mono';
+
+/* Crossfade between pages; images with a shared name morph. */
 @view-transition { navigation: auto; }
 
+/* ---------- Tokens ---------- */
 :root {
-  --bg: #f4f2ee;
-  --fg: #141414;
-  --muted: #6b6862;
-  --line: #dcd8d0;
+  --bg: #fafaf9;
+  --fg: #111110;
+  --muted: #72716d;
+  --subtle: #ebebe8;   /* highlights, hover chips */
+  --line: #e2e1dd;
+  --accent: #2f6bff;
+  --accent-bg: #2f6bff1a;
+  --dock-bg: #ffffffcc;
+
+  --sans: 'Geist Variable', system-ui, sans-serif;
+  --mono: 'Geist Mono Variable', ui-monospace, monospace;
   --ease: cubic-bezier(.2, .8, .2, 1);
-  --gutter: clamp(16px, 4vw, 48px);
-  --radius: 20px;
+  --col: 620px;
+  --gutter: 20px;
+  --radius: 10px;
+  color-scheme: light;
 }
+/* Follows the system light/dark setting */
 @media (prefers-color-scheme: dark) {
-  :root { --bg: #111110; --fg: #f1efe9; --muted: #9a968d; --line: #2a2926; }
+  :root {
+    --bg: #0a0a0a; --fg: #f5f5f4; --muted: #8b8a86; --subtle: #1c1c1b;
+    --line: #232322; --accent: #7aa2ff; --accent-bg: #7aa2ff24; --dock-bg: #161616cc;
+    color-scheme: dark;
+  }
 }
 
-* { box-sizing: border-box; margin: 0; }
-html { -webkit-font-smoothing: antialiased; }
+/* ---------- Base ---------- */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { -webkit-font-smoothing: antialiased; text-size-adjust: 100%; }
 body {
   background: var(--bg);
   color: var(--fg);
-  font: 17px/1.55 "Inter", system-ui, -apple-system, sans-serif;
+  font: 400 15px/1.6 var(--sans);
+  overflow-x: clip;
 }
 a { color: inherit; text-decoration: none; }
-img { display: block; max-width: 100%; }
+img { display: block; max-width: 100%; height: auto; }
+ul, ol { list-style: none; }
+::selection { background: var(--fg); color: var(--bg); }
 
-/* ---------- Media: a cover image, or a gradient placeholder ---------- */
+.wrap { width: min(100% - 2 * var(--gutter), var(--col)); margin-inline: auto; }
+.muted { color: var(--muted); }
+.mono { font-family: var(--mono); font-size: 13px; letter-spacing: -.01em; }
+.sr-only {
+  position: absolute; width: 1px; height: 1px; overflow: hidden;
+  clip-path: inset(50%); white-space: nowrap;
+}
+
+/* Animated underline for text links */
+.link {
+  background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat;
+  transition: background-size .45s var(--ease);
+  padding-bottom: 1px;
+}
+.link:hover, .link:focus-visible { background-size: 100% 1px; }
+.link.underlined {
+  background-image: linear-gradient(var(--line), var(--line)), linear-gradient(currentColor, currentColor);
+  background-size: 100% 1px, 0 1px;
+  background-position: 0 100%, 0 100%;
+}
+.link.underlined:hover { background-size: 100% 1px, 100% 1px; }
+
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+
+/* ---------- Media: cover image, or a gradient placeholder ---------- */
 .media {
   position: relative; overflow: hidden;
   border-radius: var(--radius);
   background: var(--c1);
+  aspect-ratio: 16 / 9;
 }
 .media-inner {
   position: absolute; inset: 0;
@@ -36,8 +83,8 @@ img { display: block; max-width: 100%; }
     radial-gradient(circle at 70% 30%, var(--c2), transparent 55%),
     radial-gradient(circle at 20% 90%, var(--c3), transparent 50%);
 }
-.media-inner.placeholder::after {   /* a fake device standing in for a screenshot */
-  content: ""; position: absolute;
+.media-inner.placeholder::after {
+  content: ''; position: absolute;
   left: 50%; top: 50%; height: 78%; aspect-ratio: 9 / 18;
   translate: -50% -42%;
   border-radius: 14% / 7%;
@@ -46,31 +93,51 @@ img { display: block; max-width: 100%; }
 }
 .media-inner img { width: 100%; height: 100%; object-fit: cover; }
 
-/* Keeps text from stretching while it morphs between pages */
-.vt-text { width: fit-content; }
-
-/* ---------- Scroll-driven animations (CSS only) ----------
-   Browsers without support show the content normally. */
-@supports (animation-timeline: view()) {
-  .reveal {
-    animation: reveal linear both;
-    animation-timeline: view();
-    animation-range: entry 0% entry 70%;
-  }
+/* ---------- Prose (Markdown) ---------- */
+.prose > * + * { margin-top: 1em; }
+.prose p, .prose li { color: color-mix(in srgb, var(--fg) 82%, var(--bg)); }
+.prose h2, .prose h3 {
+  margin-top: 2.6em; font: 400 13px/1.6 var(--mono); color: var(--muted); text-transform: lowercase;
 }
-@keyframes reveal { from { opacity: 0; transform: translateY(60px) scale(.98); } }
-
-/* ---------- Tuning the page transition ---------- */
-::view-transition-group(*) {
-  animation-duration: .7s;
-  animation-timing-function: var(--ease);
+.prose h2 + *, .prose h3 + * { margin-top: .5em; }
+.prose a {
+  background: linear-gradient(var(--line), var(--line)) 0 100% / 100% 1px no-repeat,
+              linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat;
+  transition: background-size .45s var(--ease);
 }
-::view-transition-old(root) { animation: .35s var(--ease) both page-out; }
-::view-transition-new(root) { animation: .6s .15s var(--ease) both page-in; }
-@keyframes page-out { to   { opacity: 0; transform: translateY(-24px); } }
-@keyframes page-in  { from { opacity: 0; transform: translateY(40px); } }
+.prose a:hover { background-size: 100% 1px, 100% 1px; }
+.prose strong { font-weight: 500; color: var(--fg); }
+.prose ul { padding-left: 1.1em; list-style: disc; }
+.prose ol { padding-left: 1.3em; list-style: decimal; }
+.prose li::marker { color: var(--muted); }
+.prose img { border-radius: var(--radius); margin-block: 2em; }
+.prose blockquote { border-left: 2px solid var(--line); padding-left: 16px; font-style: italic; }
+.prose code { font: 13px var(--mono); background: var(--subtle); padding: 1px 5px; border-radius: 4px; }
+
+/* ---------- Line-by-line text reveal (see Base.astro) ---------- */
+.js [data-lines]:not(.split-done) { visibility: hidden; }
+[data-lines] .line { display: block; overflow: hidden; padding-bottom: .08em; margin-bottom: -.08em; }
+[data-lines] .line > span {
+  display: block;
+  transform: translateY(105%);
+  animation: line-up .9s var(--ease) forwards;
+}
+@keyframes line-up { to { transform: none; } }
+
+/* Fade-up for blocks that follow the headline */
+.fade-in { opacity: 0; animation: fade-up .8s .25s var(--ease) forwards; }
+@keyframes fade-up { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+
+/* ---------- Page transition tuning ---------- */
+::view-transition-group(*) { animation-duration: .55s; animation-timing-function: var(--ease); }
+::view-transition-old(root) { animation: .25s ease both vt-out; }
+::view-transition-new(root) { animation: .45s .1s var(--ease) both vt-in; }
+@keyframes vt-out { to { opacity: 0; } }
+@keyframes vt-in { from { opacity: 0; transform: translateY(8px); } }
 
 @media (prefers-reduced-motion: reduce) {
   @view-transition { navigation: none; }
   *, *::before, *::after { animation: none !important; transition: none !important; }
+  .fade-in { opacity: 1; }
+  [data-lines] .line > span { transform: none; }
 }
