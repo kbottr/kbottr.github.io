@@ -1,17 +1,58 @@
 ---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import ProjectMedia from '../components/ProjectMedia.astro';
+import { site, url } from '../site';
 
+const projects = (await getCollection('projects', ({ data }) => !data.draft))
+  .sort((a, b) => a.data.order - b.data.order);
+const words = site.headline.split(' ');
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<Base>
+  <header class="intro">
+    <h1>
+      {words.map((word, i) => (
+        <span class="word" style={`animation-delay:${i * 70}ms`}>{word} </span>
+      ))}
+    </h1>
+    <p id="about">{site.intro}</p>
+  </header>
+
+  <main class="grid">
+    {projects.map((project, i) => (
+      <a class="card reveal" href={url(`/work/${project.id}/`)}>
+        <ProjectMedia project={project} eager={i === 0} />
+        <div class="meta">
+          <h2 class="vt-text" style={`view-transition-name:title-${project.id}`}>{project.data.title}</h2>
+          <span>{project.data.kind} · {project.data.year}</span>
+        </div>
+      </a>
+    ))}
+  </main>
+</Base>
+
+<style>
+  .intro { padding: 12vh var(--gutter) 10vh; max-width: 1200px; }
+  h1 { font-size: clamp(40px, 7vw, 96px); line-height: 1; letter-spacing: -.04em; font-weight: 600; }
+  .word { display: inline-block; white-space: pre; opacity: 0; transform: translateY(40%); animation: rise .9s var(--ease) forwards; }
+  .intro p { margin-top: 28px; max-width: 520px; color: var(--muted); font-size: 19px; opacity: 0; animation: fade 1s .6s forwards; }
+  @keyframes rise { to { opacity: 1; transform: none; } }
+  @keyframes fade { to { opacity: 1; } }
+  @media (prefers-reduced-motion: reduce) { .word, .intro p { opacity: 1; transform: none; } }
+
+  .grid {
+    display: grid; gap: var(--gutter);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr));
+    padding: 0 var(--gutter) 12vh;
+  }
+  .card { display: block; }
+  .card:first-child { grid-column: 1 / -1; }
+  .card :global(.media) { aspect-ratio: 16 / 10; }
+  .card:first-child :global(.media) { aspect-ratio: 21 / 9; }
+  .card :global(.media-inner) { transition: transform .8s var(--ease); }
+  .card:hover :global(.media-inner) { transform: scale(1.04); }
+  .meta { display: flex; justify-content: space-between; gap: 16px; margin-top: 16px; }
+  h2 { font-size: 22px; font-weight: 600; letter-spacing: -.02em; }
+  .meta span { color: var(--muted); font-size: 15px; }
+</style>

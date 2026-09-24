@@ -1,43 +1,24 @@
-# Astro Starter Kit: Minimal
+# Portfolio
 
-```sh
-npm create astro@latest -- --template minimal
-```
+Personal portfolio built with [Astro](https://astro.build), deployed to GitHub Pages.
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+## Everyday tasks
 
-## 🚀 Project Structure
+| Task | How |
+|---|---|
+| Run locally | `npm run dev` → http://localhost:4321 |
+| Edit name, headline, intro, email | `src/site.ts` |
+| Add a case study | Add a Markdown file to `src/content/projects/` (copy an existing one) |
+| Add a cover image | Put the image next to the Markdown file and set `cover: ./my-image.jpg` |
+| Hide a project | Set `draft: true` in its frontmatter |
+| Reorder projects | Change `order` (lower comes first) |
+| Publish | Commit and push to `main` — GitHub Actions builds and deploys |
 
-Inside of your Astro project, you'll see the following folders and files:
+## How the animations work
 
-```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
-```
-
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
-
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
-
-Any static assets, like images, can be placed in the `public/` directory.
-
-## 🧞 Commands
-
-All commands are run from the root of the project, from a terminal:
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+- **Page transitions:** `@view-transition { navigation: auto; }` in `src/styles/global.css`.
+- **Shared-element morphs:** the card image and title on the home page share a
+  `view-transition-name` with the hero and heading on the case-study page
+  (`media-<slug>` / `title-<slug>`).
+- **Scroll reveals & parallax:** CSS `animation-timeline: view()`, no JavaScript.
+- Everything is switched off for users with "reduce motion" enabled.

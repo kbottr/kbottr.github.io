@@ -1,0 +1,52 @@
+---
+import '../styles/global.css';
+import { site, url } from '../site';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { title, description = site.intro } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href={url('/favicon.svg')} />
+    <title>{title ? `${title} — ${site.name}` : site.title}</title>
+    <meta name="description" content={description} />
+  </head>
+  <body>
+    <nav class="nav">
+      <a class="logo" href={url('/')}>{site.name}</a>
+      <ul>
+        <li><a href={url('/')}>Work</a></li>
+        <li><a href={url('/#about')}>About</a></li>
+        <li><a href={`mailto:${site.email}`}>Contact</a></li>
+      </ul>
+    </nav>
+
+    <slot />
+
+    <footer>© {new Date().getFullYear()} {site.name}</footer>
+  </body>
+</html>
+
+<style>
+  .nav {
+    view-transition-name: nav;
+    position: sticky; top: 0; z-index: 10;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 20px var(--gutter);
+    background: color-mix(in srgb, var(--bg) 80%, transparent);
+    backdrop-filter: blur(12px);
+  }
+  .logo { font-weight: 600; letter-spacing: -.01em; }
+  ul { display: flex; gap: 28px; list-style: none; padding: 0; font-size: 15px; color: var(--muted); }
+  ul a:hover { color: var(--fg); }
+  footer { padding: 40px var(--gutter); color: var(--muted); font-size: 14px; border-top: 1px solid var(--line); }
+  @media (max-width: 480px) { ul { gap: 16px; } }
+</style>

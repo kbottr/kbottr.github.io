@@ -1,0 +1,101 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import ProjectMedia from '../../components/ProjectMedia.astro';
+import { url } from '../../site';
+
+export async function getStaticPaths() {
+  const projects = (await getCollection('projects', ({ data }) => !data.draft))
+    .sort((a, b) => a.data.order - b.data.order);
+  return projects.map((project, i) => ({
+    params: { slug: project.id },
+    props: { project, next: projects[(i + 1) % projects.length] },
+  }));
+}
+
+const { project, next } = Astro.props;
+const { title, lede, role, kind, year, team } = project.data;
+const { Content } = await render(project);
+---
+
+<Base title={title} description={lede}>
+  <header class="head">
+    <a class="back" href={url('/')}>← All work</a>
+    <h1 class="vt-text" style={`view-transition-name:title-${project.id}`}>{title}</h1>
+    <p class="lede">{lede}</p>
+  </header>
+
+  <ProjectMedia project={project} class="hero" eager />
+
+  <dl class="facts reveal">
+    <div><dt>Role</dt><dd>{role}</dd></div>
+    <div><dt>Type</dt><dd>{kind}</dd></div>
+    <div><dt>Year</dt><dd>{year}</dd></div>
+    {team && <div><dt>Team</dt><dd>{team}</dd></div>}
+  </dl>
+
+  <article class="prose">
+    <Content />
+  </article>
+
+  {next.id !== project.id && (
+    <a class="next" href={url(`/work/${next.id}/`)}>
+      <small>Next project</small>
+      <h2 class="vt-text" style={`view-transition-name:title-${next.id}`}>{next.data.title}</h2>
+      <ProjectMedia project={next} />
+    </a>
+  )}
+</Base>
+
+<style>
+  .head { padding: 8vh var(--gutter) 5vh; }
+  .back { color: var(--muted); font-size: 15px; }
+  .back:hover { color: var(--fg); }
+  h1 { margin-top: 24px; font-size: clamp(44px, 8vw, 120px); line-height: .95; letter-spacing: -.045em; font-weight: 600; }
+  .lede { margin-top: 20px; font-size: 21px; max-width: 640px; color: var(--muted); }
+
+  :global(.hero) { margin: 0 var(--gutter); aspect-ratio: 16 / 9; }
+  @supports (animation-timeline: view()) {
+    :global(.hero .media-inner) {
+      animation: parallax linear both;
+      animation-timeline: view();
+      animation-range: exit 0% exit 100%;
+    }
+  }
+  @keyframes parallax { to { transform: translateY(18%) scale(1.08); } }
+
+  .facts {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 24px;
+    padding: 8vh var(--gutter); border-bottom: 1px solid var(--line);
+  }
+  dt { color: var(--muted); font-size: 14px; }
+  dd { font-weight: 500; }
+
+  /* Markdown content: each "## Heading" becomes a label beside its text */
+  .prose {
+    display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+    column-gap: var(--gutter); row-gap: 1em; padding: 10vh var(--gutter) 0;
+  }
+  .prose :global(h2) {
+    grid-column: 1; margin-top: 8vh;
+    font-size: 15px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); font-weight: 500;
+  }
+  .prose :global(h2:first-child) { margin-top: 0; }
+  .prose :global(:not(h2)) { grid-column: 2; }
+  .prose :global(h2 + *) { margin-top: 8vh; }
+  .prose :global(h2:first-child + *) { margin-top: 0; }
+  .prose :global(p) { font-size: clamp(20px, 2.2vw, 28px); line-height: 1.35; letter-spacing: -.01em; }
+  .prose :global(img) { border-radius: var(--radius); margin-block: 4vh; }
+  @media (max-width: 720px) {
+    .prose { grid-template-columns: 1fr; }
+    .prose :global(*) { grid-column: 1 !important; }
+    .prose :global(h2 + *) { margin-top: 12px; }
+  }
+
+  .next { display: block; padding: 14vh var(--gutter); }
+  .next small { color: var(--muted); font-size: 15px; }
+  .next h2 { font-size: clamp(36px, 6vw, 80px); letter-spacing: -.04em; line-height: 1; margin: 12px 0 32px; }
+  .next :global(.media) { aspect-ratio: 21 / 9; }
+  .next :global(.media-inner) { transition: transform .8s var(--ease); }
+  .next:hover :global(.media-inner) { transform: scale(1.03); }
+</style>

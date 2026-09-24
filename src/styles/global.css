@@ -1,0 +1,76 @@
+/* Page transitions between pages, with no JavaScript. */
+@view-transition { navigation: auto; }
+
+:root {
+  --bg: #f4f2ee;
+  --fg: #141414;
+  --muted: #6b6862;
+  --line: #dcd8d0;
+  --ease: cubic-bezier(.2, .8, .2, 1);
+  --gutter: clamp(16px, 4vw, 48px);
+  --radius: 20px;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #111110; --fg: #f1efe9; --muted: #9a968d; --line: #2a2926; }
+}
+
+* { box-sizing: border-box; margin: 0; }
+html { -webkit-font-smoothing: antialiased; }
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font: 17px/1.55 "Inter", system-ui, -apple-system, sans-serif;
+}
+a { color: inherit; text-decoration: none; }
+img { display: block; max-width: 100%; }
+
+/* ---------- Media: a cover image, or a gradient placeholder ---------- */
+.media {
+  position: relative; overflow: hidden;
+  border-radius: var(--radius);
+  background: var(--c1);
+}
+.media-inner {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(circle at 70% 30%, var(--c2), transparent 55%),
+    radial-gradient(circle at 20% 90%, var(--c3), transparent 50%);
+}
+.media-inner.placeholder::after {   /* a fake device standing in for a screenshot */
+  content: ""; position: absolute;
+  left: 50%; top: 50%; height: 78%; aspect-ratio: 9 / 18;
+  translate: -50% -42%;
+  border-radius: 14% / 7%;
+  background: linear-gradient(180deg, rgba(255,255,255,.95), rgba(255,255,255,.75));
+  box-shadow: 0 30px 80px rgba(0,0,0,.25);
+}
+.media-inner img { width: 100%; height: 100%; object-fit: cover; }
+
+/* Keeps text from stretching while it morphs between pages */
+.vt-text { width: fit-content; }
+
+/* ---------- Scroll-driven animations (CSS only) ----------
+   Browsers without support show the content normally. */
+@supports (animation-timeline: view()) {
+  .reveal {
+    animation: reveal linear both;
+    animation-timeline: view();
+    animation-range: entry 0% entry 70%;
+  }
+}
+@keyframes reveal { from { opacity: 0; transform: translateY(60px) scale(.98); } }
+
+/* ---------- Tuning the page transition ---------- */
+::view-transition-group(*) {
+  animation-duration: .7s;
+  animation-timing-function: var(--ease);
+}
+::view-transition-old(root) { animation: .35s var(--ease) both page-out; }
+::view-transition-new(root) { animation: .6s .15s var(--ease) both page-in; }
+@keyframes page-out { to   { opacity: 0; transform: translateY(-24px); } }
+@keyframes page-in  { from { opacity: 0; transform: translateY(40px); } }
+
+@media (prefers-reduced-motion: reduce) {
+  @view-transition { navigation: none; }
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
