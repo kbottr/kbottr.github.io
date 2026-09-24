@@ -1,0 +1,116 @@
+/* ==========================================================================
+   Design tokens — the single source of truth for the site's design system.
+   Components and pages use these variables; they never hard-code values.
+   ========================================================================== */
+
+:root {
+  /* ---------- Colour ---------- */
+  --bg: #fafaf9;
+  --fg: #111110;
+  --fg-soft: color-mix(in srgb, var(--fg) 82%, var(--bg)); /* long-form body text */
+  --muted: #72716d;
+  --subtle: #ebebe8;   /* hover chips, placeholders */
+  --line: #e2e1dd;     /* dividers, borders */
+  --accent: #2f6bff;
+  --accent-bg: #2f6bff1a;
+  --dock-bg: #ffffffcc;
+  --shadow: 0 var(--space-8) var(--space-40) rgb(0 0 0 / .12);
+
+  /* ---------- Typography ----------
+     Base 17px. Scale steps multiply by √φ ≈ 1.272, so every second
+     step is exactly the golden ratio (φ ≈ 1.618). Rounded to whole px.
+
+     sm 13 ← base 17 → md 22 → lg 28 → xl 35 → 2xl 44 → 3xl 72 → 4xl 116 → 5xl 188
+                  └──────── ×φ ───────┘      └──── ×φ ────┘   (…and so on)
+     Line heights sit on the 4px grid; body 28px ≈ 17 × φ. */
+  --sans: 'Geist Variable', system-ui, sans-serif;
+  --mono: 'Geist Mono Variable', ui-monospace, monospace;
+
+  --text-sm: 13px;    --leading-sm: 20px;    /* dates, labels, captions, footer */
+  --text-base: 17px;  --leading-base: 28px;  /* body text */
+  --text-md: 22px;    --leading-md: 32px;    /* lead paragraphs, project titles */
+  --text-lg: 28px;    --leading-lg: 36px;    /* page titles */
+  --text-xl: 35px;    --leading-xl: 44px;
+  --text-2xl: 44px;   --leading-2xl: 52px;
+  --text-3xl: 72px;                          /* display: min */
+  --text-4xl: 116px;
+  --text-5xl: 188px;                         /* display: max */
+  --leading-display: 1;
+
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+
+  --tracking-mono: -.01em;
+  --tracking-tight: -.015em;
+  --tracking-tighter: -.025em;
+  --tracking-display: -.055em;
+
+  /* ---------- Spacing (4 / 8 scale) ----------
+     Named by their pixel value, so --space-24 is 24px.
+     --space-2 exists only for optical nudges and hairline offsets. */
+  --space-2: 2px;
+  --space-4: 4px;
+  --space-8: 8px;
+  --space-12: 12px;
+  --space-16: 16px;
+  --space-24: 24px;
+  --space-32: 32px;
+  --space-40: 40px;
+  --space-48: 48px;
+  --space-64: 64px;
+  --space-80: 80px;
+  --space-96: 96px;
+  --space-128: 128px;
+
+  /* ---------- Layout ---------- */
+  --col: 680px;                 /* 40 × 17px ≈ 70 characters per line */
+  --gutter: var(--space-24);
+  --label-col: 144px;           /* left column in About rows */
+
+  /* ---------- Shape ---------- */
+  --border: 1px;
+  --radius-sm: 4px;             /* inline code, focus rings */
+  --radius: 8px;                /* chips, cover thumbnails */
+  --radius-lg: 12px;            /* images */
+  --radius-full: 999px;         /* pills, dock, circles */
+
+  /* ---------- Sizes ---------- */
+  --icon-sm: 16px;
+  --icon: 20px;
+  --control: 40px;              /* dock buttons */
+  --thumb: 48px;                /* music covers */
+  --avatar: 112px;
+  --dot: 4px;
+
+  /* ---------- Motion ---------- */
+  --ease: cubic-bezier(.2, .8, .2, 1);
+  --duration-fast: .2s;         /* colour, opacity */
+  --duration: .45s;             /* underlines, small moves */
+  --duration-slow: .8s;         /* images, reveals */
+  --duration-page: .55s;        /* image morph between pages */
+  --stagger: 90ms;              /* delay between revealed lines */
+  --delay: .25s;                /* content that follows a headline */
+
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0a0a0a;
+    --fg: #f5f5f4;
+    --muted: #8b8a86;
+    --subtle: #1c1c1b;
+    --line: #232322;
+    --accent: #7aa2ff;
+    --accent-bg: #7aa2ff24;
+    --dock-bg: #161616cc;
+    color-scheme: dark;
+  }
+}
+
+/* Breakpoints (CSS can't use variables inside @media, so they're written out):
+   480px = phone (smaller gutter), 600px = About rows stack to one column. */
+@media (max-width: 480px) {
+  :root { --gutter: var(--space-16); --label-col: auto; }
+}

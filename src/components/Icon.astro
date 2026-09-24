@@ -2,6 +2,8 @@
 // Icons from Lucide (https://lucide.dev/icons/, ISC licence).
 // To add one: find it on lucide.dev, import it from '@lucide/astro/icons/<name>'
 // and add it to the map below.
+import ArrowLeft from '@lucide/astro/icons/arrow-left';
+import ArrowRight from '@lucide/astro/icons/arrow-right';
 import ArrowUpRight from '@lucide/astro/icons/arrow-up-right';
 import Briefcase from '@lucide/astro/icons/briefcase';
 import Flag from '@lucide/astro/icons/flag';
@@ -19,16 +21,25 @@ const icons = {
   briefcase: Briefcase,
   headphones: Headphones,
   flag: Flag,
-  arrow: ArrowUpRight,
+  'arrow-up-right': ArrowUpRight,
+  'arrow-left': ArrowLeft,
+  'arrow-right': ArrowRight,
 };
+export type IconName = keyof typeof icons;
 
 interface Props {
-  name: keyof typeof icons;
-  size?: number | string;
+  name: IconName;
+  size?: 'sm' | 'md'; // --icon-sm (16px) or --icon (20px)
   class?: string;
 }
-const { name, size = 18, class: className } = Astro.props;
+const { name, size = 'md', class: className } = Astro.props;
 const Lucide = icons[name];
 ---
 
-<Lucide size={size} stroke-width={1.75} class={className} aria-hidden="true" />
+<Lucide class:list={['icon', `icon-${size}`, className]} stroke-width={1.75} aria-hidden="true" />
+
+<style>
+  :global(.icon) { flex-shrink: 0; }
+  :global(.icon-sm) { width: var(--icon-sm); height: var(--icon-sm); }
+  :global(.icon-md) { width: var(--icon); height: var(--icon); }
+</style>

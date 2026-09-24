@@ -1,0 +1,18 @@
+---
+// A lead paragraph (md size) that reveals line by line on page load.
+interface Props {
+  delay?: number; // ms before the first line starts
+  class?: string;
+}
+const { delay = 0, class: className } = Astro.props;
+---
+
+<p class:list={['lead', className]} data-lines data-delay={delay}><slot /></p>
+
+<style>
+  .lead {
+    font-size: var(--text-md);
+    line-height: var(--leading-md);
+    letter-spacing: var(--tracking-tight);
+  }
+</style>

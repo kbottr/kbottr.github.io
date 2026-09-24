@@ -3,8 +3,13 @@ import { getCollection } from 'astro:content';
 import { Image } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
 import Base from '../layouts/Base.astro';
+import Section from '../components/Section.astro';
+import ListRow from '../components/ListRow.astro';
+import Pill from '../components/Pill.astro';
+import Link from '../components/Link.astro';
+import DateLabel from '../components/DateLabel.astro';
 import Icon from '../components/Icon.astro';
-import { site, url, shortMonthYear } from '../site';
+import { site, url } from '../site';
 
 // Drop a photo at src/assets/portrait.jpg (or .png/.webp) and it appears here.
 const portraits = import.meta.glob<{ default: ImageMetadata }>('../assets/portrait.{jpg,jpeg,png,webp}', { eager: true });
@@ -23,151 +28,122 @@ const posts = (await getCollection('journal', ({ data }) => !data.draft))
 <Base title="About" description={site.about[0]}>
   <div class="wrap">
     <section class="intro">
-      <div class="side">
+      <div>
         {portrait ? (
-          <Image src={portrait} alt={site.name} width={200} height={200} class="portrait" loading="eager" />
+          <Image src={portrait} alt={site.name} width={224} height={224} class="portrait" loading="eager" />
         ) : (
           <div class="portrait placeholder" aria-hidden="true">{initials}</div>
         )}
       </div>
       <div class="bio">
-        {site.about.map((p, i) => (i === 0 ? <p data-lines>{p}</p> : <p class="fade-in">{p}</p>))}
+        {site.about.map((p, i) => (i === 0 ? <p class="first" data-lines>{p}</p> : <p class="fade-in">{p}</p>))}
         <p class="socials fade-in">
-          {site.socials.map((s) => <a class="link underlined" href={s.href}>{s.label}</a>)}
-          <a class="link underlined" href={`mailto:${site.email}`}>Email</a>
+          {site.socials.map((s) => <Link variant="underlined" href={s.href}>{s.label}</Link>)}
+          <Link variant="underlined" href={`mailto:${site.email}`}>Email</Link>
         </p>
       </div>
     </section>
 
     <div class="fade-in">
-      <section class="row">
-        <h2><Icon name="briefcase" size={15} /> experience</h2>
-        <ul class="experience">
+      <Section label="experience" icon="briefcase">
+        <ul class="stack">
           {experience.map(({ data }) => (
-            <li>
-              <div>
-                <div>{data.role}</div>
-                <div class="muted">{data.company}</div>
-              </div>
-              <div class="dates mono muted">
-                {data.start} – {data.end ?? <span class="pill">present</span>}
-              </div>
-            </li>
+            <ListRow>
+              <span class="block">{data.role}</span>
+              <span class="block muted">{data.company}</span>
+              <span slot="meta" class="mono muted">
+                {data.start} – {data.end ?? <Pill>present</Pill>}
+              </span>
+            </ListRow>
           ))}
         </ul>
-      </section>
+      </Section>
 
-      <section class="row">
-        <h2><Icon name="journal" size={15} /> journal</h2>
-        <div>
-          {posts.length > 0 ? (
-            <ul class="posts">
-              {posts.map((post) => (
-                <li>
-                  <a class="link" href={url(`/journal/${post.id}/`)}>{post.data.title}</a>
-                  <span class="mono muted">{shortMonthYear(post.data.date)}</span>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p class="muted">Nothing here yet.</p>
-          )}
-          <a class="link muted all" href={url('/journal/')}>all posts →</a>
-        </div>
-      </section>
+      <Section label="journal" icon="journal">
+        {posts.length > 0 ? (
+          <ul>
+            {posts.map((post) => (
+              <ListRow href={url(`/journal/${post.id}/`)}>
+                {post.data.title}
+                <DateLabel slot="meta" date={post.data.date} format="short" />
+              </ListRow>
+            ))}
+          </ul>
+        ) : (
+          <p class="muted">Nothing here yet.</p>
+        )}
+        <Link variant="muted" href={url('/journal/')} class="all">all posts<Icon name="arrow-right" size="sm" /></Link>
+      </Section>
 
-      <section class="row">
-        <h2><Icon name="headphones" size={15} /> music</h2>
-        <ul class="music">
+      <Section label="music" icon="headphones">
+        <ul class="grid-2">
           {music.map(({ data }) => {
             const Tag = data.href ? 'a' : 'div';
             return (
               <li>
                 <Tag class="track" href={data.href}>
                   {data.cover ? (
-                    <img src={data.cover.startsWith('/') ? url(data.cover) : data.cover} alt="" width="48" height="48" loading="lazy" />
+                    <img class="cover" src={data.cover.startsWith('/') ? url(data.cover) : data.cover} alt="" width="48" height="48" loading="lazy" />
                   ) : (
-                    <span class="cover" aria-hidden="true" />
+                    <span class="cover placeholder" aria-hidden="true" />
                   )}
                   <span>
-                    <span class:list={['title', { link: data.href }]}>{data.title}</span>
-                    <span class="muted artist">{data.artist}</span>
+                    <span class:list={['block', { link: data.href }]}>{data.title}</span>
+                    <span class="block muted small">{data.artist}</span>
                   </span>
                 </Tag>
               </li>
             );
           })}
         </ul>
-      </section>
+      </Section>
 
-      <section class="row">
-        <h2><Icon name="flag" size={15} /> goals</h2>
-        <ul class="goals">
+      <Section label="goals" icon="flag">
+        <ul class="grid-2 goals">
           {goals.map(({ data }) => (
             <li class={data.status}>
               {data.status === 'done' ? <s>{data.text}</s> : data.text}
             </li>
           ))}
         </ul>
-      </section>
+      </Section>
     </div>
   </div>
 </Base>
 
 <style>
   .intro {
-    display: grid; grid-template-columns: 140px 1fr; gap: 32px;
-    padding-bottom: 48px; border-bottom: 1px solid var(--line);
+    display: grid; grid-template-columns: var(--label-col) 1fr; gap: var(--space-32);
+    padding-bottom: var(--space-48);
+    border-bottom: var(--border) solid var(--line);
   }
-  .portrait { width: 112px; height: 112px; border-radius: 50%; object-fit: cover; }
+  .portrait { width: var(--avatar); height: var(--avatar); border-radius: var(--radius-full); object-fit: cover; }
   .portrait.placeholder {
     display: grid; place-items: center;
     background: var(--subtle); color: var(--muted);
-    font: 500 28px var(--sans); letter-spacing: -.03em;
+    font-size: var(--text-lg); font-weight: var(--weight-medium); letter-spacing: var(--tracking-tighter);
   }
-  .bio > * + * { margin-top: 1em; }
-  .bio p:first-child { font-size: 17px; line-height: 1.5; letter-spacing: -.01em; }
-  .socials { display: flex; gap: 16px; flex-wrap: wrap; }
+  .bio > * + * { margin-top: var(--space-16); }
+  .bio .first { font-size: var(--text-md); line-height: var(--leading-md); letter-spacing: var(--tracking-tight); }
+  .socials { display: flex; gap: var(--space-16); flex-wrap: wrap; }
 
-  .row {
-    display: grid; grid-template-columns: 140px 1fr; gap: 32px;
-    padding-block: 32px; border-bottom: 1px solid var(--line);
-  }
-  .row:last-child { border-bottom: 0; }
-  h2 {
-    display: flex; align-items: center; gap: 8px; align-self: start;
-    font-size: 15px; font-weight: 400; color: var(--muted);
-  }
+  .block { display: block; width: fit-content; }
+  .small { font-size: var(--text-sm); line-height: var(--leading-sm); }
+  .stack { display: grid; gap: var(--space-16); }
+  :global(.all) { display: inline-flex; align-items: center; gap: var(--space-4); margin-top: var(--space-16); font-size: var(--text-sm); line-height: var(--leading-sm); }
 
-  .experience { display: grid; gap: 18px; }
-  .experience li { display: flex; justify-content: space-between; gap: 16px; }
-  .dates { white-space: nowrap; padding-top: 2px; }
-  .pill {
-    display: inline-block; padding: 0 8px; border-radius: 999px;
-    background: var(--accent-bg); color: var(--accent);
-  }
+  .grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-16) var(--space-24); }
+  .track { display: flex; gap: var(--space-12); align-items: center; }
+  .cover { width: var(--thumb); height: var(--thumb); flex-shrink: 0; border-radius: var(--radius); object-fit: cover; }
+  .cover.placeholder { background: linear-gradient(135deg, var(--subtle), var(--line)); }
 
-  .posts { display: grid; gap: 8px; }
-  .posts li { display: flex; justify-content: space-between; gap: 16px; align-items: baseline; }
-  .posts .mono { flex-shrink: 0; }
-  .all { display: inline-block; margin-top: 16px; font-size: 13px; }
-
-  .music { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px 24px; }
-  .track { display: flex; gap: 12px; align-items: center; }
-  .track img, .cover {
-    width: 48px; height: 48px; flex-shrink: 0; border-radius: 6px; object-fit: cover;
-  }
-  .cover { background: linear-gradient(135deg, var(--subtle), var(--line)); }
-  .title, .artist { display: block; width: fit-content; }
-  .artist { font-size: 13px; }
-
-  .goals { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px 24px; }
+  .goals { row-gap: var(--space-4); }
   .goals .done { color: var(--muted); }
   .goals .doing { color: var(--accent); }
-  .goals .doing::before { content: '•'; margin-left: -12px; width: 12px; display: inline-block; }
+  .goals .doing::before { content: '•'; display: inline-block; width: var(--space-12); margin-left: calc(-1 * var(--space-12)); }
 
   @media (max-width: 600px) {
-    .intro, .row { grid-template-columns: 1fr; gap: 16px; }
-    .music, .goals { grid-template-columns: 1fr; }
+    .intro { grid-template-columns: 1fr; gap: var(--space-16); }
+    .grid-2 { grid-template-columns: 1fr; }
   }
 </style>
