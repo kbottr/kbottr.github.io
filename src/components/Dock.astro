@@ -30,11 +30,6 @@ const items = [
     <Icon name="mail" />
     <span class="sr-only">Email</span>
   </a>
-  <button type="button" class="btn theme-toggle" data-label="Theme">
-    <Icon name="sun" class="sun" />
-    <Icon name="moon" class="moon" />
-    <span class="sr-only">Switch light / dark mode</span>
-  </button>
 </nav>
 
 <style>
@@ -86,33 +81,4 @@ const items = [
 
   .sep { width: 1px; height: 22px; background: var(--line); margin-inline: 2px; }
 
-  /* Show the icon for the theme you'd switch to (sun in dark mode, moon in light) */
-  .theme-toggle :global(.moon) { display: none; }
-  :global(:root[data-theme='light']) .theme-toggle :global(.sun) { display: none; }
-  :global(:root[data-theme='light']) .theme-toggle :global(.moon) { display: block; }
-  @media (prefers-color-scheme: light) {
-    :global(:root:not([data-theme])) .theme-toggle :global(.sun) { display: none; }
-    :global(:root:not([data-theme])) .theme-toggle :global(.moon) { display: block; }
-  }
 </style>
-
-<script>
-  const toggle = document.querySelector<HTMLButtonElement>('.theme-toggle');
-  toggle?.addEventListener('click', () => {
-    const root = document.documentElement;
-    const isDark =
-      root.dataset.theme === 'dark' ||
-      (!root.dataset.theme && matchMedia('(prefers-color-scheme: dark)').matches);
-    const next = isDark ? 'light' : 'dark';
-    const apply = () => {
-      root.dataset.theme = next;
-      try { localStorage.setItem('theme', next); } catch {}
-    };
-    // Crossfade the whole page where supported
-    if (document.startViewTransition && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      document.startViewTransition(apply);
-    } else {
-      apply();
-    }
-  });
-</script>

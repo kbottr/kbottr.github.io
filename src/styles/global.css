@@ -23,17 +23,13 @@
   --radius: 10px;
   color-scheme: light;
 }
+/* Follows the system light/dark setting */
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme='light']) {
+  :root {
     --bg: #0a0a0a; --fg: #f5f5f4; --muted: #8b8a86; --subtle: #1c1c1b;
     --line: #232322; --accent: #7aa2ff; --accent-bg: #7aa2ff24; --dock-bg: #161616cc;
     color-scheme: dark;
   }
-}
-:root[data-theme='dark'] {
-  --bg: #0a0a0a; --fg: #f5f5f4; --muted: #8b8a86; --subtle: #1c1c1b;
-  --line: #232322; --accent: #7aa2ff; --accent-bg: #7aa2ff24; --dock-bg: #161616cc;
-  color-scheme: dark;
 }
 
 /* ---------- Base ---------- */

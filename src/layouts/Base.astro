@@ -21,14 +21,7 @@ const { title, description = site.intro } = Astro.props;
     <meta name="description" content={description} />
     <meta name="author" content={site.name} />
     {Astro.site && <link rel="canonical" href={new URL(Astro.url.pathname, Astro.site)} />}
-    <!-- Apply the saved theme before first paint to avoid a flash -->
-    <script is:inline>
-      document.documentElement.classList.add('js');
-      try {
-        const t = localStorage.getItem('theme');
-        if (t) document.documentElement.dataset.theme = t;
-      } catch {}
-    </script>
+    <script is:inline>document.documentElement.classList.add('js');</script>
   </head>
   <body>
     <header class="wrap site-header">

@@ -22,5 +22,6 @@ Personal portfolio built with [Astro](https://astro.build), deployed to GitHub P
   Project images morph between the home feed and the case study (shared `view-transition-name`).
 - **Line-by-line text reveal:** add `data-lines` to any plain-text element (script in `src/layouts/Base.astro`).
 - **Scrolling title:** `src/components/Marquee.astro`, used at the top of each case study.
-- **Link underlines, dock hover, theme crossfade:** CSS transitions + the View Transitions API.
+- **Link underlines, dock hover:** CSS transitions.
+- **Light / dark:** follows the visitor's system setting automatically (`prefers-color-scheme` in `global.css`).
 - Everything is switched off for users with "reduce motion" enabled.
