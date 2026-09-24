@@ -1,10 +1,17 @@
-# What you're listening to. `cover` can be an image URL or a file in public/.
+# What you're listening to.
+# spotify / apple: paste the share link from each app (both optional).
+# cover: an image URL, or a file in public/ like /music/album.jpg (optional).
 - title: Track title
   artist: Artist name
-  href: https://open.spotify.com/
+  spotify: https://open.spotify.com/
+  apple: https://music.apple.com/
 - title: Album title
   artist: Artist name
+  spotify: https://open.spotify.com/
+  apple: https://music.apple.com/
 - title: Track title
   artist: Artist name
+  spotify: https://open.spotify.com/
 - title: Album title
   artist: Artist name
+  apple: https://music.apple.com/
