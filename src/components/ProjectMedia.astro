@@ -5,20 +5,14 @@ import type { CollectionEntry } from 'astro:content';
 interface Props {
   project: CollectionEntry<'projects'>;
   class?: string;
-  // Give the element a shared name so it morphs between pages.
-  morph?: boolean;
   eager?: boolean;
 }
 
-const { project, class: className, morph = true, eager = false } = Astro.props;
+const { project, class: className, eager = false } = Astro.props;
 const { cover, colors, title } = project.data;
 const [c1, c2, c3] = colors;
-const style = [
-  `--c1:${c1};--c2:${c2};--c3:${c3}`,
-  morph && `view-transition-name:media-${project.id}`,
-]
-  .filter(Boolean)
-  .join(';');
+// The shared name makes the image morph between the home feed and the case study.
+const style = `--c1:${c1};--c2:${c2};--c3:${c3};view-transition-name:media-${project.id}`;
 ---
 
 <div class:list={['media', className]} style={style}>
@@ -27,8 +21,8 @@ const style = [
       <Image
         src={cover}
         alt={`${title} cover`}
-        widths={[640, 1280, 1920]}
-        sizes="(max-width: 900px) 100vw, 1400px"
+        widths={[640, 1240, 1860]}
+        sizes="(max-width: 660px) 100vw, 620px"
         loading={eager ? 'eager' : 'lazy'}
       />
     )}

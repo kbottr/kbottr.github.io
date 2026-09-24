@@ -1,0 +1,10 @@
+# What you're listening to. `cover` can be an image URL or a file in public/.
+- title: Track title
+  artist: Artist name
+  href: https://open.spotify.com/
+- title: Album title
+  artist: Artist name
+- title: Track title
+  artist: Artist name
+- title: Album title
+  artist: Artist name

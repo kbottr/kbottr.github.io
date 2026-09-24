@@ -2,57 +2,54 @@
 import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import ProjectMedia from '../components/ProjectMedia.astro';
-import { site, url } from '../site';
+import Icon from '../components/Icon.astro';
+import { site, url, monthYear } from '../site';
 
 const projects = (await getCollection('projects', ({ data }) => !data.draft))
-  .sort((a, b) => a.data.order - b.data.order);
-const words = site.headline.split(' ');
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 ---
 
 <Base>
-  <header class="intro">
-    <h1>
-      {words.map((word, i) => (
-        <span class="word" style={`animation-delay:${i * 70}ms`}>{word} </span>
-      ))}
-    </h1>
-    <p id="about">{site.intro}</p>
-  </header>
+  <div class="wrap">
+    <p class="intro" data-lines>{site.intro}</p>
 
-  <main class="grid">
-    {projects.map((project, i) => (
-      <a class="card reveal" href={url(`/work/${project.id}/`)}>
-        <ProjectMedia project={project} eager={i === 0} />
-        <div class="meta">
-          <h2 class="vt-text" style={`view-transition-name:title-${project.id}`}>{project.data.title}</h2>
-          <span>{project.data.kind} · {project.data.year}</span>
-        </div>
-      </a>
-    ))}
-  </main>
+    <ol class="feed fade-in">
+      {projects.map((project, i) => {
+        const href = url(`/work/${project.id}/`);
+        const { title, date, summary, quote } = project.data;
+        return (
+          <li class="entry">
+            <time class="mono muted" datetime={date.toISOString()}>{monthYear(date)}</time>
+            <h2><a class="link" href={href}>{title}<Icon name="arrow" size={16} class="arrow" /></a></h2>
+            <a href={href} class="media-link" tabindex="-1" aria-hidden="true">
+              <ProjectMedia project={project} eager={i === 0} />
+            </a>
+            <p class="summary">{summary}</p>
+            {quote && (
+              <blockquote>
+                <p>“{quote.text}”</p>
+                <footer class="muted">— {quote.source}</footer>
+              </blockquote>
+            )}
+          </li>
+        );
+      })}
+    </ol>
+  </div>
 </Base>
 
 <style>
-  .intro { padding: 12vh var(--gutter) 10vh; max-width: 1200px; }
-  h1 { font-size: clamp(40px, 7vw, 96px); line-height: 1; letter-spacing: -.04em; font-weight: 600; }
-  .word { display: inline-block; white-space: pre; opacity: 0; transform: translateY(40%); animation: rise .9s var(--ease) forwards; }
-  .intro p { margin-top: 28px; max-width: 520px; color: var(--muted); font-size: 19px; opacity: 0; animation: fade 1s .6s forwards; }
-  @keyframes rise { to { opacity: 1; transform: none; } }
-  @keyframes fade { to { opacity: 1; } }
-  @media (prefers-reduced-motion: reduce) { .word, .intro p { opacity: 1; transform: none; } }
-
-  .grid {
-    display: grid; gap: var(--gutter);
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr));
-    padding: 0 var(--gutter) 12vh;
-  }
-  .card { display: block; }
-  .card:first-child { grid-column: 1 / -1; }
-  .card :global(.media) { aspect-ratio: 16 / 10; }
-  .card:first-child :global(.media) { aspect-ratio: 21 / 9; }
-  .card :global(.media-inner) { transition: transform .8s var(--ease); }
-  .card:hover :global(.media-inner) { transform: scale(1.04); }
-  .meta { display: flex; justify-content: space-between; gap: 16px; margin-top: 16px; }
-  h2 { font-size: 22px; font-weight: 600; letter-spacing: -.02em; }
-  .meta span { color: var(--muted); font-size: 15px; }
+  .intro { font-size: 20px; line-height: 1.45; letter-spacing: -.015em; max-width: 30ch; margin-bottom: 72px; }
+  .feed { display: grid; gap: 96px; }
+  .entry time { display: block; }
+  h2 { font-size: 20px; font-weight: 500; letter-spacing: -.02em; margin: 2px 0 16px; }
+  h2 a { display: inline-flex; align-items: center; gap: 6px; }
+  h2 :global(.arrow) { color: var(--muted); transition: transform .4s var(--ease), color .2s; }
+  h2 a:hover :global(.arrow) { transform: translate(2px, -2px); color: var(--fg); }
+  .media-link { display: block; }
+  .media-link :global(.media-inner) { transition: transform .8s var(--ease); }
+  .media-link:hover :global(.media-inner) { transform: scale(1.025); }
+  .summary { margin-top: 16px; color: color-mix(in srgb, var(--fg) 82%, var(--bg)); }
+  blockquote { margin-top: 20px; padding-left: 16px; border-left: 2px solid var(--line); }
+  blockquote p { font-style: italic; }
 </style>

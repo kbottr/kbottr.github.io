@@ -1,11 +1,13 @@
 ---
 title: Aurora
 kind: EV charging app
-year: 2025
-lede: Making public charging feel as simple as parking.
+date: 2025-10-01
+summary: "Making public charging feel as simple as parking. A rebuilt map around live reliability data, so drivers can plan with the app instead of around it."
+quote:
+  text: Placeholder — a short quote from press, a client or a user.
+  source: Name, Publication
 role: Lead Product Designer
 team: 2 designers, 5 engineers
-order: 1
 colors: ['#1b2b4a', '#5fe3c0', '#7b5cff']
 ---
 

@@ -1,11 +1,10 @@
 ---
 title: Tide
 kind: Banking dashboard
-year: 2024
-lede: Small business finances, at a glance.
+date: 2024-02-01
+summary: "Small business finances at a glance: balance, invoices and bills combined into one honest forecast."
 role: Senior Product Designer
 team: 3 designers, 8 engineers
-order: 3
 colors: ['#0d3b3a', '#3fb8ff', '#0b1f5c']
 ---
 
