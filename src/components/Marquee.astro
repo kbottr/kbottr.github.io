@@ -1,4 +1,6 @@
 ---
+import Asterisk from '@lucide/astro/icons/asterisk';
+
 // Big, endlessly scrolling title (Motto-style). The real <h1> stays for
 // screen readers and search engines; the moving copy is decorative.
 interface Props {
@@ -16,7 +18,7 @@ const group = Array.from({ length: repeat });
     {[0, 1].map(() => (
       <div class="group">
         {group.map(() => (
-          <span class="item">{text}<span class="star">✳</span></span>
+          <span class="item">{text}<Asterisk class="star" size="0.6em" stroke-width={1.5} aria-hidden="true" /></span>
         ))}
       </div>
     ))}
@@ -41,7 +43,7 @@ const group = Array.from({ length: repeat });
     white-space: nowrap;
     padding-right: .3em;
   }
-  .star { font-weight: 300; font-size: .7em; margin-left: .3em; color: var(--muted); }
+  .item :global(.star) { flex-shrink: 0; margin-left: .3em; color: var(--muted); }
   @keyframes scroll { to { transform: translateX(-50%); } }
 
   /* Slide in from below on page load */

@@ -14,6 +14,7 @@ Personal portfolio built with [Astro](https://astro.build), deployed to GitHub P
 | Hide a project or post | Set `draft: true` in its frontmatter |
 | Add your portrait | Save it as `src/assets/portrait.jpg` |
 | Update experience / music / goals | Edit the lists in `src/data/*.yaml` (shown in file order) |
+| Add or change an icon | Pick one on [lucide.dev/icons](https://lucide.dev/icons/), then add it in `src/components/Icon.astro` |
 | Publish | Commit and push to `main` — GitHub Actions builds and deploys |
 
 ## How the animations work

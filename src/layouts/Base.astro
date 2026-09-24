@@ -34,7 +34,10 @@ const { title, description = site.intro } = Astro.props;
     </main>
 
     <footer class="wrap site-footer muted">
-      <span>© {new Date().getFullYear()} {site.name}</span>
+      <span>
+        © {new Date().getFullYear()} {site.name}
+        <span class="credit">{" "}· Icons by <a class="link underlined" href="https://lucide.dev">Lucide</a></span>
+      </span>
       <span class="links">
         {site.socials.map((s) => <a class="link" href={s.href}>{s.label}</a>)}
       </span>
@@ -107,4 +110,5 @@ const { title, description = site.intro } = Astro.props;
     font-size: 13px;
   }
   .links { display: flex; gap: 16px; }
+  .credit { white-space: nowrap; }
 </style>
