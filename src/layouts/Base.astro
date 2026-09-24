@@ -34,13 +34,13 @@ const { title, description = site.intro } = Astro.props;
     </main>
 
     <footer class="wrap site-footer muted">
-      <span>
-        © {new Date().getFullYear()} {site.name}
-        <span class="credit">{" "}· Icons by <a class="link underlined" href="https://lucide.dev">Lucide</a></span>
-      </span>
-      <span class="links">
-        {site.socials.map((s) => <a class="link" href={s.href}>{s.label}</a>)}
-      </span>
+      <div class="footer-row">
+        <span>© {new Date().getFullYear()} {site.name}</span>
+        <span class="links">
+          {site.socials.map((s) => <a class="link" href={s.href}>{s.label}</a>)}
+        </span>
+      </div>
+      <p class="credit">Icons by <a class="link underlined" href="https://lucide.dev">Lucide</a></p>
     </footer>
 
     <Dock />
@@ -105,10 +105,14 @@ const { title, description = site.intro } = Astro.props;
   .brand { font-weight: 600; letter-spacing: -.02em; width: fit-content; }
   main { min-height: 60vh; }
   .site-footer {
-    display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap;
     padding-top: 96px; padding-bottom: 120px; /* room for the dock */
     font-size: 13px;
   }
+  .footer-row { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
   .links { display: flex; gap: 16px; }
-  .credit { white-space: nowrap; }
+  .credit {
+    margin-top: 20px; padding-top: 20px;
+    border-top: 1px solid var(--line);
+    font-size: 12px;
+  }
 </style>
