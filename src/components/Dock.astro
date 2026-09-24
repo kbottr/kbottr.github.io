@@ -36,7 +36,7 @@ const items = [
   .dock {
     view-transition-name: dock;
     position: fixed; z-index: 50;
-    left: 50%; bottom: calc(env(safe-area-inset-bottom) + 8px);
+    left: 50%; bottom: calc(env(safe-area-inset-bottom) + 16px);
     translate: -50% 0;
     display: flex; align-items: center; gap: 6px;
     padding: 6px;
@@ -60,8 +60,12 @@ const items = [
   }
   .btn:hover { background: var(--subtle); color: var(--fg); transform: translateY(-2px); }
   .btn.active { background: var(--subtle); color: var(--fg); }
+  /* Active page: icon moves up a little and a dot sits just below it,
+     so the pair stays centred inside the circle */
+  .btn :global(svg) { transition: translate .35s var(--ease); }
+  .btn.active :global(svg) { translate: 0 -3px; }
   .btn.active::after {
-    content: ''; position: absolute; bottom: -3px; left: 50%;
+    content: ''; position: absolute; bottom: 8px; left: 50%;
     width: 4px; height: 4px; margin-left: -2px; border-radius: 50%;
     background: var(--fg);
   }
