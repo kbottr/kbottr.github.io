@@ -4,10 +4,15 @@ import { site, url } from '../site';
 
 // Which section is active, based on the current path.
 const path = Astro.url.pathname.replace(import.meta.env.BASE_URL.replace(/\/$/, ''), '') || '/';
-const section = path.startsWith('/journal') ? 'journal' : path.startsWith('/about') ? 'about' : 'work';
+const section =
+  path.startsWith('/work') ? 'work'
+  : path.startsWith('/journal') ? 'journal'
+  : path.startsWith('/about') ? 'about'
+  : 'home';
 
 const items = [
-  { id: 'work', label: 'Work', href: url('/'), icon: 'home' },
+  { id: 'home', label: 'Home', href: url('/'), icon: 'home' },
+  { id: 'work', label: 'Work', href: url('/work/'), icon: 'work' },
   { id: 'journal', label: 'Journal', href: url('/journal/'), icon: 'journal' },
   { id: 'about', label: 'About', href: url('/about/'), icon: 'user' },
 ] as const;

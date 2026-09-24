@@ -1,0 +1,18 @@
+---
+// Title + one-line description at the top of an index page (Work, Journal).
+interface Props {
+  title: string;
+  description?: string;
+}
+const { title, description } = Astro.props;
+---
+
+<header class="page-header">
+  <h1 data-lines>{title}</h1>
+  {description && <p class="muted fade-in">{description}</p>}
+</header>
+
+<style>
+  .page-header { margin-bottom: var(--space-48); }
+  h1 { font-size: var(--text-base); line-height: var(--leading-base); font-weight: var(--weight-medium); }
+</style>

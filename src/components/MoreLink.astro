@@ -1,0 +1,20 @@
+---
+// Small "see all" link with an arrow, e.g. "all posts →".
+import Link from './Link.astro';
+import Icon from './Icon.astro';
+
+interface Props {
+  href: string;
+}
+const { href } = Astro.props;
+---
+
+<Link variant="muted" href={href} class="more-link"><slot /><Icon name="arrow-right" size="sm" /></Link>
+
+<style>
+  :global(.more-link) {
+    display: inline-flex; align-items: center; gap: var(--space-4);
+    margin-top: var(--space-16);
+    font-size: var(--text-sm); line-height: var(--leading-sm);
+  }
+</style>
