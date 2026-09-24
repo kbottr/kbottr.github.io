@@ -60,18 +60,20 @@ const music = defineCollection({
     order: z.number(),
     title: z.string(),
     artist: z.string(),
-    href: z.string().url().optional(),
+    spotify: z.string().url().optional(), // link to the track/album on Spotify
+    apple: z.string().url().optional(), // link to the track/album on Apple Music
     cover: z.string().optional(), // image URL, or a file in public/ like /music/album.jpg
   }),
 });
 
-const goals = defineCollection({
-  loader: yamlList('src/data/goals.yaml'),
+const challenges = defineCollection({
+  loader: yamlList('src/data/challenges.yaml'),
   schema: z.object({
     order: z.number(),
     text: z.string(),
-    status: z.enum(['todo', 'doing', 'done']).default('todo'),
+    subline: z.string().optional(),
+    done: z.boolean().default(false),
   }),
 });
 
-export const collections = { projects, journal, experience, music, goals };
+export const collections = { projects, journal, experience, music, challenges };

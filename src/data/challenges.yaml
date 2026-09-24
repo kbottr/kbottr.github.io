@@ -1,0 +1,12 @@
+# Your challenges, shown in this order.
+# done: true   → checked and struck through (leave out while it's open)
+# subline: ... → optional small line of detail under the challenge
+- text: launch my portfolio
+  subline: built with Astro, hosted on GitHub Pages
+  done: true
+- text: write ten journal posts
+- text: give a talk at a design meetup
+- text: run a half marathon
+  subline: placeholder — e.g. under two hours
+- text: travel through japan
+- text: design a typeface

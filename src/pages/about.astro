@@ -9,6 +9,8 @@ import Pill from '../components/Pill.astro';
 import Link from '../components/Link.astro';
 import DateLabel from '../components/DateLabel.astro';
 import MoreLink from '../components/MoreLink.astro';
+import Track from '../components/Track.astro';
+import Challenge from '../components/Challenge.astro';
 import { site, url } from '../site';
 
 // Drop a photo at src/assets/portrait.jpg (or .png/.webp) and it appears here.
@@ -19,7 +21,7 @@ const initials = site.name.split(' ').map((n) => n[0]).join('');
 const byOrder = (a: { data: { order: number } }, b: { data: { order: number } }) => a.data.order - b.data.order;
 const experience = (await getCollection('experience')).sort(byOrder);
 const music = (await getCollection('music')).sort(byOrder);
-const goals = (await getCollection('goals')).sort(byOrder);
+const challenges = (await getCollection('challenges')).sort(byOrder);
 const posts = (await getCollection('journal', ({ data }) => !data.draft))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
   .slice(0, 3);
@@ -76,35 +78,14 @@ const posts = (await getCollection('journal', ({ data }) => !data.draft))
       </Section>
 
       <Section label="music" icon="headphones">
-        <ul class="grid-2">
-          {music.map(({ data }) => {
-            const Tag = data.href ? 'a' : 'div';
-            return (
-              <li>
-                <Tag class="track" href={data.href}>
-                  {data.cover ? (
-                    <img class="cover" src={data.cover.startsWith('/') ? url(data.cover) : data.cover} alt="" width="48" height="48" loading="lazy" />
-                  ) : (
-                    <span class="cover placeholder" aria-hidden="true" />
-                  )}
-                  <span>
-                    <span class:list={['block', { link: data.href }]}>{data.title}</span>
-                    <span class="block muted small">{data.artist}</span>
-                  </span>
-                </Tag>
-              </li>
-            );
-          })}
+        <ul class="stack">
+          {music.map(({ data }) => <Track {...data} />)}
         </ul>
       </Section>
 
-      <Section label="goals" icon="flag">
-        <ul class="grid-2 goals">
-          {goals.map(({ data }) => (
-            <li class={data.status}>
-              {data.status === 'done' ? <s>{data.text}</s> : data.text}
-            </li>
-          ))}
+      <Section label="challenges" icon="flag">
+        <ul class="challenges">
+          {challenges.map(({ data }) => <Challenge done={data.done} subline={data.subline}>{data.text}</Challenge>)}
         </ul>
       </Section>
     </div>
@@ -128,21 +109,12 @@ const posts = (await getCollection('journal', ({ data }) => !data.draft))
   .socials { display: flex; gap: var(--space-16); flex-wrap: wrap; }
 
   .block { display: block; width: fit-content; }
-  .small { font-size: var(--text-sm); line-height: var(--leading-sm); }
   .stack { display: grid; gap: var(--space-16); }
 
-  .grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-16) var(--space-24); }
-  .track { display: flex; gap: var(--space-12); align-items: center; }
-  .cover { width: var(--thumb); height: var(--thumb); flex-shrink: 0; border-radius: var(--radius); object-fit: cover; }
-  .cover.placeholder { background: linear-gradient(135deg, var(--subtle), var(--line)); }
 
-  .goals { row-gap: var(--space-4); }
-  .goals .done { color: var(--muted); }
-  .goals .doing { color: var(--accent); }
-  .goals .doing::before { content: '•'; display: inline-block; width: var(--space-12); margin-left: calc(-1 * var(--space-12)); }
+  .challenges { display: grid; gap: var(--space-8); }
 
   @media (max-width: 600px) {
     .intro { grid-template-columns: 1fr; gap: var(--space-16); }
-    .grid-2 { grid-template-columns: 1fr; }
   }
 </style>
