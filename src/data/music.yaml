@@ -1,6 +1,10 @@
 # What you're listening to.
 # spotify / apple: paste the share link from each app (both optional).
 # cover: an image URL, or a file in public/ like /music/album.jpg (optional).
+- title: Travelling Without Moving
+  artist: Jamiroquai
+  apple: https://music.apple.com/de/album/travelling-without-moving/603751537
+  cover: https://is1-ssl.mzstatic.com/image/thumb/Music122/v4/81/ec/ef/81ecef00-2a0b-807b-154c-ff0e5fb90571/886443439115.jpg/200x200bb.jpg
 - title: Track title
   artist: Artist name
   spotify: https://open.spotify.com/
