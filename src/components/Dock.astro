@@ -36,7 +36,7 @@ const items = [
   .dock {
     view-transition-name: dock;
     position: fixed; z-index: 50;
-    left: 50%; bottom: max(20px, env(safe-area-inset-bottom));
+    left: 50%; bottom: calc(env(safe-area-inset-bottom) + 8px);
     translate: -50% 0;
     display: flex; align-items: center; gap: 6px;
     padding: 6px;
