@@ -23,9 +23,7 @@ const { label, icon } = Astro.props;
   .section {
     display: grid; grid-template-columns: var(--label-col) 1fr; gap: var(--space-32);
     padding-block: var(--space-32);
-    border-bottom: var(--border) solid var(--line);
   }
-  .section:last-child { border-bottom: 0; }
   .label {
     display: flex; align-items: center; gap: var(--space-8); align-self: start;
     font-size: var(--text-base); line-height: var(--leading-base);

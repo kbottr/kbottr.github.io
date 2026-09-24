@@ -96,7 +96,6 @@ const posts = (await getCollection('journal', ({ data }) => !data.draft))
   .intro {
     display: grid; grid-template-columns: var(--label-col) 1fr; gap: var(--space-32);
     padding-bottom: var(--space-48);
-    border-bottom: var(--border) solid var(--line);
   }
   .portrait { width: var(--avatar); height: var(--avatar); border-radius: var(--radius-full); object-fit: cover; }
   .portrait.placeholder {
