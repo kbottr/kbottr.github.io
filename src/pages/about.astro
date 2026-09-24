@@ -85,7 +85,7 @@ const posts = (await getCollection('journal', ({ data }) => !data.draft))
 
       <Section label="challenges" icon="flag">
         <ul class="challenges">
-          {challenges.map(({ data }) => <Challenge status={data.status}>{data.text}</Challenge>)}
+          {challenges.map(({ data }) => <Challenge done={data.done} subline={data.subline}>{data.text}</Challenge>)}
         </ul>
       </Section>
     </div>

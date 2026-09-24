@@ -71,7 +71,8 @@ const challenges = defineCollection({
   schema: z.object({
     order: z.number(),
     text: z.string(),
-    status: z.enum(['todo', 'doing', 'done']).default('todo'),
+    subline: z.string().optional(),
+    done: z.boolean().default(false),
   }),
 });
 
