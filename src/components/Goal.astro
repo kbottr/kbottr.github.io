@@ -1,0 +1,36 @@
+---
+// A goal with a checkbox: empty (todo), accent outline (doing),
+// or filled with a check and struck-through text (done).
+import Icon from './Icon.astro';
+
+interface Props {
+  status: 'todo' | 'doing' | 'done';
+}
+const { status } = Astro.props;
+const statusText = { todo: 'to do', doing: 'in progress', done: 'done' }[status];
+---
+
+<li class:list={['goal', status]}>
+  <span class="box" aria-hidden="true">
+    {status === 'done' && <Icon name="check" size="sm" class="tick" />}
+  </span>
+  <span class="sr-only">{statusText}:</span>
+  {status === 'done' ? <s><slot /></s> : <span><slot /></span>}
+</li>
+
+<style>
+  .goal { display: flex; align-items: center; gap: var(--space-12); }
+  .box {
+    display: grid; place-items: center;
+    width: var(--icon-sm); height: var(--icon-sm); flex-shrink: 0;
+    border-radius: var(--radius-sm);
+    box-shadow: inset 0 0 0 var(--border) var(--muted);
+  }
+
+  .doing { color: var(--accent); }
+  .doing .box { box-shadow: inset 0 0 0 var(--border) var(--accent); }
+
+  .done { color: var(--muted); }
+  .done .box { background: var(--fg); box-shadow: none; color: var(--bg); }
+  .done .box :global(.tick) { width: var(--space-12); height: var(--space-12); stroke-width: 3; }
+</style>

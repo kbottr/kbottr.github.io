@@ -57,6 +57,7 @@ All design decisions live in **`src/styles/tokens.css`**. Components and pages o
 | `Lead` | Large intro paragraph that reveals line by line |
 | `Pill` | Small rounded tag ("present") |
 | `Track` | Music entry: cover, title, artist, Spotify / Apple Music links |
+| `Goal` | Goal with a checkbox: empty (todo), accent (doing), filled + struck through (done) |
 | `Pager` | Back / next links at the end of a page |
 | `PageHeader` | Small title + description at the top of Work and Journal |
 | `MoreLink` | "all posts →" style link to a full list |
