@@ -3,7 +3,6 @@ import { defineConfig } from 'astro/config';
 
 // https://astro.build/config
 export default defineConfig({
-  // Set these to match your GitHub Pages address before deploying:
-  // site: 'https://USERNAME.github.io',
-  // base: '/REPO-NAME',  // only if the repo is not named USERNAME.github.io
+  // When you add a custom domain, change this to it (e.g. 'https://klausboettger.com').
+  site: 'https://kbottr.github.io',
 });
