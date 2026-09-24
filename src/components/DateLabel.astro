@@ -1,0 +1,15 @@
+---
+// A date in small mono type: "October 2025" (long) or "oct 2025" (short).
+import { monthYear, shortMonthYear } from '../site';
+
+interface Props {
+  date: Date;
+  format?: 'long' | 'short';
+  class?: string;
+}
+const { date, format = 'long', class: className } = Astro.props;
+---
+
+<time class:list={['mono', 'muted', className]} datetime={date.toISOString()}>
+  {format === 'long' ? monthYear(date) : shortMonthYear(date)}
+</time>

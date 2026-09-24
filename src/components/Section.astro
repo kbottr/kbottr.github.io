@@ -1,0 +1,38 @@
+---
+// A labelled section: small icon + label on the left, content on the right.
+// Used for the About page rows.
+import Icon from './Icon.astro';
+import type { IconName } from './Icon.astro';
+
+interface Props {
+  label: string;
+  icon?: IconName;
+}
+const { label, icon } = Astro.props;
+---
+
+<section class="section">
+  <h2 class="label">
+    {icon && <Icon name={icon} size="sm" />}
+    {label}
+  </h2>
+  <div class="content"><slot /></div>
+</section>
+
+<style>
+  .section {
+    display: grid; grid-template-columns: var(--label-col) 1fr; gap: var(--space-32);
+    padding-block: var(--space-32);
+    border-bottom: var(--border) solid var(--line);
+  }
+  .section:last-child { border-bottom: 0; }
+  .label {
+    display: flex; align-items: center; gap: var(--space-8); align-self: start;
+    font-size: var(--text-base); line-height: var(--leading-base);
+    font-weight: var(--weight-regular); color: var(--muted);
+  }
+  .content { min-width: 0; }
+  @media (max-width: 600px) {
+    .section { grid-template-columns: 1fr; gap: var(--space-16); }
+  }
+</style>

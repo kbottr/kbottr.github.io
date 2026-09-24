@@ -26,3 +26,36 @@ Personal portfolio built with [Astro](https://astro.build), deployed to GitHub P
 - **Link underlines, dock hover:** CSS transitions.
 - **Light / dark:** follows the visitor's system setting automatically (`prefers-color-scheme` in `global.css`).
 - Everything is switched off for users with "reduce motion" enabled.
+
+## Design system
+
+All design decisions live in **`src/styles/tokens.css`**. Components and pages only use these tokens — no hard-coded sizes, spacing, colours or timings.
+
+**Type scale** — base 17px, each step × √φ (≈ 1.272), so every second step is exactly the golden ratio:
+
+| Token | Size / line height | Used for |
+|---|---|---|
+| `--text-sm` | 13 / 20 | dates, labels, captions, footer (mono) |
+| `--text-base` | 17 / 28 | body text (28 ≈ 17 × φ) |
+| `--text-md` | 22 / 32 | lead paragraphs, project titles |
+| `--text-lg` | 28 / 36 | page titles |
+| `--text-xl` · `--text-2xl` | 35 / 44 · 44 / 52 | reserved for larger headings |
+| `--text-3xl` → `--text-5xl` | 72 → 188 | display (case-study marquee) |
+
+**Spacing** — 4/8 scale, named by pixel value: `--space-4`, `-8`, `-12`, `-16`, `-24`, `-32`, `-40`, `-48`, `-64`, `-80`, `-96`, `-128` (plus `--space-2` for optical nudges).
+
+**Components** (`src/components/`):
+
+| Component | What it is |
+|---|---|
+| `Link` | Text link with animated underline (`variant`: plain, underlined, muted) |
+| `DateLabel` | Mono date, "October 2025" or "oct 2025" |
+| `ListRow` | Content left, meta right; with `href` the row gets a hover highlight |
+| `Section` | Icon + label on the left, content on the right (About page) |
+| `Lead` | Large intro paragraph that reveals line by line |
+| `Pill` | Small rounded tag ("present") |
+| `Pager` | Back / next links at the end of a page |
+| `Icon` | Lucide icons in two sizes (`sm` 16, `md` 20) |
+| `Marquee` | Scrolling display title |
+| `ProjectMedia` | Project cover image or gradient placeholder |
+| `Dock` | Bottom navigation |

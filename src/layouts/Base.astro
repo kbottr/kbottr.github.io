@@ -1,6 +1,7 @@
 ---
 import '../styles/global.css';
 import Dock from '../components/Dock.astro';
+import Link from '../components/Link.astro';
 import { site, url } from '../site';
 
 interface Props {
@@ -37,10 +38,10 @@ const { title, description = site.intro } = Astro.props;
       <div class="footer-row">
         <span>© {new Date().getFullYear()} {site.name}</span>
         <span class="links">
-          {site.socials.map((s) => <a class="link" href={s.href}>{s.label}</a>)}
+          {site.socials.map((s) => <Link href={s.href}>{s.label}</Link>)}
         </span>
       </div>
-      <p class="credit">Icons by <a class="link underlined" href="https://lucide.dev">Lucide</a></p>
+      <p class="credit">Icons by <Link variant="underlined" href="https://lucide.dev">Lucide</Link></p>
     </footer>
 
     <Dock />
@@ -51,6 +52,8 @@ const { title, description = site.intro } = Astro.props;
       // then restores the original text so it reflows normally.
       const els = document.querySelectorAll<HTMLElement>('[data-lines]');
       const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+      // Delay between lines comes from the --stagger token (e.g. "90ms")
+      const stagger = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--stagger')) || 90;
 
       function split(el: HTMLElement, delay = 0) {
         const original = el.innerHTML;
@@ -74,7 +77,7 @@ const { title, description = site.intro } = Astro.props;
           line.className = 'line';
           const inner = document.createElement('span');
           inner.textContent = words.join(' ');
-          inner.style.animationDelay = `${delay + i * 90}ms`;
+          inner.style.animationDelay = `${delay + i * stagger}ms`;
           line.append(inner);
           el.append(line);
         });
@@ -98,21 +101,25 @@ const { title, description = site.intro } = Astro.props;
   .site-header {
     view-transition-name: header;
     display: flex; flex-direction: column;
-    padding-top: clamp(40px, 8vh, 80px);
-    padding-bottom: clamp(40px, 7vh, 72px);
-    line-height: 1.5;
+    padding-top: var(--space-64);
+    padding-bottom: var(--space-64);
   }
-  .brand { font-weight: 600; letter-spacing: -.02em; width: fit-content; }
+  .brand {
+    width: fit-content;
+    font-weight: var(--weight-semibold);
+    letter-spacing: var(--tracking-tighter);
+  }
   main { min-height: 60vh; }
   .site-footer {
-    padding-top: 96px; padding-bottom: 120px; /* room for the dock */
-    font-size: 13px;
+    padding-top: var(--space-96);
+    padding-bottom: var(--space-128); /* room for the dock */
+    font-size: var(--text-sm);
+    line-height: var(--leading-sm);
   }
-  .footer-row { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
-  .links { display: flex; gap: 16px; }
+  .footer-row { display: flex; justify-content: space-between; gap: var(--space-16); flex-wrap: wrap; }
+  .links { display: flex; gap: var(--space-16); }
   .credit {
-    margin-top: 20px; padding-top: 20px;
-    border-top: 1px solid var(--line);
-    font-size: 12px;
+    margin-top: var(--space-24); padding-top: var(--space-24);
+    border-top: var(--border) solid var(--line);
   }
 </style>

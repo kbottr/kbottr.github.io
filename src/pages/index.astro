@@ -3,7 +3,10 @@ import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import ProjectMedia from '../components/ProjectMedia.astro';
 import Icon from '../components/Icon.astro';
-import { site, url, monthYear } from '../site';
+import Lead from '../components/Lead.astro';
+import Link from '../components/Link.astro';
+import DateLabel from '../components/DateLabel.astro';
+import { site, url } from '../site';
 
 const projects = (await getCollection('projects', ({ data }) => !data.draft))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
@@ -11,7 +14,7 @@ const projects = (await getCollection('projects', ({ data }) => !data.draft))
 
 <Base>
   <div class="wrap">
-    <p class="intro" data-lines>{site.intro}</p>
+    <Lead class="intro">{site.intro}</Lead>
 
     <ol class="feed fade-in">
       {projects.map((project, i) => {
@@ -19,14 +22,16 @@ const projects = (await getCollection('projects', ({ data }) => !data.draft))
         const { title, date, summary, quote } = project.data;
         return (
           <li class="entry">
-            <time class="mono muted" datetime={date.toISOString()}>{monthYear(date)}</time>
-            <h2><a class="link" href={href}>{title}<Icon name="arrow" size={16} class="arrow" /></a></h2>
+            <DateLabel date={date} />
+            <h2 class="title">
+              <Link href={href}>{title}<Icon name="arrow-up-right" size="sm" class="arrow" /></Link>
+            </h2>
             <a href={href} class="media-link" tabindex="-1" aria-hidden="true">
               <ProjectMedia project={project} eager={i === 0} />
             </a>
             <p class="summary">{summary}</p>
             {quote && (
-              <blockquote>
+              <blockquote class="quote">
                 <p>“{quote.text}”</p>
                 <footer class="muted">— {quote.source}</footer>
               </blockquote>
@@ -39,17 +44,27 @@ const projects = (await getCollection('projects', ({ data }) => !data.draft))
 </Base>
 
 <style>
-  .intro { font-size: 20px; line-height: 1.45; letter-spacing: -.015em; max-width: 30ch; margin-bottom: 72px; }
-  .feed { display: grid; gap: 96px; }
-  .entry time { display: block; }
-  h2 { font-size: 20px; font-weight: 500; letter-spacing: -.02em; margin: 2px 0 16px; }
-  h2 a { display: inline-flex; align-items: center; gap: 6px; }
-  h2 :global(.arrow) { color: var(--muted); transition: transform .4s var(--ease), color .2s; }
-  h2 a:hover :global(.arrow) { transform: translate(2px, -2px); color: var(--fg); }
+  .wrap :global(.intro) { max-width: 30ch; margin-bottom: var(--space-80); }
+  .feed { display: grid; gap: var(--space-96); }
+  .entry :global(time) { display: block; }
+  .title {
+    margin: var(--space-2) 0 var(--space-16);
+    font-size: var(--text-md);
+    line-height: var(--leading-md);
+    font-weight: var(--weight-medium);
+    letter-spacing: var(--tracking-tighter);
+  }
+  .title :global(a) { display: inline-flex; align-items: center; gap: var(--space-4); }
+  .title :global(.arrow) { color: var(--muted); transition: transform var(--duration) var(--ease), color var(--duration-fast); }
+  .title :global(a:hover .arrow) { transform: translate(var(--space-2), calc(-1 * var(--space-2))); color: var(--fg); }
   .media-link { display: block; }
-  .media-link :global(.media-inner) { transition: transform .8s var(--ease); }
+  .media-link :global(.media-inner) { transition: transform var(--duration-slow) var(--ease); }
   .media-link:hover :global(.media-inner) { transform: scale(1.025); }
-  .summary { margin-top: 16px; color: color-mix(in srgb, var(--fg) 82%, var(--bg)); }
-  blockquote { margin-top: 20px; padding-left: 16px; border-left: 2px solid var(--line); }
-  blockquote p { font-style: italic; }
+  .summary { margin-top: var(--space-16); color: var(--fg-soft); }
+  .quote {
+    margin-top: var(--space-24);
+    padding-left: var(--space-16);
+    border-left: var(--space-2) solid var(--line);
+  }
+  .quote p { font-style: italic; }
 </style>

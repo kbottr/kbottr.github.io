@@ -3,6 +3,8 @@ import { getCollection, render } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import Marquee from '../../components/Marquee.astro';
 import ProjectMedia from '../../components/ProjectMedia.astro';
+import Lead from '../../components/Lead.astro';
+import Pager from '../../components/Pager.astro';
 import { url } from '../../site';
 
 export async function getStaticPaths() {
@@ -17,47 +19,48 @@ export async function getStaticPaths() {
 const { project, next } = Astro.props;
 const { title, summary, role, kind, date, team } = project.data;
 const { Content } = await render(project);
+
+const facts = [
+  { label: 'role', value: role },
+  { label: 'type', value: kind },
+  { label: 'year', value: String(date.getUTCFullYear()) },
+  ...(team ? [{ label: 'team', value: team }] : []),
+];
 ---
 
 <Base title={title} description={summary}>
   <Marquee text={title} />
 
   <div class="wrap">
-    <p class="lede" data-lines data-delay="200">{summary}</p>
+    <Lead delay={200} class="summary">{summary}</Lead>
 
     <dl class="facts mono fade-in">
-      <div><dt class="muted">role</dt><dd>{role}</dd></div>
-      <div><dt class="muted">type</dt><dd>{kind}</dd></div>
-      <div><dt class="muted">year</dt><dd>{date.getUTCFullYear()}</dd></div>
-      {team && <div><dt class="muted">team</dt><dd>{team}</dd></div>}
+      {facts.map((f) => (
+        <div><dt class="muted">{f.label}</dt><dd>{f.value}</dd></div>
+      ))}
     </dl>
 
-    <ProjectMedia project={project} class="hero" eager />
+    <ProjectMedia project={project} eager />
 
     <article class="prose">
       <Content />
     </article>
 
-    <nav class="pager">
-      <a class="link muted" href={url('/')}>← all work</a>
-      {next.id !== project.id && (
-        <a class="link" href={url(`/work/${next.id}/`)}><span class="muted">next:</span> {next.data.title} →</a>
-      )}
-    </nav>
+    <Pager
+      back={{ href: url('/'), label: 'all work' }}
+      next={next.id !== project.id ? { href: url(`/work/${next.id}/`), label: next.data.title } : undefined}
+    />
   </div>
 </Base>
 
 <style>
-  .lede { font-size: 20px; line-height: 1.45; letter-spacing: -.015em; margin-top: 24px; }
+  .wrap :global(.summary) { margin-top: var(--space-24); }
   .facts {
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 16px;
-    margin: 40px 0; padding-block: 20px;
-    border-block: 1px solid var(--line);
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(var(--space-128), 1fr)); gap: var(--space-16);
+    margin-block: var(--space-40);
+    padding-block: var(--space-24);
+    border-block: var(--border) solid var(--line);
   }
-  dd { margin-top: 2px; }
-  .prose { margin-top: 48px; }
-  .pager {
-    display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap;
-    margin-top: 96px; padding-top: 20px; border-top: 1px solid var(--line);
-  }
+  dd { margin-top: var(--space-2); }
+  .prose { margin-top: var(--space-48); }
 </style>

@@ -18,7 +18,7 @@ const group = Array.from({ length: repeat });
     {[0, 1].map(() => (
       <div class="group">
         {group.map(() => (
-          <span class="item">{text}<Asterisk class="star" size="0.6em" stroke-width={1.5} aria-hidden="true" /></span>
+          <span class="item">{text}<Asterisk class="star" stroke-width={1.5} aria-hidden="true" /></span>
         ))}
       </div>
     ))}
@@ -30,23 +30,25 @@ const group = Array.from({ length: repeat });
     width: 100vw;
     margin-left: calc(50% - 50vw);
     overflow: hidden;
-    padding-block: 2vh;
+    padding-block: var(--space-16);
     mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+    animation: rise var(--duration-slow) var(--ease) both;
   }
+  @keyframes rise { from { opacity: 0; transform: translateY(var(--space-32)); } }
   .track { display: flex; width: max-content; animation: scroll var(--dur) linear infinite; }
   .marquee:hover .track { animation-play-state: paused; }
   .group { display: flex; flex-shrink: 0; }
+  /* Display size runs from the 72px step to the 188px step of the type scale */
   .item {
     display: flex; align-items: center;
-    font: 500 clamp(64px, 13vw, 180px)/1 var(--sans);
-    letter-spacing: -.055em;
+    font-size: clamp(var(--text-3xl), 16vw, var(--text-5xl));
+    line-height: var(--leading-display);
+    font-weight: var(--weight-medium);
+    letter-spacing: var(--tracking-display);
     white-space: nowrap;
     padding-right: .3em;
   }
-  .item :global(.star) { flex-shrink: 0; margin-left: .3em; color: var(--muted); }
+  /* Separator sized relative to the title (0.6 of its font size) */
+  .item :global(.star) { flex-shrink: 0; width: .6em; height: .6em; margin-left: .3em; color: var(--muted); }
   @keyframes scroll { to { transform: translateX(-50%); } }
-
-  /* Slide in from below on page load */
-  .marquee { animation: rise 1s var(--ease) both; }
-  @keyframes rise { from { opacity: 0; transform: translateY(30px); } }
 </style>

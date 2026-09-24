@@ -1,0 +1,33 @@
+---
+// A row with content on the left and meta (date, period) on the right.
+// With `href`, the whole row is a link with a hover highlight.
+interface Props {
+  href?: string;
+  class?: string;
+}
+const { href, class: className } = Astro.props;
+const Tag = href ? 'a' : 'div';
+---
+
+<li class:list={['list-row', className]}>
+  <Tag class:list={['row', { interactive: href }]} href={href}>
+    <span class="main"><slot /></span>
+    {Astro.slots.has('meta') && <span class="meta"><slot name="meta" /></span>}
+  </Tag>
+</li>
+
+<style>
+  .row {
+    display: flex; justify-content: space-between; align-items: baseline;
+    gap: var(--space-24);
+  }
+  .main { min-width: 0; }
+  .meta { flex-shrink: 0; white-space: nowrap; }
+  .interactive {
+    margin-inline: calc(-1 * var(--space-8));
+    padding: var(--space-4) var(--space-8);
+    border-radius: var(--radius);
+    transition: background var(--duration-fast);
+  }
+  .interactive:hover { background: var(--subtle); }
+</style>

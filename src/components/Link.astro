@@ -1,0 +1,12 @@
+---
+// Text link with an animated underline.
+// variant: 'plain' (underline on hover), 'underlined' (faint line at rest), 'muted' (grey until hover)
+import type { HTMLAttributes } from 'astro/types';
+
+interface Props extends HTMLAttributes<'a'> {
+  variant?: 'plain' | 'underlined' | 'muted';
+}
+const { variant = 'plain', class: className, ...rest } = Astro.props;
+---
+
+<a class:list={['link', { underlined: variant === 'underlined', muted: variant === 'muted' }, className]} {...rest}><slot /></a>
