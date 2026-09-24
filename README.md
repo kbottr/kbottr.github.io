@@ -1,5 +1,7 @@
 # Portfolio
 
+**Pages:** Home (`/`: intro, latest journal posts, work list, short about) · Work (`/work/`: project feed + case studies) · Journal (`/journal/`) · About (`/about/`)
+
 Personal portfolio built with [Astro](https://astro.build), deployed to GitHub Pages.
 
 ## Everyday tasks
@@ -8,7 +10,7 @@ Personal portfolio built with [Astro](https://astro.build), deployed to GitHub P
 |---|---|
 | Run locally | `npm run dev` → http://localhost:4321 |
 | Edit name, role, intro, about text, email, socials | `src/site.ts` |
-| Add a case study | Add a Markdown file to `src/content/projects/` (copy an existing one) |
+| Add a case study | Add a Markdown file to `src/content/projects/` (copy an existing one) — it appears on Home (list) and Work (feed) |
 | Add a cover image | Put the image next to the Markdown file and set `cover: ./my-image.jpg` |
 | Write a journal post | Add a Markdown file to `src/content/journal/` |
 | Hide a project or post | Set `draft: true` in its frontmatter |
@@ -55,6 +57,8 @@ All design decisions live in **`src/styles/tokens.css`**. Components and pages o
 | `Lead` | Large intro paragraph that reveals line by line |
 | `Pill` | Small rounded tag ("present") |
 | `Pager` | Back / next links at the end of a page |
+| `PageHeader` | Small title + description at the top of Work and Journal |
+| `MoreLink` | "all posts →" style link to a full list |
 | `Icon` | Lucide icons in two sizes (`sm` 16, `md` 20) |
 | `Marquee` | Scrolling display title |
 | `ProjectMedia` | Project cover image or gradient placeholder |

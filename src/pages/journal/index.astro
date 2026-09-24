@@ -3,6 +3,7 @@ import { getCollection } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import ListRow from '../../components/ListRow.astro';
 import DateLabel from '../../components/DateLabel.astro';
+import PageHeader from '../../components/PageHeader.astro';
 import { url } from '../../site';
 
 const posts = (await getCollection('journal', ({ data }) => !data.draft))
@@ -11,8 +12,7 @@ const posts = (await getCollection('journal', ({ data }) => !data.draft))
 
 <Base title="Journal" description="Thoughts, notes and things I'm learning.">
   <div class="wrap">
-    <h1 data-lines>journal</h1>
-    <p class="muted fade-in">Thoughts, notes and things I'm learning.</p>
+    <PageHeader title="journal" description="Thoughts, notes and things I'm learning." />
 
     {posts.length > 0 ? (
       <ul class="list fade-in">
@@ -29,8 +29,3 @@ const posts = (await getCollection('journal', ({ data }) => !data.draft))
   </div>
 </Base>
 
-<style>
-  h1 { font-size: var(--text-base); line-height: var(--leading-base); font-weight: var(--weight-medium); }
-  .list { margin-top: var(--space-40); }
-  .empty { margin-top: var(--space-40); }
-</style>

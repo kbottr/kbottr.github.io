@@ -8,7 +8,7 @@ import ListRow from '../components/ListRow.astro';
 import Pill from '../components/Pill.astro';
 import Link from '../components/Link.astro';
 import DateLabel from '../components/DateLabel.astro';
-import Icon from '../components/Icon.astro';
+import MoreLink from '../components/MoreLink.astro';
 import { site, url } from '../site';
 
 // Drop a photo at src/assets/portrait.jpg (or .png/.webp) and it appears here.
@@ -72,7 +72,7 @@ const posts = (await getCollection('journal', ({ data }) => !data.draft))
         ) : (
           <p class="muted">Nothing here yet.</p>
         )}
-        <Link variant="muted" href={url('/journal/')} class="all">all posts<Icon name="arrow-right" size="sm" /></Link>
+        <MoreLink href={url('/journal/')}>all posts</MoreLink>
       </Section>
 
       <Section label="music" icon="headphones">
@@ -130,7 +130,6 @@ const posts = (await getCollection('journal', ({ data }) => !data.draft))
   .block { display: block; width: fit-content; }
   .small { font-size: var(--text-sm); line-height: var(--leading-sm); }
   .stack { display: grid; gap: var(--space-16); }
-  :global(.all) { display: inline-flex; align-items: center; gap: var(--space-4); margin-top: var(--space-16); font-size: var(--text-sm); line-height: var(--leading-sm); }
 
   .grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-16) var(--space-24); }
   .track { display: flex; gap: var(--space-12); align-items: center; }

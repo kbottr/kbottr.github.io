@@ -14,6 +14,7 @@ export const site = {
     'Placeholder: what you are working on now, and what kind of problems you like to solve.',
   ],
   email: 'hello@example.com',
+  cosmos: 'https://www.cosmos.so/wilhelm',
   socials: [
     { label: 'LinkedIn', href: 'https://www.linkedin.com/' },
     { label: 'GitHub', href: 'https://github.com/kbottr' },

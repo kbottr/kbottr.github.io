@@ -1,5 +1,6 @@
 ---
-// Icons from Lucide (https://lucide.dev/icons/, ISC licence).
+// Icons from Lucide (https://lucide.dev/icons/, ISC licence),
+// plus custom brand icons in ./icons/.
 // To add one: find it on lucide.dev, import it from '@lucide/astro/icons/<name>'
 // and add it to the map below.
 import ArrowLeft from '@lucide/astro/icons/arrow-left';
@@ -8,13 +9,16 @@ import ArrowUpRight from '@lucide/astro/icons/arrow-up-right';
 import Briefcase from '@lucide/astro/icons/briefcase';
 import Flag from '@lucide/astro/icons/flag';
 import Headphones from '@lucide/astro/icons/headphones';
+import Layers from '@lucide/astro/icons/layers';
 import House from '@lucide/astro/icons/house';
 import Mail from '@lucide/astro/icons/mail';
+import Cosmos from './icons/Cosmos.astro';
 import PenLine from '@lucide/astro/icons/pen-line';
 import User from '@lucide/astro/icons/user';
 
 const icons = {
   home: House,
+  work: Layers,
   journal: PenLine,
   user: User,
   mail: Mail,
@@ -25,7 +29,11 @@ const icons = {
   'arrow-left': ArrowLeft,
   'arrow-right': ArrowRight,
 };
-export type IconName = keyof typeof icons;
+// Custom brand icons (filled, drawn at the small size to match visual weight)
+const brands = {
+  cosmos: Cosmos,
+};
+export type IconName = keyof typeof icons | keyof typeof brands;
 
 interface Props {
   name: IconName;
@@ -33,10 +41,12 @@ interface Props {
   class?: string;
 }
 const { name, size = 'md', class: className } = Astro.props;
-const Lucide = icons[name];
+const Lucide = name in icons ? icons[name as keyof typeof icons] : undefined;
+const Brand = name in brands ? brands[name as keyof typeof brands] : undefined;
 ---
 
-<Lucide class:list={['icon', `icon-${size}`, className]} stroke-width={1.75} aria-hidden="true" />
+{Lucide && <Lucide class:list={['icon', `icon-${size}`, className]} stroke-width={1.75} aria-hidden="true" />}
+{Brand && <Brand class:list={['icon', 'icon-sm', className]} />}
 
 <style>
   :global(.icon) { flex-shrink: 0; }

@@ -47,7 +47,7 @@ const facts = [
     </article>
 
     <Pager
-      back={{ href: url('/'), label: 'all work' }}
+      back={{ href: url('/work/'), label: 'all work' }}
       next={next.id !== project.id ? { href: url(`/work/${next.id}/`), label: next.data.title } : undefined}
     />
   </div>

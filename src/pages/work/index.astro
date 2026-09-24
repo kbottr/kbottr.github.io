@@ -1,0 +1,69 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import ProjectMedia from '../../components/ProjectMedia.astro';
+import Icon from '../../components/Icon.astro';
+import PageHeader from '../../components/PageHeader.astro';
+import Link from '../../components/Link.astro';
+import DateLabel from '../../components/DateLabel.astro';
+import { url } from '../../site';
+
+const projects = (await getCollection('projects', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+---
+
+<Base title="Work" description="Selected projects and case studies.">
+  <div class="wrap">
+    <PageHeader title="work" description="Selected projects and case studies." />
+
+    <ol class="feed fade-in">
+      {projects.map((project, i) => {
+        const href = url(`/work/${project.id}/`);
+        const { title, date, summary, quote } = project.data;
+        return (
+          <li class="entry">
+            <DateLabel date={date} />
+            <h2 class="title">
+              <Link href={href}>{title}<Icon name="arrow-up-right" size="sm" class="arrow" /></Link>
+            </h2>
+            <a href={href} class="media-link" tabindex="-1" aria-hidden="true">
+              <ProjectMedia project={project} eager={i === 0} />
+            </a>
+            <p class="summary">{summary}</p>
+            {quote && (
+              <blockquote class="quote">
+                <p>“{quote.text}”</p>
+                <footer class="muted">— {quote.source}</footer>
+              </blockquote>
+            )}
+          </li>
+        );
+      })}
+    </ol>
+  </div>
+</Base>
+
+<style>
+  .feed { display: grid; gap: var(--space-96); }
+  .entry :global(time) { display: block; }
+  .title {
+    margin: var(--space-2) 0 var(--space-16);
+    font-size: var(--text-md);
+    line-height: var(--leading-md);
+    font-weight: var(--weight-medium);
+    letter-spacing: var(--tracking-tighter);
+  }
+  .title :global(a) { display: inline-flex; align-items: center; gap: var(--space-4); }
+  .title :global(.arrow) { color: var(--muted); transition: transform var(--duration) var(--ease), color var(--duration-fast); }
+  .title :global(a:hover .arrow) { transform: translate(var(--space-2), calc(-1 * var(--space-2))); color: var(--fg); }
+  .media-link { display: block; }
+  .media-link :global(.media-inner) { transition: transform var(--duration-slow) var(--ease); }
+  .media-link:hover :global(.media-inner) { transform: scale(1.025); }
+  .summary { margin-top: var(--space-16); color: var(--fg-soft); }
+  .quote {
+    margin-top: var(--space-24);
+    padding-left: var(--space-16);
+    border-left: var(--space-2) solid var(--line);
+  }
+  .quote p { font-style: italic; }
+</style>
