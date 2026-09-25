@@ -1,5 +1,8 @@
 ---
 // A music entry: cover, title + artist, and links to Spotify / Apple Music.
+// Covers go through Astro's <Image>: remote ones (allowed in astro.config.mjs)
+// are downloaded at build time and served as small WebP files.
+import { Image } from 'astro:assets';
 import Link from './Link.astro';
 import Icon from './Icon.astro';
 import { url } from '../site';
@@ -20,7 +23,15 @@ const links = [
 
 <li class="track">
   {cover ? (
-    <img class="cover" src={cover.startsWith('/') ? url(cover) : cover} alt="" width="48" height="48" loading="lazy" />
+    <Image
+      class="cover"
+      src={cover.startsWith('/') ? url(cover) : cover}
+      alt=""
+      width={48}
+      height={48}
+      densities={[1, 2]}
+      loading="lazy"
+    />
   ) : (
     <span class="cover placeholder" aria-hidden="true" />
   )}
