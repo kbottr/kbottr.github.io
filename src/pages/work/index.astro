@@ -57,6 +57,7 @@ const projects = (await getCollection('projects', ({ data }) => !data.draft))
   .title :global(.arrow) { color: var(--muted); transition: transform var(--duration) var(--ease), color var(--duration-fast); }
   .title :global(a:hover .arrow) { transform: translate(var(--space-2), calc(-1 * var(--space-2))); color: var(--fg); }
   .media-link { display: block; }
+  .media-link :global(.media) { aspect-ratio: 1 / 1; } /* square thumbnails; case-study hero stays 16:9 */
   .media-link :global(.media-inner) { transition: transform var(--duration-slow) var(--ease); }
   .media-link:hover :global(.media-inner) { transform: scale(1.025); }
   .summary { margin-top: var(--space-16); color: var(--fg-soft); }
