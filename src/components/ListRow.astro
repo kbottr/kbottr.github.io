@@ -30,4 +30,7 @@ const Tag = href ? 'a' : 'div';
     transition: background var(--duration-fast);
   }
   .interactive:hover { background: var(--subtle); }
+  /* The hover padding pushes the text down; pull the first row back up so
+     its text sits on the same line as a section label beside it */
+  .list-row:first-child .interactive { margin-top: calc(-1 * var(--space-4)); }
 </style>
