@@ -1,6 +1,6 @@
 ---
 // A challenge with a checkbox: empty while open, filled with a check
-// (and struck-through text) when done. Optional subline underneath.
+// (and scribbled-out text) when done. Optional subline underneath.
 import Icon from './Icon.astro';
 
 interface Props {
@@ -8,6 +8,17 @@ interface Props {
   subline?: string;
 }
 const { done = false, subline } = Astro.props;
+
+// Hand-drawn strike-through: a wobbly stroke plus a quicker return stroke,
+// drawn in a 100 × 16 box that stretches to the text width.
+// Three variants, picked from the text so neighbouring items differ.
+const scribbles = [
+  ['M1 9.5 C 12 5.5, 24 11.5, 38 8 S 62 5, 78 8.5 S 94 6.5, 99 5', 'M98 7 C 84 12, 64 7.5, 46 10.5 S 18 8.5, 2 12'],
+  ['M2 6.5 C 16 11, 28 5, 44 8.5 S 68 11.5, 84 6.5 S 96 8, 99 7.5', 'M99 10 C 80 6.5, 62 12.5, 42 9.5 S 14 12, 1 8.5'],
+  ['M1 10.5 C 9 6, 22 6.5, 34 9.5 S 56 5, 72 7.5 S 90 11, 99 6.5', 'M97 10.5 C 78 8, 56 12.5, 34 9.5 S 10 12, 3 9.5'],
+];
+const text = done ? await Astro.slots.render('default') : '';
+const [first, second] = scribbles[text.length % scribbles.length];
 ---
 
 <li class:list={['challenge', { done }]}>
@@ -16,7 +27,15 @@ const { done = false, subline } = Astro.props;
   </span>
   <span class="text">
     <span class="sr-only">{done ? 'done' : 'open'}:</span>
-    {done ? <s><slot /></s> : <span><slot /></span>}
+    {done ? (
+      <s class="scribbled">
+        <Fragment set:html={text} />
+        <svg class="scribble" viewBox="0 0 100 16" preserveAspectRatio="none" aria-hidden="true">
+          <path d={first} pathLength="1" />
+          <path d={second} pathLength="1" class="return" />
+        </svg>
+      </s>
+    ) : <span><slot /></span>}
     {subline && <span class="subline muted">{subline}</span>}
   </span>
 </li>
@@ -37,4 +56,36 @@ const { done = false, subline } = Astro.props;
   .done { color: var(--muted); }
   .done .box { background: var(--fg); box-shadow: none; color: var(--bg); }
   .done .box :global(.tick) { width: var(--space-12); height: var(--space-12); stroke-width: 3; }
+
+  /* Scribbled strike-through replaces the straight line */
+  .scribbled { position: relative; width: fit-content; text-decoration: none; }
+  .scribble {
+    position: absolute;
+    left: calc(-1 * var(--space-4)); right: calc(-1 * var(--space-4));
+    top: 50%; height: var(--space-16);
+    translate: 0 -50%;
+    rotate: -1deg; /* a hand never draws perfectly level */
+    width: calc(100% + 2 * var(--space-4));
+    overflow: visible;
+    pointer-events: none;
+  }
+  .scribble path {
+    fill: none;
+    stroke: var(--fg-soft);
+    stroke-width: 1.75;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    /* pathLength="1" + dasharray 1 lets the line draw in from 0 to 100%.
+       (The box only stretches sideways, so the stroke keeps its thickness.) */
+    stroke-dasharray: 1;
+    animation: draw var(--duration-slow) var(--ease) both;
+    animation-delay: calc(var(--delay) + var(--duration));
+  }
+  .scribble .return {
+    stroke-width: 1.4;
+    opacity: .8;
+    animation-delay: calc(var(--delay) + var(--duration) + var(--duration-fast));
+  }
+  /* Draws the line like a pen stroke; with reduced motion it simply shows */
+  @keyframes draw { from { stroke-dashoffset: 1; } }
 </style>
