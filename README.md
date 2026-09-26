@@ -57,7 +57,7 @@ All design decisions live in **`src/styles/tokens.css`**. Components and pages o
 | `Lead` | Large intro paragraph that reveals line by line |
 | `Pill` | Small rounded tag ("present") |
 | `Track` | Music entry: cover, title, artist, Spotify / Apple Music links |
-| `Challenge` | Challenge with a checkbox (filled + struck through when done) and an optional subline |
+| `Challenge` | Toggleable checkbox + optional subline; checked items get scribbled out (shape from `src/lib/scribble.ts`). `done: true` in challenges.yaml sets the starting state; visitors' clicks aren't saved |
 | `Pager` | Back / next links at the end of a page |
 | `PageHeader` | Small title + description at the top of Work and Journal |
 | `MoreLink` | "all posts →" style link to a full list |
