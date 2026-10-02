@@ -56,7 +56,7 @@ All design decisions live in **`src/styles/tokens.css`**. Components and pages o
 | `Section` | Icon + label on top, content below (home and About pages) |
 | `Lead` | Large intro paragraph that reveals line by line |
 | `Pill` | Small rounded tag ("present") |
-| `PortraitFlip` | Squircle portrait that tilts toward the mouse like a 3D object and flips on click/tap to show a second image |
+| `PortraitFlip` | Squircle portrait that tilts toward the mouse like a 3D object and flips on click/tap to a holographic back side |
 | `Track` | Music entry: cover, title, artist, Spotify / Apple Music links |
 | `Challenge` | Toggleable checkbox + optional subline; checked items get scribbled out (shape from `src/lib/scribble.ts`). `done: true` in challenges.yaml sets the starting state; visitors' clicks aren't saved |
 | `Pager` | Back / next links at the end of a page |
