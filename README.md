@@ -14,7 +14,7 @@ Personal portfolio built with [Astro](https://astro.build), deployed to GitHub P
 | Add a cover image | Put the image next to the Markdown file and set `cover: ./my-image.jpg` |
 | Write a journal post | Add a Markdown file to `src/content/journal/` |
 | Hide a project or post | Set `draft: true` in its frontmatter |
-| Add your portrait | Save it as `src/assets/portrait.jpg` |
+| Add your portrait | Save it as `src/assets/portrait.jpg`; the image revealed when it's flipped goes in `src/assets/portrait-back.jpg` |
 | Update experience / music / challenges | Edit the lists in `src/data/*.yaml` (shown in file order). For music, paste share links as `spotify:` and `apple:` |
 | Add or change an icon | Pick one on [lucide.dev/icons](https://lucide.dev/icons/), then add it in `src/components/Icon.astro` |
 | Publish | Commit and push to `main` — GitHub Actions builds and deploys |
@@ -53,9 +53,10 @@ All design decisions live in **`src/styles/tokens.css`**. Components and pages o
 | `Link` | Text link with animated underline (`variant`: plain, underlined, muted) |
 | `DateLabel` | Mono date, "October 2025" or "oct 2025" |
 | `ListRow` | Content left, meta right; with `href` the row gets a hover highlight |
-| `Section` | Icon + label on the left, content on the right (About page) |
+| `Section` | Icon + label on top, content below (home and About pages) |
 | `Lead` | Large intro paragraph that reveals line by line |
 | `Pill` | Small rounded tag ("present") |
+| `PortraitFlip` | Squircle tile with slight thickness that tilts toward the mouse and flips on click/tap to a holographic back side |
 | `Track` | Music entry: cover, title, artist, Spotify / Apple Music links |
 | `Challenge` | Toggleable checkbox + optional subline; checked items get scribbled out (shape from `src/lib/scribble.ts`). `done: true` in challenges.yaml sets the starting state; visitors' clicks aren't saved |
 | `Pager` | Back / next links at the end of a page |
