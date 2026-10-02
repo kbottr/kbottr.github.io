@@ -8,10 +8,12 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
+    "check": "astro check",
     "preview": "astro preview",
     "astro": "astro"
   },
   "dependencies": {
+    "@astrojs/sitemap": "^3.7.4",
     "@fontsource-variable/geist": "^5.3.0",
     "@fontsource-variable/geist-mono": "^5.3.0",
     "@lucide/astro": "^1.48.0",
@@ -22,6 +24,8 @@
     "esbuild": true
   },
   "devDependencies": {
-    "@types/js-yaml": "^4.0.9"
+    "@astrojs/check": "^0.9.10",
+    "@types/js-yaml": "^4.0.9",
+    "typescript": "^6.0.3"
   }
 }

@@ -8,7 +8,8 @@ const section =
   path.startsWith('/work') ? 'work'
   : path.startsWith('/journal') ? 'journal'
   : path.startsWith('/about') ? 'about'
-  : 'home';
+  : path === '/' ? 'home'
+  : undefined; // e.g. the 404 page
 
 const items = [
   { id: 'home', label: 'Home', href: url('/'), icon: 'home' },

@@ -3,13 +3,20 @@ import '../styles/global.css';
 import Dock from '../components/Dock.astro';
 import Link from '../components/Link.astro';
 import { site, url } from '../site';
+// The two font files every page needs; preloaded so text can show sooner
+import geist from '@fontsource-variable/geist/files/geist-latin-wght-normal.woff2?url';
+import geistMono from '@fontsource-variable/geist-mono/files/geist-mono-latin-wght-normal.woff2?url';
 
 interface Props {
   title?: string;
   description?: string;
+  /** Keep the page out of search results (e.g. the 404 page) */
+  noindex?: boolean;
 }
 
-const { title, description = site.intro } = Astro.props;
+const { title, description = site.intro, noindex = false } = Astro.props;
+const pageTitle = title ? `${title} — ${site.brand}` : site.title;
+const canonical = Astro.site && new URL(Astro.url.pathname, Astro.site).href;
 ---
 
 <!doctype html>
@@ -17,11 +24,30 @@ const { title, description = site.intro } = Astro.props;
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <link rel="icon" type="image/svg+xml" href={url('/favicon.svg')} />
-    <title>{title ? `${title} — ${site.brand}` : site.title}</title>
+    <title>{pageTitle}</title>
     <meta name="description" content={description} />
     <meta name="author" content={site.name} />
-    {Astro.site && <link rel="canonical" href={new URL(Astro.url.pathname, Astro.site)} />}
+    {noindex ? <meta name="robots" content="noindex" /> : canonical && <link rel="canonical" href={canonical} />}
+
+    <link rel="preload" href={geist} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={geistMono} as="font" type="font/woff2" crossorigin />
+
+    {/* Browser chrome (e.g. Safari's toolbar) matches the page in light and dark mode */}
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#fafaf9" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0a0a0a" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" type="image/svg+xml" href={url('/favicon.svg')} />
+    <link rel="apple-touch-icon" href={url('/apple-touch-icon.png')} />
+    <link rel="sitemap" href={url('/sitemap-index.xml')} />
+
+    {/* Link previews (LinkedIn, iMessage, Slack, …) */}
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={site.brand} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    {canonical && <meta property="og:url" content={canonical} />}
+    <meta name="twitter:card" content="summary" />
+
     <script is:inline>document.documentElement.classList.add('js');</script>
   </head>
   <body>
