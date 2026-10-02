@@ -114,7 +114,7 @@
 }
 
 /* Breakpoints (CSS can't use variables inside @media, so they're written out):
-   480px = phone (smaller gutter), 600px = About intro stacks (portrait above bio). */
+   480px = phone (smaller gutter). */
 @media (max-width: 480px) {
   :root { --gutter: var(--space-16); }
 }

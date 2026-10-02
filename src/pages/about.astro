@@ -94,7 +94,7 @@ const posts = (await getCollection('journal', ({ data }) => !data.draft))
 
 <style>
   .intro {
-    display: grid; grid-template-columns: var(--avatar) 1fr; gap: var(--space-32);
+    display: flex; flex-direction: column; gap: var(--space-24); /* portrait on top of the bio */
     padding-bottom: var(--space-48);
   }
   .portrait { width: var(--avatar); height: var(--avatar); border-radius: var(--radius-full); object-fit: cover; }
@@ -113,7 +113,4 @@ const posts = (await getCollection('journal', ({ data }) => !data.draft))
 
   .challenges { display: grid; gap: var(--space-8); }
 
-  @media (max-width: 600px) {
-    .intro { grid-template-columns: 1fr; gap: var(--space-16); }
-  }
 </style>
