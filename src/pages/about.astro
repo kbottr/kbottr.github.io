@@ -97,7 +97,10 @@ const posts = (await getCollection('journal', ({ data }) => !data.draft))
     display: flex; flex-direction: column; gap: var(--space-24); /* portrait on top of the bio */
     padding-bottom: var(--space-48);
   }
-  .portrait { width: var(--avatar); height: var(--avatar); border-radius: var(--radius-full); object-fit: cover; }
+  .portrait {
+    width: var(--avatar); height: var(--avatar); object-fit: cover;
+    mask: var(--mask-squircle) center / 100% 100% no-repeat; /* squircle shape */
+  }
   .portrait.placeholder {
     display: grid; place-items: center;
     background: var(--subtle); color: var(--muted);
