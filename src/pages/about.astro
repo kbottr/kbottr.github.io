@@ -38,11 +38,7 @@ const posts = (await getCollection('journal', ({ data }) => !data.draft))
     </section>
 
     <div class="fade-in">
-      {moments.length > 0 && (
-        <Section label="moments" icon="images">
-          <PhotoStack items={moments} />
-        </Section>
-      )}
+      {moments.length > 0 && <PhotoStack items={moments} />}
 
       <Section label="experience" icon="briefcase">
         <ul class="stack">

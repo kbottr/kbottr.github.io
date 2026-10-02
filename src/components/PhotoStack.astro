@@ -1,6 +1,6 @@
 ---
-// A stack of photos with a caption for each. The photos behind peek out
-// above the one in front: click one to bring it forward, click the front
+// A stack of photos with a caption for each, seen from above. The photos
+// behind stick out to the sides of the one in front: click one to bring it forward, click the front
 // photo (or use the arrows) to move on to the next.
 // Content: src/data/moments.yaml, images in src/assets/moments/.
 import { Image } from 'astro:assets';
@@ -16,12 +16,14 @@ const { items } = Astro.props;
 const files = import.meta.glob<{ default: ImageMetadata }>('../assets/moments/*.{jpg,jpeg,png,webp}', { eager: true });
 const imageFor = (name?: string) => (name ? files[`../assets/moments/${name}`]?.default : undefined);
 
-// A slight, fixed tilt for the photos behind, so the stack looks hand-placed
-const TILTS = [0, -1.5, 1.2, -1, 1.8, -2];
-const pad = (n: number) => String(n).padStart(2, '0');
+// Seen from above: the photos behind fan out alternately to the right and
+// left of the front one, each a step further out and a little more turned.
+// pos 0 = front, 1 = right, 2 = left, 3 = further right, …
+const shift = (pos: number) => (pos === 0 ? 0 : Math.ceil(pos / 2) * (pos % 2 ? 1 : -1));
+const maxStep = Math.ceil((items.length - 1) / 2);
 ---
 
-<div class="photo-stack" style={`--count:${items.length}`}>
+<div class="photo-stack" style={`--count:${items.length};--max-step:${maxStep}`}>
   <div class="deck" role="group" aria-roledescription="photo stack" aria-label="Photos">
     {items.map((item, i) => {
       const image = imageFor(item.image);
@@ -29,8 +31,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
         <button
           type="button"
           class:list={['card', { front: i === 0 }]}
-          data-index={i}
-          style={`--pos:${i};--tilt:${TILTS[i % TILTS.length]}deg;--c1:${item.colors[0]};--c2:${item.colors[1]}`}
+          style={`--pos:${i};--shift:${shift(i)};--dir:${Math.sign(shift(i))};--c1:${item.colors[0]};--c2:${item.colors[1]}`}
           tabindex={i === 0 ? 0 : -1}
           aria-label={i === 0 ? 'Next photo' : `Show “${item.title}”`}
         >
@@ -44,36 +45,36 @@ const pad = (n: number) => String(n).padStart(2, '0');
     })}
   </div>
 
-  <div class="footer">
-    <div class="captions" aria-live="polite">
-      {items.map((item, i) => (
-        <div class:list={['caption', { active: i === 0 }]} data-index={i} aria-hidden={i === 0 ? undefined : 'true'}>
-          <p class="title">{item.title}</p>
-          <p class="text">{item.text}</p>
-        </div>
-      ))}
+  {items.length > 1 && (
+    <div class="controls">
+      <button type="button" class="arrow prev" aria-label="Previous photo"><Icon name="arrow-left" size="sm" /></button>
+      <button type="button" class="arrow next" aria-label="Next photo"><Icon name="arrow-right" size="sm" /></button>
     </div>
-    {items.length > 1 && (
-      <div class="controls">
-        <span class="counter mono muted"><span class="current">{pad(1)}</span> / {pad(items.length)}</span>
-        <button type="button" class="arrow prev" aria-label="Previous photo"><Icon name="arrow-left" size="sm" /></button>
-        <button type="button" class="arrow next" aria-label="Next photo"><Icon name="arrow-right" size="sm" /></button>
+  )}
+
+  <div class="captions" aria-live="polite">
+    {items.map((item, i) => (
+      <div class:list={['caption', { active: i === 0 }]} aria-hidden={i === 0 ? undefined : 'true'}>
+        <p class="title">{item.title}</p>
+        <p class="text">{item.text}</p>
       </div>
-    )}
+    ))}
   </div>
 </div>
 
 <style>
   .photo-stack {
-    --peek: var(--space-16);  /* how far each photo behind sticks out above */
-    --shrink: .06;            /* how much smaller each photo behind is */
+    --peek: var(--space-24); /* how far each photo behind sticks out sideways */
+    --turn: 2deg;            /* extra rotation per step out */
+    padding-block: var(--space-32);
   }
 
-  /* Room above the front photo for the ones peeking out behind it */
+  /* Narrower than the column, so the photos fanning out to the sides fit */
   .deck {
     position: relative;
+    width: calc(100% - 2 * var(--max-step) * var(--peek));
+    margin-inline: auto;
     aspect-ratio: 3 / 2;
-    margin-top: calc((var(--count) - 1) * var(--peek));
   }
 
   .card {
@@ -83,46 +84,32 @@ const pad = (n: number) => String(n).padStart(2, '0');
     border-radius: var(--radius-lg);
     overflow: hidden;
     box-shadow: var(--shadow);
-    transform-origin: 50% 0;
-    translate: 0 calc(var(--pos) * -1 * var(--peek));
-    scale: calc(1 - var(--pos) * var(--shrink));
-    rotate: calc(min(var(--pos), 1) * var(--tilt)); /* the front photo sits straight */
+    translate: calc(var(--shift) * var(--peek)) 0;
+    rotate: calc(var(--shift) * var(--turn));
     z-index: calc(var(--count) - var(--pos));
+    /* photos further back are a little darker */
+    filter: brightness(calc(1 - var(--pos) * .06));
     transition:
       translate var(--duration-slow) var(--ease),
-      scale var(--duration-slow) var(--ease),
       rotate var(--duration-slow) var(--ease),
       filter var(--duration) var(--ease);
-    /* photos further back are a little darker */
-    filter: brightness(calc(1 - var(--pos) * .08));
   }
-  .card:not(.front):hover { translate: 0 calc(var(--pos) * -1 * var(--peek) - var(--space-8)); filter: none; }
+  /* Hovering a photo behind pulls it out a little further */
+  .card:not(.front):hover {
+    translate: calc(var(--shift) * var(--peek) + var(--dir) * var(--space-8)) 0;
+    filter: none;
+  }
   .card :global(img) { width: 100%; height: 100%; object-fit: cover; }
   .placeholder {
     display: block; width: 100%; height: 100%;
     background: linear-gradient(135deg, var(--c1), var(--c2));
   }
 
-  /* Caption + controls */
-  .footer {
-    display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-24);
-    margin-top: var(--space-24);
+  /* Arrows between the stack and the caption, aligned with the text */
+  .controls {
+    display: flex; gap: var(--space-4);
+    margin: var(--space-32) 0 var(--space-8) calc(-1 * var(--space-8));
   }
-  /* All captions share one grid cell, so the box keeps the height of the
-     longest one and nothing below jumps when switching */
-  .captions { display: grid; flex: 1; min-width: 0; }
-  .caption {
-    grid-area: 1 / 1;
-    opacity: 0; visibility: hidden;
-    translate: 0 var(--space-8);
-    transition: opacity var(--duration) var(--ease), translate var(--duration) var(--ease), visibility var(--duration);
-  }
-  .caption.active { opacity: 1; visibility: visible; translate: none; transition-delay: var(--duration-fast); }
-  .title { font-weight: var(--weight-medium); }
-  .text { color: var(--fg-soft); }
-
-  .controls { display: flex; align-items: center; gap: var(--space-4); flex-shrink: 0; }
-  .counter { margin-right: var(--space-8); }
   .arrow {
     display: grid; place-items: center;
     width: var(--control); height: var(--control);
@@ -133,10 +120,22 @@ const pad = (n: number) => String(n).padStart(2, '0');
   }
   .arrow:hover { background: var(--subtle); color: var(--fg); }
 
-  /* Phones: controls go above the caption */
+  /* All captions share one grid cell, so the box keeps the height of the
+     longest one and nothing below jumps when switching */
+  .captions { display: grid; }
+  .caption {
+    grid-area: 1 / 1;
+    opacity: 0; visibility: hidden;
+    translate: 0 var(--space-8);
+    transition: opacity var(--duration) var(--ease), translate var(--duration) var(--ease), visibility var(--duration);
+  }
+  .caption.active { opacity: 1; visibility: visible; translate: none; transition-delay: var(--duration-fast); }
+  .title { font-weight: var(--weight-medium); }
+  .text { color: var(--fg-soft); }
+
+  /* Phones: a smaller fan */
   @media (max-width: 480px) {
-    .footer { flex-direction: column-reverse; gap: var(--space-8); }
-    .controls { align-self: flex-end; margin-right: calc(-1 * var(--space-8)); }
+    .photo-stack { --peek: var(--space-12); }
   }
 </style>
 
@@ -144,7 +143,6 @@ const pad = (n: number) => String(n).padStart(2, '0');
   document.querySelectorAll<HTMLElement>('.photo-stack').forEach((root) => {
     const cards = [...root.querySelectorAll<HTMLButtonElement>('.card')];
     const captions = [...root.querySelectorAll<HTMLElement>('.caption')];
-    const current = root.querySelector('.current');
     const titles = captions.map((c) => c.querySelector('.title')?.textContent ?? '');
     let order = cards.map((_, i) => i); // order[0] is the photo in front
 
@@ -153,13 +151,15 @@ const pad = (n: number) => String(n).padStart(2, '0');
         const pos = order.indexOf(i);
         const front = pos === 0;
         card.style.setProperty('--pos', String(pos));
+        const shift = pos === 0 ? 0 : Math.ceil(pos / 2) * (pos % 2 ? 1 : -1); // same as in the frontmatter
+        card.style.setProperty('--shift', String(shift));
+        card.style.setProperty('--dir', String(Math.sign(shift)));
         card.classList.toggle('front', front);
         card.tabIndex = front ? 0 : -1;
         card.setAttribute('aria-label', front ? 'Next photo' : `Show “${titles[i]}”`);
         captions[i].classList.toggle('active', front);
         captions[i].toggleAttribute('aria-hidden', !front);
       });
-      if (current) current.textContent = String(order[0] + 1).padStart(2, '0');
     }
 
     const bringToFront = (i: number) => { order = [i, ...order.filter((x) => x !== i)]; render(); };
