@@ -17,7 +17,16 @@ Personal portfolio built with [Astro](https://astro.build), deployed to GitHub P
 | Add your portrait | Save it as `src/assets/portrait.jpg`; the image revealed when it's flipped goes in `src/assets/portrait-back.jpg` |
 | Update experience / music / challenges | Edit the lists in `src/data/*.yaml` (shown in file order). For music, paste share links as `spotify:` and `apple:` |
 | Add or change an icon | Pick one on [lucide.dev/icons](https://lucide.dev/icons/), then add it in `src/components/Icon.astro` |
+| Check for errors | `npm run check` (types, content, components) |
+| Test the real build | `npm run build && npm run preview` (inlined CSS and prefetching only happen in the build) |
 | Publish | Commit and push to `main` — GitHub Actions builds and deploys |
+
+## Speed & search
+
+- **CSS** is inlined into every page (`build.inlineStylesheets` in `astro.config.mjs`), so nothing blocks the first paint.
+- **Fonts:** only the Latin files of Geist / Geist Mono are declared (`src/styles/fonts.css`) and both are preloaded in `Base.astro`.
+- **Prefetching:** internal pages are fetched in the background once a link to them is on screen, so navigating feels instant.
+- **Search engines & link previews:** `sitemap-index.xml` (generated), `public/robots.txt`, Open Graph tags in `Base.astro`. A custom `src/pages/404.astro` is shown for unknown addresses.
 
 ## How the animations work
 

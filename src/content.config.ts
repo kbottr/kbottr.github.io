@@ -60,8 +60,8 @@ const music = defineCollection({
     order: z.number(),
     title: z.string(),
     artist: z.string(),
-    spotify: z.string().url().optional(), // link to the track/album on Spotify
-    apple: z.string().url().optional(), // link to the track/album on Apple Music
+    spotify: z.url().optional(), // link to the track/album on Spotify
+    apple: z.url().optional(), // link to the track/album on Apple Music
     cover: z.string().optional(), // image URL, or a file in public/ like /music/album.jpg
   }),
 });

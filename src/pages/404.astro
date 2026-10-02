@@ -1,0 +1,28 @@
+---
+// GitHub Pages shows this page for any address that doesn't exist.
+import Base from '../layouts/Base.astro';
+import PageHeader from '../components/PageHeader.astro';
+import ListRow from '../components/ListRow.astro';
+import { url } from '../site';
+
+const pages = [
+  { label: 'Home', path: '/' },
+  { label: 'Work', path: '/work/' },
+  { label: 'Journal', path: '/journal/' },
+  { label: 'About', path: '/about/' },
+];
+---
+
+<Base title="Page not found" description="This page doesn't exist." noindex>
+  <div class="wrap">
+    <PageHeader title="page not found" description="This page doesn't exist, or it has moved. Maybe one of these?" />
+    <ul class="fade-in">
+      {pages.map((p) => (
+        <ListRow href={url(p.path)}>
+          {p.label}
+          <span slot="meta" class="mono muted">{p.path}</span>
+        </ListRow>
+      ))}
+    </ul>
+  </div>
+</Base>
