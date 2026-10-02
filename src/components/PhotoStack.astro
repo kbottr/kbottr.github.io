@@ -21,6 +21,9 @@ const imageFor = (name?: string) => (name ? files[`../assets/moments/${name}`]?.
 // pos 0 = front, 1 = right, 2 = left, 3 = further right, …
 const shift = (pos: number) => (pos === 0 ? 0 : Math.ceil(pos / 2) * (pos % 2 ? 1 : -1));
 const maxStep = Math.ceil((items.length - 1) / 2);
+// Each photo also keeps its own random-looking twist, so the pile looks
+// tossed together rather than neatly fanned (the front photo sits straight)
+const TWISTS = [-5, 4, -3, 6, -6, 3, 5, -4];
 ---
 
 <div class="photo-stack" style={`--count:${items.length};--max-step:${maxStep}`}>
@@ -31,7 +34,7 @@ const maxStep = Math.ceil((items.length - 1) / 2);
         <button
           type="button"
           class:list={['card', { front: i === 0 }]}
-          style={`--pos:${i};--shift:${shift(i)};--dir:${Math.sign(shift(i))};--c1:${item.colors[0]};--c2:${item.colors[1]}`}
+          style={`--pos:${i};--shift:${shift(i)};--dir:${Math.sign(shift(i))};--twist:${TWISTS[i % TWISTS.length]}deg;--c1:${item.colors[0]};--c2:${item.colors[1]}`}
           tabindex={i === 0 ? 0 : -1}
           aria-label={i === 0 ? 'Next photo' : `Show “${item.title}”`}
         >
@@ -65,8 +68,8 @@ const maxStep = Math.ceil((items.length - 1) / 2);
 <style>
   .photo-stack {
     --peek: var(--space-24); /* how far each photo behind sticks out sideways */
-    --turn: 2deg;            /* extra rotation per step out */
-    padding-block: var(--space-32);
+    --turn: 3deg;            /* extra rotation per step out */
+    padding-block: var(--space-48) var(--space-32); /* room for tilted corners */
   }
 
   /* Narrower than the column, so the photos fanning out to the sides fit */
@@ -85,7 +88,7 @@ const maxStep = Math.ceil((items.length - 1) / 2);
     overflow: hidden;
     box-shadow: var(--shadow);
     translate: calc(var(--shift) * var(--peek)) 0;
-    rotate: calc(var(--shift) * var(--turn));
+    rotate: calc(var(--shift) * var(--turn) + min(var(--pos), 1) * var(--twist));
     z-index: calc(var(--count) - var(--pos));
     /* photos further back are a little darker */
     filter: brightness(calc(1 - var(--pos) * .06));
@@ -105,10 +108,10 @@ const maxStep = Math.ceil((items.length - 1) / 2);
     background: linear-gradient(135deg, var(--c1), var(--c2));
   }
 
-  /* Arrows between the stack and the caption, aligned with the text */
+  /* Arrows between the stack and the caption, centred under the stack */
   .controls {
-    display: flex; gap: var(--space-4);
-    margin: var(--space-32) 0 var(--space-8) calc(-1 * var(--space-8));
+    display: flex; justify-content: center; gap: var(--space-4);
+    margin: var(--space-48) 0 var(--space-16);
   }
   .arrow {
     display: grid; place-items: center;
