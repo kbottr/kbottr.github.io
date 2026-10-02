@@ -1,16 +1,20 @@
 # Newest first. Leave out `end` for a current role.
-- role: Senior Product Designer
-  company: Company name
-  start: 01 / 2023
-- role: Product Designer
-  company: Company name
-  start: 04 / 2020
-  end: 12 / 2022
-- role: UX Designer
-  company: Agency name
-  start: 09 / 2017
-  end: 03 / 2020
-- role: BA Interaction Design
-  company: University name
-  start: 10 / 2013
-  end: 07 / 2017
+- role: Design Lead
+  company: Elli · Volkswagen Group
+  start: 11 / 2023
+- role: UX/UI Designer
+  company: Elli · Volkswagen Group
+  start: 09 / 2022
+  end: 11 / 2023
+- role: Senior UI/UX Designer
+  company: ENNO studio
+  start: 12 / 2021
+  end: 07 / 2022
+- role: Art Director
+  company: Hubject
+  start: 01 / 2020
+  end: 11 / 2021
+- role: Design Manager
+  company: Hubject
+  start: 04 / 2016
+  end: 12 / 2019
