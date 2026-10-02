@@ -15,6 +15,7 @@ const initials = site.name.split(' ').map((n) => n[0]).join('');
 ---
 
 <button type="button" class="flip" aria-pressed="false" aria-label={`Flip ${site.name}'s portrait`}>
+  <span class="tilt">
   <span class="card">
     <span class="face front">
       {front ? (
@@ -31,6 +32,7 @@ const initials = site.name.split(' ').map((n) => n[0]).join('');
       )}
     </span>
   </span>
+  </span>
 </button>
 
 <style>
@@ -39,21 +41,27 @@ const initials = site.name.split(' ').map((n) => n[0]).join('');
     width: var(--avatar); height: var(--avatar);
     padding: 0; border: 0; background: none; color: inherit;
     cursor: pointer;
-    perspective: calc(var(--avatar) * 6);
+    perspective: calc(var(--avatar) * 5);
     border-radius: 28%; /* focus ring roughly follows the squircle */
     -webkit-tap-highlight-color: transparent;
   }
+
+  /* Outer layer: leans toward the mouse (angles set by the script below) */
+  .tilt {
+    display: block; width: 100%; height: 100%;
+    transform-style: preserve-3d;
+    transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) scale(var(--lift, 1));
+    transition: transform var(--duration-slow) var(--ease);
+  }
+  .tracking .tilt { --lift: 1.06; transition-duration: var(--duration-fast); }
+
+  /* Inner layer: the flip itself */
   .card {
     position: relative; display: block; width: 100%; height: 100%;
     transform-style: preserve-3d;
     transition: transform var(--duration-slow) var(--ease);
   }
   .flipped .card { transform: rotateY(180deg); }
-  /* A small tilt on hover hints that it can be turned */
-  @media (hover: hover) {
-    .flip:hover .card { transform: rotateY(-14deg); }
-    .flip.flipped:hover .card { transform: rotateY(166deg); }
-  }
 
   .face {
     position: absolute; inset: 0;
@@ -64,6 +72,15 @@ const initials = site.name.split(' ').map((n) => n[0]).join('');
   .back { transform: rotateY(180deg); }
   .face :global(img) { width: 100%; height: 100%; object-fit: cover; }
 
+  /* Soft light reflection that follows the pointer */
+  .face::after {
+    content: ''; position: absolute; inset: 0; pointer-events: none;
+    background: radial-gradient(circle at var(--gx, 50%) var(--gy, 50%), rgb(255 255 255 / .28), transparent 60%);
+    opacity: 0;
+    transition: opacity var(--duration);
+  }
+  .tracking .face::after { opacity: 1; }
+
   .placeholder {
     display: grid; place-items: center; width: 100%; height: 100%;
     background: var(--subtle); color: var(--muted);
@@ -73,10 +90,38 @@ const initials = site.name.split(' ').map((n) => n[0]).join('');
 </style>
 
 <script>
+  const MAX_TILT = 16; // degrees at the very edge of the portrait
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
   document.querySelectorAll<HTMLButtonElement>('.flip').forEach((button) => {
+    // Click / tap / Enter / Space: flip
     button.addEventListener('click', () => {
       const flipped = button.classList.toggle('flipped');
       button.setAttribute('aria-pressed', String(flipped));
+    });
+
+    if (reduced) return;
+
+    // Mouse only: lean toward the pointer like a 3D object
+    let frame = 0;
+    button.addEventListener('pointermove', (e) => {
+      if (e.pointerType !== 'mouse') return;
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => {
+        const r = button.getBoundingClientRect();
+        const x = (e.clientX - r.left) / r.width - 0.5; // -0.5 (left) … 0.5 (right)
+        const y = (e.clientY - r.top) / r.height - 0.5; // -0.5 (top) … 0.5 (bottom)
+        button.classList.add('tracking');
+        button.style.setProperty('--ry', `${x * 2 * MAX_TILT}deg`);
+        button.style.setProperty('--rx', `${-y * 2 * MAX_TILT}deg`);
+        button.style.setProperty('--gx', `${(x + 0.5) * 100}%`);
+        button.style.setProperty('--gy', `${(y + 0.5) * 100}%`);
+      });
+    });
+    button.addEventListener('pointerleave', () => {
+      cancelAnimationFrame(frame);
+      button.classList.remove('tracking');
+      ['--rx', '--ry', '--gx', '--gy'].forEach((p) => button.style.removeProperty(p));
     });
   });
 </script>
