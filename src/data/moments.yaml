@@ -1,0 +1,16 @@
+# Photo stack on the About page, shown in this order (the first is on top).
+# image:  a file in src/assets/moments/, e.g. image: berlin.jpg
+#         (leave out to show a colour placeholder)
+# colors: two colours for the placeholder gradient
+- title: Placeholder — a place I love
+  text: A short story about this photo. Where it was taken, what was happening, why it matters to you.
+  colors: ['#c9d6ff', '#e2e2f8']
+- title: Placeholder — side project
+  text: Something you made outside of work, and what you learned from it.
+  colors: ['#ffd9c2', '#f6e7d8']
+- title: Placeholder — team offsite
+  text: The people you work with, a moment from a workshop or a trip together.
+  colors: ['#c7ecd9', '#e3f2ea']
+- title: Placeholder — on the road
+  text: Travel, a run, a record shop — whatever says something about you.
+  colors: ['#f3c9e3', '#f6e2ee']

@@ -1,0 +1,181 @@
+---
+// A stack of photos with a caption for each, seen from above. The photos
+// behind stick out to the sides of the one in front: click one to bring it forward, click the front
+// photo (or use the arrows) to move on to the next.
+// Content: src/data/moments.yaml, images in src/assets/moments/.
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import type { CollectionEntry } from 'astro:content';
+import Icon from './Icon.astro';
+
+interface Props {
+  items: CollectionEntry<'moments'>['data'][];
+}
+const { items } = Astro.props;
+
+const files = import.meta.glob<{ default: ImageMetadata }>('../assets/moments/*.{jpg,jpeg,png,webp}', { eager: true });
+const imageFor = (name?: string) => (name ? files[`../assets/moments/${name}`]?.default : undefined);
+
+// Seen from above: the photos behind fan out alternately to the right and
+// left of the front one, each a step further out and a little more turned.
+// pos 0 = front, 1 = right, 2 = left, 3 = further right, …
+const shift = (pos: number) => (pos === 0 ? 0 : Math.ceil(pos / 2) * (pos % 2 ? 1 : -1));
+const maxStep = Math.ceil((items.length - 1) / 2);
+// Each photo also keeps its own random-looking twist, so the pile looks
+// tossed together rather than neatly fanned (the front photo sits straight)
+const TWISTS = [-5, 4, -3, 6, -6, 3, 5, -4];
+---
+
+<div class="photo-stack" style={`--count:${items.length};--max-step:${maxStep}`}>
+  <div class="deck" role="group" aria-roledescription="photo stack" aria-label="Photos">
+    {items.map((item, i) => {
+      const image = imageFor(item.image);
+      return (
+        <button
+          type="button"
+          class:list={['card', { front: i === 0 }]}
+          style={`--pos:${i};--shift:${shift(i)};--dir:${Math.sign(shift(i))};--twist:${TWISTS[i % TWISTS.length]}deg;--c1:${item.colors[0]};--c2:${item.colors[1]}`}
+          tabindex={i === 0 ? 0 : -1}
+          aria-label={i === 0 ? 'Next photo' : `Show “${item.title}”`}
+        >
+          {image ? (
+            <Image src={image} alt={item.alt ?? ''} widths={[680, 1360]} sizes="(max-width: 728px) 100vw, 680px" />
+          ) : (
+            <span class="placeholder" aria-hidden="true" />
+          )}
+        </button>
+      );
+    })}
+  </div>
+
+  {items.length > 1 && (
+    <div class="controls">
+      <button type="button" class="arrow prev" aria-label="Previous photo"><Icon name="arrow-left" size="sm" /></button>
+      <button type="button" class="arrow next" aria-label="Next photo"><Icon name="arrow-right" size="sm" /></button>
+    </div>
+  )}
+
+  <div class="captions" aria-live="polite">
+    {items.map((item, i) => (
+      <div class:list={['caption', { active: i === 0 }]} aria-hidden={i === 0 ? undefined : 'true'}>
+        <p class="title">{item.title}</p>
+        <p class="text">{item.text}</p>
+      </div>
+    ))}
+  </div>
+</div>
+
+<style>
+  .photo-stack {
+    --peek: var(--space-24); /* how far each photo behind sticks out sideways */
+    --turn: 3deg;            /* extra rotation per step out */
+    padding-block: var(--space-48) var(--space-32); /* room for tilted corners */
+  }
+
+  /* Narrower than the column, so the photos fanning out to the sides fit */
+  .deck {
+    position: relative;
+    width: calc(100% - 2 * var(--max-step) * var(--peek));
+    margin-inline: auto;
+    aspect-ratio: 3 / 2;
+  }
+
+  .card {
+    position: absolute; inset: 0;
+    padding: 0; border: 0; background: none; color: inherit;
+    cursor: pointer;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    translate: calc(var(--shift) * var(--peek)) 0;
+    rotate: calc(var(--shift) * var(--turn) + min(var(--pos), 1) * var(--twist));
+    z-index: calc(var(--count) - var(--pos));
+    /* photos further back are a little darker */
+    filter: brightness(calc(1 - var(--pos) * .06));
+    transition:
+      translate var(--duration-slow) var(--ease),
+      rotate var(--duration-slow) var(--ease),
+      filter var(--duration) var(--ease);
+  }
+  /* Hovering a photo behind pulls it out a little further */
+  .card:not(.front):hover {
+    translate: calc(var(--shift) * var(--peek) + var(--dir) * var(--space-8)) 0;
+    filter: none;
+  }
+  .card :global(img) { width: 100%; height: 100%; object-fit: cover; }
+  .placeholder {
+    display: block; width: 100%; height: 100%;
+    background: linear-gradient(135deg, var(--c1), var(--c2));
+  }
+
+  /* Arrows between the stack and the caption, centred under the stack */
+  .controls {
+    display: flex; justify-content: center; gap: var(--space-4);
+    margin: var(--space-48) 0 var(--space-16);
+  }
+  .arrow {
+    display: grid; place-items: center;
+    width: var(--control); height: var(--control);
+    padding: 0; border: 0; border-radius: var(--radius-full);
+    background: transparent; color: var(--muted);
+    cursor: pointer;
+    transition: background var(--duration-fast), color var(--duration-fast);
+  }
+  .arrow:hover { background: var(--subtle); color: var(--fg); }
+
+  /* All captions share one grid cell, so the box keeps the height of the
+     longest one and nothing below jumps when switching */
+  .captions { display: grid; }
+  .caption {
+    grid-area: 1 / 1;
+    opacity: 0; visibility: hidden;
+    translate: 0 var(--space-8);
+    transition: opacity var(--duration) var(--ease), translate var(--duration) var(--ease), visibility var(--duration);
+  }
+  .caption.active { opacity: 1; visibility: visible; translate: none; transition-delay: var(--duration-fast); }
+  .title { font-weight: var(--weight-medium); }
+  .text { color: var(--fg-soft); }
+
+  /* Phones: a smaller fan */
+  @media (max-width: 480px) {
+    .photo-stack { --peek: var(--space-12); }
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLElement>('.photo-stack').forEach((root) => {
+    const cards = [...root.querySelectorAll<HTMLButtonElement>('.card')];
+    const captions = [...root.querySelectorAll<HTMLElement>('.caption')];
+    const titles = captions.map((c) => c.querySelector('.title')?.textContent ?? '');
+    let order = cards.map((_, i) => i); // order[0] is the photo in front
+
+    function render() {
+      cards.forEach((card, i) => {
+        const pos = order.indexOf(i);
+        const front = pos === 0;
+        card.style.setProperty('--pos', String(pos));
+        const shift = pos === 0 ? 0 : Math.ceil(pos / 2) * (pos % 2 ? 1 : -1); // same as in the frontmatter
+        card.style.setProperty('--shift', String(shift));
+        card.style.setProperty('--dir', String(Math.sign(shift)));
+        card.classList.toggle('front', front);
+        card.tabIndex = front ? 0 : -1;
+        card.setAttribute('aria-label', front ? 'Next photo' : `Show “${titles[i]}”`);
+        captions[i].classList.toggle('active', front);
+        captions[i].toggleAttribute('aria-hidden', !front);
+      });
+    }
+
+    const bringToFront = (i: number) => { order = [i, ...order.filter((x) => x !== i)]; render(); };
+    const next = () => { order = [...order.slice(1), order[0]]; render(); };
+    const prev = () => bringToFront(order[order.length - 1]);
+
+    cards.forEach((card, i) => card.addEventListener('click', () => (order[0] === i ? next() : bringToFront(i))));
+    root.querySelector('.next')?.addEventListener('click', next);
+    root.querySelector('.prev')?.addEventListener('click', prev);
+    root.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight') { next(); e.preventDefault(); }
+      if (e.key === 'ArrowLeft') { prev(); e.preventDefault(); }
+    });
+    render();
+  });
+</script>

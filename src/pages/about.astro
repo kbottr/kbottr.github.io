@@ -10,6 +10,7 @@ import DateLabel from '../components/DateLabel.astro';
 import MoreLink from '../components/MoreLink.astro';
 import Track from '../components/Track.astro';
 import Challenge from '../components/Challenge.astro';
+import PhotoStack from '../components/PhotoStack.astro';
 import { site, url } from '../site';
 
 
@@ -17,6 +18,7 @@ const byOrder = (a: { data: { order: number } }, b: { data: { order: number } })
 const experience = (await getCollection('experience')).sort(byOrder);
 const music = (await getCollection('music')).sort(byOrder);
 const challenges = (await getCollection('challenges')).sort(byOrder);
+const moments = (await getCollection('moments')).sort(byOrder).map((m) => m.data);
 const posts = (await getCollection('journal', ({ data }) => !data.draft))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
   .slice(0, 3);
@@ -36,6 +38,8 @@ const posts = (await getCollection('journal', ({ data }) => !data.draft))
     </section>
 
     <div class="fade-in">
+      {moments.length > 0 && <PhotoStack items={moments} />}
+
       <Section label="experience" icon="briefcase">
         <ul class="stack">
           {experience.map(({ data }) => (
