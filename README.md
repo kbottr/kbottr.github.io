@@ -53,7 +53,7 @@ All design decisions live in **`src/styles/tokens.css`**. Components and pages o
 | `Link` | Text link with animated underline (`variant`: plain, underlined, muted) |
 | `DateLabel` | Mono date, "October 2025" or "oct 2025" |
 | `ListRow` | Content left, meta right; with `href` the row gets a hover highlight |
-| `Section` | Icon + label on the left, content on the right (About page) |
+| `Section` | Icon + label on top, content below (home and About pages) |
 | `Lead` | Large intro paragraph that reveals line by line |
 | `Pill` | Small rounded tag ("present") |
 | `Track` | Music entry: cover, title, artist, Spotify / Apple Music links |
