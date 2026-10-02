@@ -12,6 +12,10 @@ const backs = import.meta.glob<{ default: ImageMetadata }>('../assets/portrait-b
 const front = Object.values(fronts)[0]?.default;
 const back = Object.values(backs)[0]?.default;
 const initials = site.name.split(' ').map((n) => n[0]).join('');
+
+// Thickness: 6 layers 1px apart, centred between the faces (which sit at ±3px)
+const DEPTH = 6;
+const edgeLayers = Array.from({ length: DEPTH }, (_, i) => DEPTH / 2 - 0.5 - i);
 ---
 
 <button type="button" class="flip" aria-pressed="false" aria-label={`Flip ${site.name}'s portrait`}>
@@ -23,7 +27,6 @@ const initials = site.name.split(' ').map((n) => n[0]).join('');
       ) : (
         <span class="placeholder" aria-hidden="true">{initials}</span>
       )}
-      <span class="rim" aria-hidden="true"></span>
     </span>
     <span class="face back">
       {back ? (
@@ -31,8 +34,11 @@ const initials = site.name.split(' ').map((n) => n[0]).join('');
       ) : (
         <span class="placeholder alt" aria-hidden="true">hi!</span>
       )}
-      <span class="rim" aria-hidden="true"></span>
     </span>
+    {/* Side wall: thin squircle layers stacked between front and back */}
+    {edgeLayers.map((z, i) => (
+      <span class="edge" aria-hidden="true" style={`--z:${z}px;--shade:${i * 7}%`} />
+    ))}
   </span>
   </span>
 </button>
@@ -59,6 +65,8 @@ const initials = site.name.split(' ').map((n) => n[0]).join('');
 
   /* Inner layer: the flip itself */
   .card {
+    --depth: calc(var(--space-2) * 3); /* 6px, matches DEPTH above */
+    --edge-color: color-mix(in srgb, var(--fg) 22%, var(--bg));
     position: relative; display: block; width: 100%; height: 100%;
     transform-style: preserve-3d;
     transition: transform var(--duration-slow) var(--ease);
@@ -66,12 +74,13 @@ const initials = site.name.split(' ').map((n) => n[0]).join('');
   .flipped .card { transform: rotateY(180deg); }
 
   .face {
-    position: absolute; inset: 0;
+    position: absolute; inset: 0; z-index: 1;
+    transform: translateZ(calc(var(--depth) / 2));
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
     mask: var(--mask-squircle) center / 100% 100% no-repeat; /* squircle shape */
   }
-  .back { transform: rotateY(180deg); }
+  .back { transform: rotateY(180deg) translateZ(calc(var(--depth) / 2)); }
   .face :global(img) { width: 100%; height: 100%; object-fit: cover; }
 
   /* Soft light reflection that follows the pointer */
@@ -83,25 +92,14 @@ const initials = site.name.split(' ').map((n) => n[0]).join('');
   }
   .tracking .face::after { opacity: 1; }
 
-  /* Rim: a thin squircle edge lit from the pointer side, shown on hover
-     so the portrait reads like a solid object with a bevelled edge */
-  .rim {
-    --rim: var(--space-2);
-    position: absolute; inset: 0; z-index: 2; pointer-events: none;
-    background: radial-gradient(
-      circle at var(--gx, 30%) var(--gy, 30%),
-      rgb(255 255 255 / .4), rgb(255 255 255 / .1) 55%, rgb(0 0 0 / .2)
-    );
-    /* outer squircle minus a slightly smaller one = a ring */
-    mask:
-      var(--mask-squircle) center / 100% 100% no-repeat,
-      var(--mask-squircle) center / calc(100% - 2 * var(--rim)) calc(100% - 2 * var(--rim)) no-repeat;
-    mask-composite: exclude;
-    -webkit-mask-composite: xor;
-    opacity: 0;
-    transition: opacity var(--duration);
+  /* Side wall (thickness). Hidden when viewed straight on; shows as a
+     smooth edge when the portrait tilts or turns. Darker toward the back. */
+  .edge {
+    position: absolute; inset: 0;
+    transform: translateZ(var(--z));
+    background: color-mix(in srgb, var(--edge-color), black var(--shade));
+    mask: var(--mask-squircle) center / 100% 100% no-repeat;
   }
-  .tracking .rim { opacity: 1; }
 
   .placeholder {
     display: grid; place-items: center; width: 100%; height: 100%;
