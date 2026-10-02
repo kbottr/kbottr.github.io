@@ -16,7 +16,7 @@ export const site = {
   email: 'hello@example.com',
   cosmos: 'https://www.cosmos.so/wilhelm',
   socials: [
-    { label: 'LinkedIn', href: 'https://www.linkedin.com/' },
+    { label: 'LinkedIn', href: 'https://www.linkedin.com/in/wilhelmboettger' },
     { label: 'GitHub', href: 'https://github.com/kbottr' },
   ],
 };
