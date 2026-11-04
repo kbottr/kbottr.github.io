@@ -16,15 +16,15 @@
     "@astrojs/sitemap": "^3.7.4",
     "@fontsource-variable/geist": "^5.3.0",
     "@fontsource-variable/geist-mono": "^5.3.0",
-    "@lucide/astro": "^1.48.0",
-    "astro": "^7.3.5",
-    "js-yaml": "^5.4.2"
+    "@lucide/astro": "^1.68.0",
+    "astro": "^7.4.5",
+    "js-yaml": "^5.5.0"
   },
   "allowScripts": {
     "esbuild": true
   },
   "devDependencies": {
-    "@astrojs/check": "^0.9.10",
+    "@astrojs/check": "^0.9.12",
     "@types/js-yaml": "^4.0.9",
     "typescript": "^6.0.3"
   }
