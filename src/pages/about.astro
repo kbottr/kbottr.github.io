@@ -6,7 +6,6 @@ import PortraitFlip from '../components/PortraitFlip.astro';
 import ListRow from '../components/ListRow.astro';
 import Pill from '../components/Pill.astro';
 import Link from '../components/Link.astro';
-import Icon from '../components/Icon.astro';
 import DateLabel from '../components/DateLabel.astro';
 import MoreLink from '../components/MoreLink.astro';
 import Track from '../components/Track.astro';
@@ -30,19 +29,14 @@ const posts = (await getCollection('journal', ({ data }) => !data.draft))
     <section class="intro">
       <div class="profile">
         <PortraitFlip />
-        {/* Same style as the Spotify / Apple Music links in the music section */}
         <ul class="socials fade-in">
           {site.socials.map((s) => (
             <li>
-              <Link variant="muted" href={s.href} target="_blank" rel="noopener me" class="social" aria-label={`${s.label} (opens in a new tab)`}>
-                {s.label.toLowerCase()}<Icon name="arrow-up-right" size="sm" />
-              </Link>
+              <Link href={s.href} rel="noopener me">{s.label.toLowerCase()}</Link>
             </li>
           ))}
           <li>
-            <Link variant="muted" href={`mailto:${site.email}`} class="social">
-              email<Icon name="arrow-up-right" size="sm" />
-            </Link>
+            <Link href={`mailto:${site.email}`}>email</Link>
           </li>
         </ul>
       </div>
@@ -109,7 +103,6 @@ const posts = (await getCollection('journal', ({ data }) => !data.draft))
   /* Portrait with the social links beside it, sitting on its bottom edge */
   .profile { display: flex; align-items: flex-end; gap: var(--space-24); }
   .socials { display: flex; flex-direction: column; font-size: var(--text-sm); line-height: var(--leading-sm); }
-  .socials :global(.social) { display: inline-flex; align-items: center; gap: var(--space-2); }
 
   .block { display: block; width: fit-content; }
   .stack { display: grid; gap: var(--space-16); }

@@ -60,7 +60,7 @@ All design decisions live in **`src/styles/tokens.css`**. Components and pages o
 
 | Component | What it is |
 |---|---|
-| `Link` | Text link with animated underline (`variant`: plain, underlined, muted) |
+| `Link` | The text link for the whole site: grey, underline draws in on hover. Links leaving the site get a ↗ and websites open in a new tab (`variant="plain"` keeps the text colour, e.g. for titles) |
 | `DateLabel` | Mono date, "October 2025" or "oct 2025" |
 | `ListRow` | Content left, meta right; with `href` the row gets a hover highlight |
 | `Section` | Icon + label on top, content below (home and About pages) |
@@ -71,7 +71,7 @@ All design decisions live in **`src/styles/tokens.css`**. Components and pages o
 | `Challenge` | Toggleable checkbox + optional subline; checked items get scribbled out (shape from `src/lib/scribble.ts`). `done: true` in challenges.yaml sets the starting state; visitors' clicks aren't saved |
 | `Pager` | Back / next links at the end of a page |
 | `PageHeader` | Small title + description at the top of Work and Journal |
-| `MoreLink` | "all posts →" style link to a full list |
+| `MoreLink` | "all posts" style link to a full list |
 | `Icon` | Lucide icons in two sizes (`sm` 16, `md` 20) |
 | `Marquee` | Scrolling display title |
 | `ProjectMedia` | Project cover image or gradient placeholder |

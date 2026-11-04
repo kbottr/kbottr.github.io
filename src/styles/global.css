@@ -84,6 +84,15 @@ ul, ol { list-style: none; }
   transition: background-size var(--duration) var(--ease);
 }
 .prose a:hover { background-size: 100% var(--border), 100% var(--border); }
+/* Links leaving the site: the same ↗ arrow as components/Link.astro (Lucide arrow-up-right) */
+.prose a:is([href^="http"], [href^="mailto:"])::after {
+  content: '';
+  display: inline-block;
+  width: .8em; height: .8em;
+  margin-left: var(--space-2);
+  background: currentColor;
+  mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'><path d='M7 7h10v10'/><path d='M7 17 17 7'/></svg>") center / contain no-repeat;
+}
 .prose strong { font-weight: var(--weight-medium); color: var(--fg); }
 .prose ul { padding-left: var(--space-24); list-style: disc; }
 .prose ol { padding-left: var(--space-24); list-style: decimal; }
@@ -134,17 +143,14 @@ ul, ol { list-style: none; }
 }
 
 /* ---------- Text link (see components/Link.astro) ----------
-   Underline draws in on hover. `.underlined` shows a faint line at rest. */
+   Grey; on hover it turns dark and an underline draws in.
+   Links leaving the site carry a small ↗ arrow. */
 .link {
+  color: var(--muted);
   background: linear-gradient(currentColor, currentColor) 0 100% / 0 var(--border) no-repeat;
   transition: background-size var(--duration) var(--ease), color var(--duration-fast);
   padding-bottom: var(--border);
 }
-.link:hover, .link:focus-visible { background-size: 100% var(--border); }
-.link.underlined {
-  background-image: linear-gradient(var(--line), var(--line)), linear-gradient(currentColor, currentColor);
-  background-size: 100% var(--border), 0 var(--border);
-  background-position: 0 100%, 0 100%;
-}
-.link.underlined:hover, .link.underlined:focus-visible { background-size: 100% var(--border), 100% var(--border); }
-.link.muted:hover { color: var(--fg); }
+.link:hover, .link:focus-visible { color: var(--fg); background-size: 100% var(--border); }
+.link.plain { color: inherit; }
+.link.external { display: inline-flex; align-items: center; gap: var(--space-2); }
