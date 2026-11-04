@@ -6,6 +6,7 @@ import PortraitFlip from '../components/PortraitFlip.astro';
 import ListRow from '../components/ListRow.astro';
 import Pill from '../components/Pill.astro';
 import Link from '../components/Link.astro';
+import Icon from '../components/Icon.astro';
 import DateLabel from '../components/DateLabel.astro';
 import MoreLink from '../components/MoreLink.astro';
 import Track from '../components/Track.astro';
@@ -27,13 +28,26 @@ const posts = (await getCollection('journal', ({ data }) => !data.draft))
 <Base title="About" description={site.about[0]}>
   <div class="wrap">
     <section class="intro">
-      <PortraitFlip />
+      <div class="profile">
+        <PortraitFlip />
+        {/* Same style as the Spotify / Apple Music links in the music section */}
+        <ul class="socials fade-in">
+          {site.socials.map((s) => (
+            <li>
+              <Link variant="muted" href={s.href} target="_blank" rel="noopener me" class="social" aria-label={`${s.label} (opens in a new tab)`}>
+                {s.label.toLowerCase()}<Icon name="arrow-up-right" size="sm" />
+              </Link>
+            </li>
+          ))}
+          <li>
+            <Link variant="muted" href={`mailto:${site.email}`} class="social">
+              email<Icon name="arrow-up-right" size="sm" />
+            </Link>
+          </li>
+        </ul>
+      </div>
       <div class="bio">
         {site.about.map((p, i) => (i === 0 ? <p class="first" data-lines>{p}</p> : <p class="fade-in">{p}</p>))}
-        <p class="socials fade-in">
-          {site.socials.map((s) => <Link variant="underlined" href={s.href}>{s.label}</Link>)}
-          <Link variant="underlined" href={`mailto:${site.email}`}>Email</Link>
-        </p>
       </div>
     </section>
 
@@ -92,7 +106,10 @@ const posts = (await getCollection('journal', ({ data }) => !data.draft))
   }
   .bio > * + * { margin-top: var(--space-16); }
   .bio .first { font-size: var(--text-md); line-height: var(--leading-md); letter-spacing: var(--tracking-tight); }
-  .socials { display: flex; gap: var(--space-16); flex-wrap: wrap; }
+  /* Portrait with the social links beside it, sitting on its bottom edge */
+  .profile { display: flex; align-items: flex-end; gap: var(--space-24); }
+  .socials { display: flex; flex-direction: column; font-size: var(--text-sm); line-height: var(--leading-sm); }
+  .socials :global(.social) { display: inline-flex; align-items: center; gap: var(--space-2); }
 
   .block { display: block; width: fit-content; }
   .stack { display: grid; gap: var(--space-16); }
