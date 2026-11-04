@@ -7,6 +7,8 @@ export default defineConfig({
   // When you add a custom domain, change this to it (e.g. 'https://klausboettger.com').
   site: 'https://kbottr.github.io',
   // Writes sitemap-index.xml for search engines (linked from public/robots.txt).
+  // No Astro toolbar at the bottom of the page while developing.
+  devToolbar: { enabled: false },
   integrations: [sitemap({ filter: (page) => !page.endsWith('/404/') })],
   build: {
     // The CSS is small, so it goes straight into each page's <head>:
