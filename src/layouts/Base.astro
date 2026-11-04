@@ -64,10 +64,10 @@ const canonical = Astro.site && new URL(Astro.url.pathname, Astro.site).href;
       <div class="footer-row">
         <span>© {new Date().getFullYear()} {site.name}</span>
         <span class="links">
-          {site.socials.map((s) => <Link href={s.href}>{s.label}</Link>)}
+          {site.socials.map((s) => <Link href={s.href} rel="noopener me">{s.label.toLowerCase()}</Link>)}
         </span>
       </div>
-      <p class="credit">Icons by <Link variant="underlined" href="https://lucide.dev">Lucide</Link></p>
+      <p class="credit">Icons by <Link href="https://lucide.dev">lucide</Link></p>
     </footer>
 
     <Dock />

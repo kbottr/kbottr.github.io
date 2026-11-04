@@ -4,7 +4,6 @@
 // are downloaded at build time and served as small WebP files.
 import { Image } from 'astro:assets';
 import Link from './Link.astro';
-import Icon from './Icon.astro';
 import { url } from '../site';
 
 interface Props {
@@ -42,9 +41,7 @@ const links = [
   {links.length > 0 && (
     <span class="links">
       {links.map((l) => (
-        <Link variant="muted" href={l.href} target="_blank" rel="noopener" class="listen" aria-label={`${title} by ${artist} on ${l.name} (opens in a new tab)`}>
-          {l.label}<Icon name="arrow-up-right" size="sm" />
-        </Link>
+        <Link href={l.href} aria-label={`${title} by ${artist} on ${l.name} (opens in a new tab)`}>{l.label}</Link>
       ))}
     </span>
   )}
@@ -65,7 +62,6 @@ const links = [
     align-self: flex-end;
     font-size: var(--text-sm); line-height: var(--leading-sm);
   }
-  .links :global(.listen) { display: inline-flex; align-items: center; gap: var(--space-2); }
 
   /* Phones: links move under the title, aligned with the text */
   @media (max-width: 480px) {

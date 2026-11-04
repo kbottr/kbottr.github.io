@@ -1,12 +1,25 @@
 ---
-// Text link with an animated underline.
-// variant: 'plain' (underline on hover), 'underlined' (faint line at rest), 'muted' (grey until hover)
+// The site's text link: grey, turns dark with an underline drawing in on hover.
+// Links that leave the site (other websites, email) get a ↗ arrow, and
+// websites open in a new tab. Links within the site have no arrow.
+// variant: 'muted' (default) or 'plain' (keeps the surrounding text colour,
+// e.g. for titles that are links).
 import type { HTMLAttributes } from 'astro/types';
+import Icon from './Icon.astro';
 
 interface Props extends HTMLAttributes<'a'> {
-  variant?: 'plain' | 'underlined' | 'muted';
+  variant?: 'muted' | 'plain';
 }
-const { variant = 'plain', class: className, ...rest } = Astro.props;
+const { variant = 'muted', class: className, href = '', ...rest } = Astro.props;
+
+const link = String(href);
+const web = /^https?:\/\//.test(link) && !(Astro.site && link.startsWith(Astro.site.origin));
+const external = web || /^(mailto|tel):/.test(link);
 ---
 
-<a class:list={['link', { underlined: variant === 'underlined', muted: variant === 'muted' }, className]} {...rest}><slot /></a>
+<a
+  class:list={['link', { plain: variant === 'plain', external }, className]}
+  href={link}
+  {...(web ? { target: '_blank', rel: 'noopener' } : {})}
+  {...rest}
+><slot />{external && <Icon name="arrow-up-right" size="sm" />}{web && <span class="sr-only"> (opens in a new tab)</span>}</a>

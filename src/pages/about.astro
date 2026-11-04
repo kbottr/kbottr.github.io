@@ -27,13 +27,21 @@ const posts = (await getCollection('journal', ({ data }) => !data.draft))
 <Base title="About" description={site.about[0]}>
   <div class="wrap">
     <section class="intro">
-      <PortraitFlip />
+      <div class="profile">
+        <PortraitFlip />
+        <ul class="socials fade-in">
+          {site.socials.map((s) => (
+            <li>
+              <Link href={s.href} rel="noopener me">{s.label.toLowerCase()}</Link>
+            </li>
+          ))}
+          <li>
+            <Link href={`mailto:${site.email}`}>email</Link>
+          </li>
+        </ul>
+      </div>
       <div class="bio">
         {site.about.map((p, i) => (i === 0 ? <p class="first" data-lines>{p}</p> : <p class="fade-in">{p}</p>))}
-        <p class="socials fade-in">
-          {site.socials.map((s) => <Link variant="underlined" href={s.href}>{s.label}</Link>)}
-          <Link variant="underlined" href={`mailto:${site.email}`}>Email</Link>
-        </p>
       </div>
     </section>
 
@@ -92,7 +100,9 @@ const posts = (await getCollection('journal', ({ data }) => !data.draft))
   }
   .bio > * + * { margin-top: var(--space-16); }
   .bio .first { font-size: var(--text-md); line-height: var(--leading-md); letter-spacing: var(--tracking-tight); }
-  .socials { display: flex; gap: var(--space-16); flex-wrap: wrap; }
+  /* Portrait with the social links beside it, sitting on its bottom edge */
+  .profile { display: flex; align-items: flex-end; gap: var(--space-24); }
+  .socials { display: flex; flex-direction: column; font-size: var(--text-sm); line-height: var(--leading-sm); }
 
   .block { display: block; width: fit-content; }
   .stack { display: grid; gap: var(--space-16); }

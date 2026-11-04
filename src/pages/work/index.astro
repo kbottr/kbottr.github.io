@@ -2,7 +2,6 @@
 import { getCollection } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import ProjectMedia from '../../components/ProjectMedia.astro';
-import Icon from '../../components/Icon.astro';
 import PageHeader from '../../components/PageHeader.astro';
 import Link from '../../components/Link.astro';
 import DateLabel from '../../components/DateLabel.astro';
@@ -24,7 +23,7 @@ const projects = (await getCollection('projects', ({ data }) => !data.draft))
           <li class="entry">
             <DateLabel date={date} />
             <h2 class="title">
-              <Link href={href}>{title}<Icon name="arrow-up-right" size="sm" class="arrow" /></Link>
+              <Link variant="plain" href={href}>{title}</Link>
             </h2>
             <a href={href} class="media-link" tabindex="-1" aria-hidden="true">
               <ProjectMedia project={project} eager={i === 0} />
@@ -53,9 +52,6 @@ const projects = (await getCollection('projects', ({ data }) => !data.draft))
     font-weight: var(--weight-medium);
     letter-spacing: var(--tracking-tighter);
   }
-  .title :global(a) { display: inline-flex; align-items: center; gap: var(--space-4); }
-  .title :global(.arrow) { color: var(--muted); transition: transform var(--duration) var(--ease), color var(--duration-fast); }
-  .title :global(a:hover .arrow) { transform: translate(var(--space-2), calc(-1 * var(--space-2))); color: var(--fg); }
   .media-link { display: block; }
   .media-link :global(.media) { aspect-ratio: 1 / 1; } /* square thumbnails; case-study hero stays 16:9 */
   .media-link :global(.media-inner) { transition: transform var(--duration-slow) var(--ease); }

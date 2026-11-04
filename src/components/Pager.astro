@@ -1,7 +1,6 @@
 ---
 // Back / next links at the end of a page.
 import Link from './Link.astro';
-import Icon from './Icon.astro';
 
 interface Props {
   back: { href: string; label: string };
@@ -11,13 +10,9 @@ const { back, next } = Astro.props;
 ---
 
 <nav class="pager">
-  <Link variant="muted" href={back.href} class="with-icon">
-    <Icon name="arrow-left" size="sm" />{back.label}
-  </Link>
+  <Link href={back.href}>{back.label}</Link>
   {next && (
-    <Link href={next.href} class="with-icon">
-      <span class="muted">next:</span> {next.label}<Icon name="arrow-right" size="sm" />
-    </Link>
+    <Link href={next.href}>next: {next.label}</Link>
   )}
 </nav>
 
@@ -25,6 +20,6 @@ const { back, next } = Astro.props;
   .pager {
     display: flex; justify-content: space-between; gap: var(--space-16); flex-wrap: wrap;
     margin-top: var(--space-96);
+    font-size: var(--text-sm); line-height: var(--leading-sm);
   }
-  .pager :global(.with-icon) { display: inline-flex; align-items: center; gap: var(--space-4); }
 </style>
