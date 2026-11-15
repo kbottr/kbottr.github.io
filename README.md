@@ -17,7 +17,7 @@ Personal portfolio built with [Astro](https://astro.build), deployed to GitHub P
 | Add your portrait | Save it as `src/assets/portrait.jpg`; the image revealed when it's flipped goes in `src/assets/portrait-back.jpg` |
 | Add photos to the photo slider (About) | Put images in `src/assets/moments/` and list them in `src/data/moments.yaml` with a title, text and `alt` |
 | Edit your areas of expertise (home page) | `src/data/expertise.yaml` (title, one sentence, an icon name; `{years}` becomes e.g. "10+") |
-| Change the current role (top right) | It's the entry without an `end` in `src/data/experience.yaml` |
+| Change the current role (footer) | It's the entry without an `end` in `src/data/experience.yaml` |
 | Update experience / music / challenges | Edit the lists in `src/data/*.yaml` (shown in file order). For music, paste share links as `spotify:` and `apple:` |
 | Add or change an icon | Pick one on [lucide.dev/icons](https://lucide.dev/icons/), then add it in `src/components/Icon.astro` |
 | Check for errors | `npm run check` (types, content, components) |

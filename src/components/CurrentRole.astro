@@ -1,5 +1,5 @@
 ---
-// Current job with a small "active" dot, shown top right in the header.
+// Current job with a small "active" dot, shown in the footer.
 // Comes from the role without an end date in src/data/experience.yaml.
 import { getCurrentRole } from '../lib/career';
 
@@ -18,7 +18,6 @@ const current = await getCurrentRole();
     display: flex; align-items: center; gap: var(--space-8);
     font-size: var(--text-sm); line-height: var(--leading-sm);
     color: var(--muted);
-    text-align: right;
   }
   .dot {
     width: var(--space-8); height: var(--space-8); flex-shrink: 0;
