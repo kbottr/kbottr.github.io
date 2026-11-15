@@ -2,6 +2,7 @@
 import '../styles/global.css';
 import Dock from '../components/Dock.astro';
 import Link from '../components/Link.astro';
+import CurrentRole from '../components/CurrentRole.astro';
 import { site, url } from '../site';
 // The two font files every page needs; preloaded so text can show sooner
 import geist from '@fontsource-variable/geist/files/geist-latin-wght-normal.woff2?url';
@@ -58,6 +59,7 @@ const coords = `${Math.abs(lat).toFixed(4)}° ${lat >= 0 ? 'N' : 'S'}, ${Math.ab
   <body>
     <header class="wrap site-header">
       <a href={url('/')} class="brand">{site.brand}</a>
+      <CurrentRole />
     </header>
 
     <main>
@@ -132,7 +134,8 @@ const coords = `${Math.abs(lat).toFixed(4)}° ${lat >= 0 ? 'N' : 'S'}, ${Math.ab
 <style>
   .site-header {
     view-transition-name: header;
-    display: flex; flex-direction: column;
+    /* Logo left, current role right, on one line */
+    display: flex; justify-content: space-between; align-items: center; gap: var(--space-16);
     padding-top: var(--space-64);
     padding-bottom: var(--space-64);
   }

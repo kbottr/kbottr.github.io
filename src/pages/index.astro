@@ -1,6 +1,7 @@
 ---
-// Home: who you are and why to hire you — current role, selected work,
+// Home: who you are and why to hire you — intro and contact, selected work,
 // expertise and the companies you've worked for — then the journal.
+// (The current role sits in the header, see components/CurrentRole.astro.)
 import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import Lead from '../components/Lead.astro';
@@ -12,6 +13,7 @@ import Link from '../components/Link.astro';
 import Icon from '../components/Icon.astro';
 import type { IconName } from '../components/Icon.astro';
 import { site, url } from '../site';
+import { getExperience, getYearsOfExperience } from '../lib/career';
 
 const byDateDesc = (a: { data: { date: Date } }, b: { data: { date: Date } }) =>
   b.data.date.valueOf() - a.data.date.valueOf();
@@ -19,18 +21,14 @@ const byOrder = (a: { data: { order: number } }, b: { data: { order: number } })
 
 const posts = (await getCollection('journal', ({ data }) => !data.draft)).sort(byDateDesc).slice(0, 3);
 const projects = (await getCollection('projects', ({ data }) => !data.draft)).sort(byDateDesc);
-const expertise = (await getCollection('expertise')).sort(byOrder).map((e) => e.data);
-const experience = (await getCollection('experience')).sort(byOrder).map((e) => e.data);
+const experience = await getExperience();
+const years = await getYearsOfExperience();
+// "{years}" in expertise.yaml becomes e.g. "10+"
+const expertise = (await getCollection('expertise')).sort(byOrder)
+  .map((e) => ({ ...e.data, text: e.data.text.replaceAll('{years}', `${years}+`) }));
 
 // "11 / 2023" → 2023
 const year = (date: string) => Number(date.split('/').pop()?.trim());
-
-// Current role, and whole years since the first job ("10+ years")
-const current = experience.find((e) => !e.end) ?? experience[0];
-const first = experience[experience.length - 1];
-const [startMonth, startYear] = first ? first.start.split('/').map((n) => Number(n.trim())) : [0, 0];
-const now = new Date();
-const years = Math.floor((now.getFullYear() * 12 + now.getMonth() + 1 - (startYear * 12 + startMonth)) / 12);
 
 // One row per company: roles there (newest first) and the years they span
 const companies: { name: string; roles: string[]; from: number; to?: number }[] = [];
@@ -50,13 +48,6 @@ for (const e of experience) {
     <section class="hero">
       <Lead class="intro">{site.intro}</Lead>
       <div class="fade-in">
-        {current && (
-          <p class="status">
-            <span class="dot" aria-hidden="true" />
-            {current.role} at {current.company}
-            {years > 0 && <span class="muted"> · {years}+ years in product design</span>}
-          </p>
-        )}
         <p class="contact">
           <Link href={`mailto:${site.email}`}>email me</Link>
           {site.socials
@@ -127,21 +118,9 @@ for (const e of experience) {
   .hero { margin-bottom: var(--space-48); }
   .wrap :global(.intro) { max-width: 30ch; }
 
-  /* Current role, with a small "active" dot */
-  .status {
-    display: flex; align-items: baseline; flex-wrap: wrap; gap: 0 var(--space-8);
-    margin-top: var(--space-24);
-  }
-  .dot {
-    align-self: center;
-    width: var(--space-8); height: var(--space-8); flex-shrink: 0;
-    border-radius: var(--radius-full);
-    background: var(--accent);
-    box-shadow: 0 0 0 var(--space-4) var(--accent-bg);
-  }
   .contact {
     display: flex; flex-wrap: wrap; gap: var(--space-16);
-    margin-top: var(--space-16);
+    margin-top: var(--space-24);
     font-size: var(--text-sm); line-height: var(--leading-sm);
   }
 
