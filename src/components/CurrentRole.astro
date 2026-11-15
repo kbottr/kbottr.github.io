@@ -1,28 +1,9 @@
 ---
-// Current job with a small "active" dot, shown in the footer.
+// Current job, shown in the footer.
 // Comes from the role without an end date in src/data/experience.yaml.
 import { getCurrentRole } from '../lib/career';
 
 const current = await getCurrentRole();
 ---
 
-{current && (
-  <p class="current-role">
-    <span class="dot" aria-hidden="true" />
-    <span>{current.role} at {current.company}</span>
-  </p>
-)}
-
-<style>
-  .current-role {
-    display: flex; align-items: center; gap: var(--space-8);
-    font-size: var(--text-sm); line-height: var(--leading-sm);
-    color: var(--muted);
-  }
-  .dot {
-    width: var(--space-8); height: var(--space-8); flex-shrink: 0;
-    border-radius: var(--radius-full);
-    background: var(--accent);
-    box-shadow: 0 0 0 var(--space-4) var(--accent-bg);
-  }
-</style>
+{current && <p>{current.role} at {current.company}</p>}
