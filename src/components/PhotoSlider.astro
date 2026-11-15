@@ -84,7 +84,10 @@ const imageFor = (name?: string) => (name ? files[`../assets/moments/${name}`]?.
   .track::-webkit-scrollbar { display: none; }
   /* Mouse dragging (script below): grab cursor, and no snapping mid-drag */
   @media (hover: hover) { .track { cursor: grab; } }
-  .track.dragging { cursor: grabbing; scroll-snap-type: none; user-select: none; }
+  .track.dragging { cursor: grabbing; user-select: none; }
+  /* Snapping stays off from the start of a drag until the photos have
+     finished gliding into place, so it can't jump in halfway */
+  .track.free { scroll-snap-type: none; }
   .track :global(img) { -webkit-user-drag: none; }
   .track:focus-visible { outline-offset: calc(-1 * var(--space-4)); }
 
@@ -180,6 +183,7 @@ const imageFor = (name?: string) => (name ? files[`../assets/moments/${name}`]?.
     // than a sixth of a photo (or a quick flick) moves to the next one,
     // otherwise it springs back. Touch already swipes natively.
     let drag: { x: number; left: number; time: number; moved: boolean } | null = null;
+    let glide = 0; // counts releases, so an old glide can't re-enable snapping mid-drag
     track.addEventListener('pointerdown', (e) => {
       if (e.pointerType !== 'mouse' || e.button !== 0) return;
       drag = { x: e.clientX, left: track.scrollLeft, time: e.timeStamp, moved: false };
@@ -189,7 +193,7 @@ const imageFor = (name?: string) => (name ? files[`../assets/moments/${name}`]?.
       const dx = e.clientX - drag.x;
       if (!drag.moved && Math.abs(dx) > 4) {
         drag.moved = true;
-        track.classList.add('dragging');
+        track.classList.add('dragging', 'free');
         track.setPointerCapture(e.pointerId);
       }
       if (drag.moved) track.scrollLeft = drag.left - dx;
@@ -205,6 +209,14 @@ const imageFor = (name?: string) => (name ? files[`../assets/moments/${name}`]?.
       const target = Math.abs(dx) > step() / 6 || fast ? from - Math.sign(dx) : from;
       track.classList.remove('dragging');
       go(target);
+      // Turn snapping back on once the glide has finished (unless a new
+      // drag has started in the meantime)
+      const id = ++glide;
+      const resnap = () => {
+        if (id === glide && !drag) track.classList.remove('free');
+      };
+      track.addEventListener('scrollend', resnap, { once: true });
+      setTimeout(resnap, 1000); // for browsers without the scrollend event
       // Swallow the click that follows a drag, so it doesn't select a photo
       const swallow = (c: Event) => c.stopPropagation();
       track.addEventListener('click', swallow, { capture: true });
