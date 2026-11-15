@@ -6,12 +6,10 @@ import PortraitFlip from '../components/PortraitFlip.astro';
 import ListRow from '../components/ListRow.astro';
 import Pill from '../components/Pill.astro';
 import Link from '../components/Link.astro';
-import DateLabel from '../components/DateLabel.astro';
-import MoreLink from '../components/MoreLink.astro';
 import Track from '../components/Track.astro';
 import Challenge from '../components/Challenge.astro';
 import PhotoStack from '../components/PhotoStack.astro';
-import { site, url } from '../site';
+import { site } from '../site';
 
 
 const byOrder = (a: { data: { order: number } }, b: { data: { order: number } }) => a.data.order - b.data.order;
@@ -19,9 +17,6 @@ const experience = (await getCollection('experience')).sort(byOrder);
 const music = (await getCollection('music')).sort(byOrder);
 const challenges = (await getCollection('challenges')).sort(byOrder);
 const moments = (await getCollection('moments')).sort(byOrder).map((m) => m.data);
-const posts = (await getCollection('journal', ({ data }) => !data.draft))
-  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
-  .slice(0, 3);
 ---
 
 <Base title="About" description={site.about[0]}>
@@ -60,22 +55,6 @@ const posts = (await getCollection('journal', ({ data }) => !data.draft))
             </ListRow>
           ))}
         </ul>
-      </Section>
-
-      <Section label="journal" icon="journal">
-        {posts.length > 0 ? (
-          <ul>
-            {posts.map((post) => (
-              <ListRow href={url(`/journal/${post.id}/`)}>
-                {post.data.title}
-                <DateLabel slot="meta" date={post.data.date} format="short" />
-              </ListRow>
-            ))}
-          </ul>
-        ) : (
-          <p class="muted">Nothing here yet.</p>
-        )}
-        <MoreLink href={url('/journal/')}>all posts</MoreLink>
       </Section>
 
       <Section label="music" icon="headphones">
