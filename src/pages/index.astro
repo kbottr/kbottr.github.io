@@ -20,6 +20,18 @@ const projects = (await getCollection('projects', ({ data }) => !data.draft)).so
     <Lead class="intro">{site.intro}</Lead>
 
     <div class="fade-in">
+      <Section label="work" icon="work">
+        <ul>
+          {projects.map((project) => (
+            <ListRow href={url(`/work/${project.id}/`)}>
+              {project.data.title}{' '}<span class="muted kind">{project.data.kind}</span>
+              <span slot="meta" class="mono muted">{project.data.date.getUTCFullYear()}</span>
+            </ListRow>
+          ))}
+        </ul>
+        <MoreLink href={url('/work/')}>all work</MoreLink>
+      </Section>
+
       <Section label="journal" icon="journal">
         {posts.length > 0 ? (
           <ul>
@@ -34,18 +46,6 @@ const projects = (await getCollection('projects', ({ data }) => !data.draft)).so
           <p class="muted">Nothing here yet.</p>
         )}
         <MoreLink href={url('/journal/')}>all posts</MoreLink>
-      </Section>
-
-      <Section label="work" icon="work">
-        <ul>
-          {projects.map((project) => (
-            <ListRow href={url(`/work/${project.id}/`)}>
-              {project.data.title}{' '}<span class="muted kind">{project.data.kind}</span>
-              <span slot="meta" class="mono muted">{project.data.date.getUTCFullYear()}</span>
-            </ListRow>
-          ))}
-        </ul>
-        <MoreLink href={url('/work/')}>all work</MoreLink>
       </Section>
 
       <Section label="about" icon="user">
