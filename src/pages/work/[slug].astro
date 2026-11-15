@@ -2,6 +2,7 @@
 import { getCollection, render } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import Marquee from '../../components/Marquee.astro';
+import Headline from '../../components/Headline.astro';
 import ProjectMedia from '../../components/ProjectMedia.astro';
 import Lead from '../../components/Lead.astro';
 import Pager from '../../components/Pager.astro';
@@ -17,7 +18,7 @@ export async function getStaticPaths() {
 }
 
 const { project, next } = Astro.props;
-const { title, summary, role, kind, date, team } = project.data;
+const { title, summary, role, kind, date, team, headline } = project.data;
 const { Content } = await render(project);
 
 const facts = [
@@ -29,7 +30,7 @@ const facts = [
 ---
 
 <Base title={title} description={summary}>
-  <Marquee text={title} />
+  {headline === 'static' ? <Headline text={title} /> : <Marquee text={title} />}
 
   <div class="wrap">
     <Lead delay={200} class="summary">{summary}</Lead>

@@ -1,0 +1,25 @@
+---
+// Big static title at the top of a case study: the calm alternative to the
+// scrolling Marquee. Pick per project with `headline: static` in its Markdown.
+// Lines slide up into place on load (data-lines, script in Base.astro).
+interface Props {
+  text: string;
+}
+const { text } = Astro.props;
+---
+
+<div class="wrap headline">
+  <h1 data-lines>{text}</h1>
+</div>
+
+<style>
+  .headline { padding-block: var(--space-16); }
+  /* From the 44px step on phones up to the 116px step of the type scale */
+  h1 {
+    font-size: clamp(var(--text-2xl), 15vw, var(--text-4xl));
+    line-height: var(--leading-display);
+    font-weight: var(--weight-medium);
+    letter-spacing: var(--tracking-display);
+    text-wrap: balance;
+  }
+</style>
