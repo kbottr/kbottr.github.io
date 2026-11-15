@@ -4,8 +4,6 @@ export const site = {
   brand: 'wilhelm',
   // Your real name: used in the footer, on the About page and for search engines.
   name: 'Klaus Wilhelm Böttger',
-  // Under the logo. Your current job title is shown on the home page (from experience.yaml).
-  role: 'Designer',
   title: 'wilhelm — Klaus Wilhelm Böttger, Designer',
   // One sentence on the home page.
   intro: 'I design digital products that feel obvious, and lead the teams that build them.',
