@@ -14,6 +14,8 @@ export const site = {
     'Placeholder: what you are working on now, and what kind of problems you like to solve.',
   ],
   email: 'hello@example.com',
+  // Shown in the footer: where you're based, as map coordinates (Munich)
+  location: { name: 'Munich', lat: 48.1374, lon: 11.5755 },
   cosmos: 'https://www.cosmos.so/wilhelm',
   socials: [
     { label: 'LinkedIn', href: 'https://www.linkedin.com/in/wilhelmboettger' },
