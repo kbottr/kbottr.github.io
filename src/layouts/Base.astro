@@ -67,16 +67,16 @@ const coords = `${Math.abs(lat).toFixed(4)}° ${lat >= 0 ? 'N' : 'S'}, ${Math.ab
 
     <footer class="wrap site-footer muted">
       <div class="footer-row">
+        <CurrentRole />
+        <p class="mono" title={site.location.name}>
+          <span class="sr-only">Based in {site.location.name}, </span>{coords}
+        </p>
+      </div>
+      <div class="footer-row copyright">
         <span>© {new Date().getFullYear()} {site.name}</span>
         <span class="links">
           {site.socials.map((s) => <Link href={s.href} rel="noopener me">{s.label.toLowerCase()}</Link>)}
         </span>
-      </div>
-      <div class="footer-row location">
-        <p class="mono" title={site.location.name}>
-          <span class="sr-only">Based in {site.location.name}, </span>{coords}
-        </p>
-        <CurrentRole />
       </div>
     </footer>
 
@@ -154,7 +154,7 @@ const coords = `${Math.abs(lat).toFixed(4)}° ${lat >= 0 ? 'N' : 'S'}, ${Math.ab
   }
   .footer-row { display: flex; justify-content: space-between; gap: var(--space-16); flex-wrap: wrap; }
   .links { display: flex; gap: var(--space-16); }
-  .location {
+  .copyright {
     margin-top: var(--space-24);
   }
 </style>
