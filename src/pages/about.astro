@@ -8,7 +8,7 @@ import Pill from '../components/Pill.astro';
 import Link from '../components/Link.astro';
 import Track from '../components/Track.astro';
 import Challenge from '../components/Challenge.astro';
-import PhotoStack from '../components/PhotoStack.astro';
+import PhotoSlider from '../components/PhotoSlider.astro';
 import { site } from '../site';
 
 
@@ -41,7 +41,7 @@ const moments = (await getCollection('moments')).sort(byOrder).map((m) => m.data
     </section>
 
     <div class="fade-in">
-      {moments.length > 0 && <PhotoStack items={moments} />}
+      {moments.length > 0 && <PhotoSlider items={moments} />}
 
       <Section label="experience" icon="briefcase">
         <ul class="stack">
