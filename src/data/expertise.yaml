@@ -1,15 +1,14 @@
 # What you're best at, shown on the home page (in this order).
 # icon: a name from src/components/Icon.astro
-# DRAFT: based on your roles at Elli, ENNO and Hubject. Rewrite in your own words.
-- title: E-mobility & EV charging
-  text: Ten years of charging products, from roaming at Hubject to apps and the webshop at Elli.
-  icon: zap
+- title: Product design
+  text: Turning complex problems into products that feel simple and obvious.
+  icon: pen-tool
 - title: Design leadership
-  text: Leading design work and teams, from Design Manager at Hubject to Design Lead at Elli.
+  text: Guiding teams and decisions so that good design actually ships.
   icon: users
 - title: Design systems
-  text: Tokens, components and guidelines that keep products consistent and teams fast.
+  text: Shared foundations that keep products consistent and teams fast.
   icon: component
-- title: E-commerce
-  text: Shop experiences from the product page to checkout, designed for clarity and conversion.
-  icon: shopping-bag
+- title: UX strategy
+  text: Connecting user needs and business goals into a clear direction.
+  icon: compass
