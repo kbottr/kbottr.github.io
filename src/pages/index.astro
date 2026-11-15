@@ -1,6 +1,6 @@
 ---
 // Home: who you are and why to hire you — intro and contact, selected work,
-// expertise and the companies you've worked for.
+// expertise together with the companies you've worked for.
 // (The current role sits in the footer, see components/CurrentRole.astro.)
 import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
@@ -68,8 +68,9 @@ for (const e of experience) {
         <MoreLink href={url('/work/')}>all work</MoreLink>
       </Section>
 
-      {expertise.length > 0 && (
-        <Section label="expertise" icon="sparkles">
+      {/* What you're good at, then where you've done it */}
+      <Section label="expertise" icon="sparkles">
+        {expertise.length > 0 && (
           <ul class="expertise">
             {expertise.map((e) => (
               <li>
@@ -79,10 +80,7 @@ for (const e of experience) {
               </li>
             ))}
           </ul>
-        </Section>
-      )}
-
-      <Section label="companies" icon="briefcase">
+        )}
         <ul class="companies">
           {companies.map((c) => (
             <ListRow>
@@ -120,6 +118,7 @@ for (const e of experience) {
   .expertise p { color: var(--fg-soft); }
 
   .companies { display: grid; gap: var(--space-16); }
+  .expertise + .companies { margin-top: var(--space-48); }
   .company, .roles { display: block; }
 
   @media (max-width: 480px) {

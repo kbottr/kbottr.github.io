@@ -1,6 +1,6 @@
 # Portfolio
 
-**Pages:** Home (`/`: intro with current role and contact, selected work, expertise, companies) · Work (`/work/`: project feed + case studies) · Journal (`/journal/`) · About (`/about/`)
+**Pages:** Home (`/`: intro with current role and contact, selected work, expertise with the companies you've worked for) · Work (`/work/`: project feed + case studies) · Journal (`/journal/`) · About (`/about/`)
 
 Personal portfolio built with [Astro](https://astro.build), deployed to GitHub Pages.
 
