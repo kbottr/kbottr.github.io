@@ -1,7 +1,6 @@
 ---
 title: Fieldnotes
 kind: Journaling app
-headline: static
 date: 2024-06-01
 summary: "A calmer place to think out loud. No streaks, no counters — just 30-second entries and a weekly look back."
 role: Product Designer

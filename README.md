@@ -34,7 +34,7 @@ Personal portfolio built with [Astro](https://astro.build), deployed to GitHub P
 - **Page transitions:** `@view-transition { navigation: auto; }` in `src/styles/global.css`.
   Project images morph between the home feed and the case study (shared `view-transition-name`).
 - **Line-by-line text reveal:** add `data-lines` to any plain-text element (script in `src/layouts/Base.astro`).
-- **Case-study title:** scrolling `src/components/Marquee.astro` by default; set `headline: static` in a project's Markdown for the static `src/components/Headline.astro` instead.
+- **Case-study title:** a big static title (`src/components/Headline.astro`) by default; set `headline: marquee` in a project's Markdown for the scrolling `src/components/Marquee.astro` instead.
 - **Link underlines, dock hover:** CSS transitions.
 - **Light / dark:** follows the visitor's system setting automatically (`prefers-color-scheme` in `global.css`).
 - Everything is switched off for users with "reduce motion" enabled.

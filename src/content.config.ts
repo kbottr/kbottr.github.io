@@ -27,8 +27,8 @@ const projects = defineCollection({
       cover: image().optional(),
       // Gradient colours used when there is no cover
       colors: z.tuple([z.string(), z.string(), z.string()]),
-      // Title at the top of the case study: 'marquee' (scrolling) or 'static'
-      headline: z.enum(['marquee', 'static']).default('marquee'),
+      // Title at the top of the case study: 'static' (default) or 'marquee' (scrolling)
+      headline: z.enum(['static', 'marquee']).default('static'),
       draft: z.boolean().default(false),
     }),
 });
