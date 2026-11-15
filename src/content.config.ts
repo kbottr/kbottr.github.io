@@ -78,7 +78,18 @@ const challenges = defineCollection({
   }),
 });
 
-// Photo stack on the About page
+// Areas of expertise on the home page
+const expertise = defineCollection({
+  loader: yamlList('src/data/expertise.yaml'),
+  schema: z.object({
+    order: z.number(),
+    title: z.string(),
+    text: z.string(),
+    icon: z.string(), // a name from src/components/Icon.astro
+  }),
+});
+
+// Photo slider on the About page
 const moments = defineCollection({
   loader: yamlList('src/data/moments.yaml'),
   schema: z.object({
@@ -91,4 +102,4 @@ const moments = defineCollection({
   }),
 });
 
-export const collections = { projects, journal, experience, music, challenges, moments };
+export const collections = { projects, journal, experience, music, challenges, moments, expertise };

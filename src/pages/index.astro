@@ -1,4 +1,6 @@
 ---
+// Home: who you are and why to hire you — current role, selected work,
+// expertise and the companies you've worked for — then the journal.
 import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import Lead from '../components/Lead.astro';
@@ -6,21 +8,64 @@ import Section from '../components/Section.astro';
 import ListRow from '../components/ListRow.astro';
 import DateLabel from '../components/DateLabel.astro';
 import MoreLink from '../components/MoreLink.astro';
+import Link from '../components/Link.astro';
+import Icon from '../components/Icon.astro';
+import type { IconName } from '../components/Icon.astro';
 import { site, url } from '../site';
 
 const byDateDesc = (a: { data: { date: Date } }, b: { data: { date: Date } }) =>
   b.data.date.valueOf() - a.data.date.valueOf();
+const byOrder = (a: { data: { order: number } }, b: { data: { order: number } }) => a.data.order - b.data.order;
 
-const posts = (await getCollection('journal', ({ data }) => !data.draft)).sort(byDateDesc).slice(0, 5);
+const posts = (await getCollection('journal', ({ data }) => !data.draft)).sort(byDateDesc).slice(0, 3);
 const projects = (await getCollection('projects', ({ data }) => !data.draft)).sort(byDateDesc);
+const expertise = (await getCollection('expertise')).sort(byOrder).map((e) => e.data);
+const experience = (await getCollection('experience')).sort(byOrder).map((e) => e.data);
+
+// "11 / 2023" → 2023
+const year = (date: string) => Number(date.split('/').pop()?.trim());
+
+// Current role, and whole years since the first job ("10+ years")
+const current = experience.find((e) => !e.end) ?? experience[0];
+const first = experience[experience.length - 1];
+const [startMonth, startYear] = first ? first.start.split('/').map((n) => Number(n.trim())) : [0, 0];
+const now = new Date();
+const years = Math.floor((now.getFullYear() * 12 + now.getMonth() + 1 - (startYear * 12 + startMonth)) / 12);
+
+// One row per company: roles there (newest first) and the years they span
+const companies: { name: string; roles: string[]; from: number; to?: number }[] = [];
+for (const e of experience) {
+  const last = companies[companies.length - 1];
+  if (last?.name === e.company) {
+    last.roles.push(e.role);
+    last.from = year(e.start);
+  } else {
+    companies.push({ name: e.company, roles: [e.role], from: year(e.start), to: e.end ? year(e.end) : undefined });
+  }
+}
 ---
 
 <Base>
   <div class="wrap">
-    <Lead class="intro">{site.intro}</Lead>
+    <section class="hero">
+      <Lead class="intro">{site.intro}</Lead>
+      <div class="fade-in">
+        {current && (
+          <p class="status">
+            <span class="dot" aria-hidden="true" />
+            {current.role} at {current.company}
+            {years > 0 && <span class="muted"> · {years}+ years in product design</span>}
+          </p>
+        )}
+        <p class="contact">
+          <Link href={`mailto:${site.email}`}>email me</Link>
+          {site.socials.map((s) => <Link href={s.href} rel="noopener me">{s.label.toLowerCase()}</Link>)}
+        </p>
+      </div>
+    </section>
 
     <div class="fade-in">
-      <Section label="work" icon="work">
+      <Section label="selected work" icon="work">
         <ul>
           {projects.map((project) => (
             <ListRow href={url(`/work/${project.id}/`)}>
@@ -32,8 +77,35 @@ const projects = (await getCollection('projects', ({ data }) => !data.draft)).so
         <MoreLink href={url('/work/')}>all work</MoreLink>
       </Section>
 
-      <Section label="journal" icon="journal">
-        {posts.length > 0 ? (
+      {expertise.length > 0 && (
+        <Section label="expertise" icon="sparkles">
+          <ul class="expertise">
+            {expertise.map((e) => (
+              <li>
+                <Icon name={e.icon as IconName} class="expertise-icon" />
+                <h3>{e.title}</h3>
+                <p>{e.text}</p>
+              </li>
+            ))}
+          </ul>
+        </Section>
+      )}
+
+      <Section label="companies" icon="briefcase">
+        <ul class="companies">
+          {companies.map((c) => (
+            <ListRow>
+              <span class="company">{c.name}</span>
+              <span class="roles muted">{c.roles.join(', ')}</span>
+              <span slot="meta" class="mono muted">{c.from === c.to ? c.from : `${c.from} – ${c.to ?? 'now'}`}</span>
+            </ListRow>
+          ))}
+        </ul>
+        <MoreLink href={url('/about/')}>more about me</MoreLink>
+      </Section>
+
+      {posts.length > 0 && (
+        <Section label="journal" icon="journal">
           <ul>
             {posts.map((post) => (
               <ListRow href={url(`/journal/${post.id}/`)}>
@@ -42,22 +114,50 @@ const projects = (await getCollection('projects', ({ data }) => !data.draft)).so
               </ListRow>
             ))}
           </ul>
-        ) : (
-          <p class="muted">Nothing here yet.</p>
-        )}
-        <MoreLink href={url('/journal/')}>all posts</MoreLink>
-      </Section>
-
-      <Section label="about" icon="user">
-        <p class="about">{site.about[0]}</p>
-        <MoreLink href={url('/about/')}>more about me</MoreLink>
-      </Section>
+          <MoreLink href={url('/journal/')}>all posts</MoreLink>
+        </Section>
+      )}
     </div>
   </div>
 </Base>
 
 <style>
-  .wrap :global(.intro) { max-width: 30ch; margin-bottom: var(--space-48); }
-  .about { color: var(--fg-soft); }
+  .hero { margin-bottom: var(--space-48); }
+  .wrap :global(.intro) { max-width: 30ch; }
+
+  /* Current role, with a small "active" dot */
+  .status {
+    display: flex; align-items: baseline; flex-wrap: wrap; gap: 0 var(--space-8);
+    margin-top: var(--space-24);
+  }
+  .dot {
+    align-self: center;
+    width: var(--space-8); height: var(--space-8); flex-shrink: 0;
+    border-radius: var(--radius-full);
+    background: var(--accent);
+    box-shadow: 0 0 0 var(--space-4) var(--accent-bg);
+  }
+  .contact {
+    display: flex; flex-wrap: wrap; gap: var(--space-16);
+    margin-top: var(--space-16);
+    font-size: var(--text-sm); line-height: var(--leading-sm);
+  }
+
   .kind { margin-left: var(--space-4); } /* + the space character ≈ 8px */
+
+  /* Expertise: two columns of icon + title + one sentence */
+  .expertise {
+    display: grid; grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-32) var(--space-24);
+  }
+  .expertise :global(.expertise-icon) { color: var(--muted); margin-bottom: var(--space-8); }
+  .expertise h3 { font-size: var(--text-base); line-height: var(--leading-base); font-weight: var(--weight-medium); }
+  .expertise p { color: var(--fg-soft); }
+
+  .companies { display: grid; gap: var(--space-16); }
+  .company, .roles { display: block; }
+
+  @media (max-width: 480px) {
+    .expertise { grid-template-columns: 1fr; }
+  }
 </style>
