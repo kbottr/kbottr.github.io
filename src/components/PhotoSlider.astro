@@ -1,8 +1,8 @@
 ---
 // Photo slider spanning the full window width, with a caption for each photo.
 // The current photo lines up with the text column; its neighbours peek in
-// from the sides. Swipe / scroll sideways, use the arrows, or click a photo
-// at the side to move to it.
+// from the sides. Swipe / scroll sideways, drag with the mouse, use the
+// arrows, or click a photo at the side to move to it.
 // Content: src/data/moments.yaml, images in src/assets/moments/.
 import { Image } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
@@ -82,6 +82,10 @@ const imageFor = (name?: string) => (name ? files[`../assets/moments/${name}`]?.
     scrollbar-width: none;
   }
   .track::-webkit-scrollbar { display: none; }
+  /* Mouse dragging (script below): grab cursor, and no snapping mid-drag */
+  @media (hover: hover) { .track { cursor: grab; } }
+  .track.dragging { cursor: grabbing; scroll-snap-type: none; user-select: none; }
+  .track :global(img) { -webkit-user-drag: none; }
   .track:focus-visible { outline-offset: calc(-1 * var(--space-4)); }
 
   .slide {
@@ -91,10 +95,9 @@ const imageFor = (name?: string) => (name ? files[`../assets/moments/${name}`]?.
     border-radius: var(--radius-lg);
     overflow: hidden;
     opacity: .35;
-    cursor: pointer;
     transition: opacity var(--duration) var(--ease);
   }
-  .slide.active { opacity: 1; cursor: auto; }
+  .slide.active { opacity: 1; }
   .slide:not(.active):hover { opacity: .6; }
   .slide :global(img) { width: 100%; height: 100%; object-fit: cover; }
   .placeholder {
@@ -172,6 +175,44 @@ const imageFor = (name?: string) => (name ? files[`../assets/moments/${name}`]?.
 
     prev?.addEventListener('click', () => go(current - 1));
     next?.addEventListener('click', () => go(current + 1));
+
+    // Mouse drag: the photos follow the pointer; on release, a pull of more
+    // than a sixth of a photo (or a quick flick) moves to the next one,
+    // otherwise it springs back. Touch already swipes natively.
+    let drag: { x: number; left: number; time: number; moved: boolean } | null = null;
+    track.addEventListener('pointerdown', (e) => {
+      if (e.pointerType !== 'mouse' || e.button !== 0) return;
+      drag = { x: e.clientX, left: track.scrollLeft, time: e.timeStamp, moved: false };
+    });
+    track.addEventListener('pointermove', (e) => {
+      if (!drag) return;
+      const dx = e.clientX - drag.x;
+      if (!drag.moved && Math.abs(dx) > 4) {
+        drag.moved = true;
+        track.classList.add('dragging');
+        track.setPointerCapture(e.pointerId);
+      }
+      if (drag.moved) track.scrollLeft = drag.left - dx;
+    });
+    const release = (e: PointerEvent) => {
+      if (!drag) return;
+      const { moved, x, left, time } = drag;
+      drag = null;
+      if (!moved) return;
+      const dx = e.clientX - x;
+      const fast = Math.abs(dx) / Math.max(1, e.timeStamp - time) > 0.5; // px per ms
+      const from = Math.round(left / step());
+      const target = Math.abs(dx) > step() / 6 || fast ? from - Math.sign(dx) : from;
+      track.classList.remove('dragging');
+      go(target);
+      // Swallow the click that follows a drag, so it doesn't select a photo
+      const swallow = (c: Event) => c.stopPropagation();
+      track.addEventListener('click', swallow, { capture: true });
+      setTimeout(() => track.removeEventListener('click', swallow, { capture: true }));
+    };
+    track.addEventListener('pointerup', release);
+    track.addEventListener('pointercancel', release);
+
     slides.forEach((s, i) => s.addEventListener('click', () => i !== current && go(i)));
     show(0);
   });
