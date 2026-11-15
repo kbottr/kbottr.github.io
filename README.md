@@ -25,7 +25,7 @@ Personal portfolio built with [Astro](https://astro.build), deployed to GitHub P
 ## Speed & search
 
 - **CSS** is inlined into every page (`build.inlineStylesheets` in `astro.config.mjs`), so nothing blocks the first paint.
-- **Fonts:** Geist (sans), Geist Mono and Source Serif 4 (journal post text, `--serif`). Only the Latin files are declared (`src/styles/fonts.css`) the two Geist fonts are preloaded on every page, the serif only on journal posts.
+- **Fonts:** Geist (sans), Geist Mono and Source Serif 4 (journal post text, `--serif`). Only the Latin files are declared (`src/styles/fonts.css`); the two Geist fonts are preloaded on every page, the serif only on journal posts.
 - **Prefetching:** internal pages are fetched in the background once a link to them is on screen, so navigating feels instant.
 - **Search engines & link previews:** `sitemap-index.xml` (generated), `public/robots.txt`, Open Graph tags in `Base.astro`. A custom `src/pages/404.astro` is shown for unknown addresses.
 
