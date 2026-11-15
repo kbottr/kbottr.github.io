@@ -30,6 +30,7 @@
      Line heights sit on the 4px grid; body 28px ≈ 17 × φ. */
   --sans: 'Geist Variable', system-ui, sans-serif;
   --mono: 'Geist Mono Variable', ui-monospace, monospace;
+  --serif: 'Source Serif 4 Variable', Georgia, serif; /* journal posts */
 
   --text-sm: 13px;    --leading-sm: 20px;    /* dates, labels, captions, footer */
   --text-base: 17px;  --leading-base: 28px;  /* body text */

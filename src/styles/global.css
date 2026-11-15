@@ -111,6 +111,19 @@ ul, ol { list-style: none; }
   border-radius: var(--radius-sm);
 }
 
+/* Reading mode (journal posts): body text set in the serif.
+   Headings, code and captions keep the sans / mono. */
+.prose.reading :is(p, li, blockquote) {
+  font-family: var(--serif);
+  font-size: var(--text-md);
+  line-height: var(--leading-md);
+  font-optical-sizing: auto;
+}
+.prose.reading blockquote { font-style: italic; }
+@media (max-width: 480px) {
+  .prose.reading :is(p, li, blockquote) { font-size: var(--text-base); line-height: var(--leading-base); }
+}
+
 /* ---------- Line-by-line text reveal (script in Base.astro) ---------- */
 .js [data-lines]:not(.split-done) { visibility: hidden; }
 [data-lines] .line { display: block; overflow: hidden; padding-bottom: .08em; margin-bottom: -.08em; }

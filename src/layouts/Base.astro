@@ -31,6 +31,8 @@ const canonical = Astro.site && new URL(Astro.url.pathname, Astro.site).href;
 
     <link rel="preload" href={geist} as="font" type="font/woff2" crossorigin />
     <link rel="preload" href={geistMono} as="font" type="font/woff2" crossorigin />
+    {/* Pages can add their own preloads etc. with slot="head" */}
+    <slot name="head" />
 
     {/* Browser chrome (e.g. Safari's toolbar) matches the page in light and dark mode */}
     <meta name="color-scheme" content="light dark" />
