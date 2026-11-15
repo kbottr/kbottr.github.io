@@ -72,12 +72,9 @@ const coords = `${Math.abs(lat).toFixed(4)}° ${lat >= 0 ? 'N' : 'S'}, ${Math.ab
           {site.socials.map((s) => <Link href={s.href} rel="noopener me">{s.label.toLowerCase()}</Link>)}
         </span>
       </div>
-      <div class="footer-row credit">
-        <p>Icons by <Link href="https://lucide.dev">lucide</Link></p>
-        <p class="mono" title={site.location.name}>
-          <span class="sr-only">Based in {site.location.name}, </span>{coords}
-        </p>
-      </div>
+      <p class="mono location" title={site.location.name}>
+        <span class="sr-only">Based in {site.location.name}, </span>{coords}
+      </p>
     </footer>
 
     <Dock />
@@ -154,7 +151,7 @@ const coords = `${Math.abs(lat).toFixed(4)}° ${lat >= 0 ? 'N' : 'S'}, ${Math.ab
   }
   .footer-row { display: flex; justify-content: space-between; gap: var(--space-16); flex-wrap: wrap; }
   .links { display: flex; gap: var(--space-16); }
-  .credit {
+  .location {
     margin-top: var(--space-24);
   }
 </style>
