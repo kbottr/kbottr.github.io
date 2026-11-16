@@ -19,6 +19,7 @@ export const site = {
   socials: [
     { label: 'LinkedIn', href: 'https://www.linkedin.com/in/wilhelmboettger' },
     { label: 'GitHub', href: 'https://github.com/kbottr' },
+    { label: 'Instagram', href: 'https://www.instagram.com/wilhelm__/' },
   ],
 };
 
