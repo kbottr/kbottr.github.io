@@ -22,7 +22,7 @@ const projects = (await getCollection('projects', ({ data }) => !data.draft)).so
       <Lead class="intro">{site.intro}</Lead>
       <div class="fade-in">
         <p class="contact">
-          <Link href={`mailto:${site.email}`}>email me</Link>
+          <Link href={`mailto:${site.email}`}>send me a mail</Link>
           {site.socials
             .filter((s) => s.label !== 'LinkedIn')
             .map((s) => <Link href={s.href} rel="noopener me">{s.label.toLowerCase()}</Link>)}
