@@ -26,16 +26,17 @@ const years = await getYearsOfExperience();
 const expertise = (await getCollection('expertise')).sort(byOrder)
   .map((e) => ({ ...e.data, text: e.data.text.replaceAll('{years}', `${years}+`) }));
 
-// One row per company: roles there (newest first) and the time they span,
-// e.g. "09 / 2022 – now" (dates as written in experience.yaml)
+// One row per company: roles there (newest first) and the years they span,
+// e.g. "2022 – now" (years taken from the dates in experience.yaml)
+const year = (date: string) => date.split('/').pop()?.trim() ?? date; // "09 / 2022" → "2022"
 const companies: { name: string; roles: string[]; from: string; to?: string }[] = [];
 for (const e of experience) {
   const last = companies[companies.length - 1];
   if (last?.name === e.company) {
     last.roles.push(e.role);
-    last.from = e.start;
+    last.from = year(e.start);
   } else {
-    companies.push({ name: e.company, roles: [e.role], from: e.start, to: e.end });
+    companies.push({ name: e.company, roles: [e.role], from: year(e.start), to: e.end && year(e.end) });
   }
 }
 ---
