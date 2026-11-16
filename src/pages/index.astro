@@ -1,11 +1,11 @@
 ---
-// Home: who you are — intro and contact — and your selected work.
+// Home: who you are — intro and contact — and your selected work (with images).
 // (The current role sits in the footer, see components/CurrentRole.astro.)
 import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import Lead from '../components/Lead.astro';
 import Section from '../components/Section.astro';
-import ListRow from '../components/ListRow.astro';
+import ProjectMedia from '../components/ProjectMedia.astro';
 import MoreLink from '../components/MoreLink.astro';
 import Link from '../components/Link.astro';
 import { site, url } from '../site';
@@ -29,12 +29,17 @@ const projects = (await getCollection('projects', ({ data }) => !data.draft)).so
 
     <div class="fade-in">
       <Section label="selected work" icon="work">
-        <ul>
-          {projects.map((project) => (
-            <ListRow href={url(`/work/${project.id}/`)}>
-              {project.data.title}{' '}<span class="muted kind">{project.data.kind}</span>
-              <span slot="meta" class="mono muted">{project.data.date.getUTCFullYear()}</span>
-            </ListRow>
+        <ul class="projects">
+          {projects.map((project, i) => (
+            <li>
+              <a href={url(`/work/${project.id}/`)} class="project">
+                <ProjectMedia project={project} class="thumb" eager={i === 0} />
+                <span class="caption">
+                  <span>{project.data.title}{' '}<span class="muted kind">{project.data.kind}</span></span>
+                  <span class="mono muted">{project.data.date.getUTCFullYear()}</span>
+                </span>
+              </a>
+            </li>
           ))}
         </ul>
         <MoreLink href={url('/work/')}>all work</MoreLink>
@@ -53,5 +58,15 @@ const projects = (await getCollection('projects', ({ data }) => !data.draft)).so
     font-size: var(--text-sm); line-height: var(--leading-sm);
   }
 
+  /* Selected work: golden-ratio image with title, type and year below */
+  .projects { display: grid; gap: var(--space-48); }
+  .project { display: block; }
+  .project :global(.thumb) { aspect-ratio: var(--ratio-golden); }
+  .project :global(.media-inner) { transition: transform var(--duration-slow) var(--ease); }
+  .project:hover :global(.media-inner) { transform: scale(1.025); }
+  .caption {
+    display: flex; justify-content: space-between; align-items: baseline; gap: var(--space-24);
+    margin-top: var(--space-12);
+  }
   .kind { margin-left: var(--space-4); } /* + the space character ≈ 8px */
 </style>
