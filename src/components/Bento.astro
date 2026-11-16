@@ -1,9 +1,7 @@
 ---
 // Bento grid of detail images for a case study (set `details` in the
-// project's Markdown). Two columns of near-square tiles on a soft grey
-// background; `wide` tiles span both columns. A tile is a photo, a short
-// statement in the serif, or — until you add an image — a grey placeholder
-// with a phone hanging in from the top or rising from the bottom.
+// project's Markdown). Two columns of square tiles; `wide` tiles span both
+// columns in the golden ratio.
 import { Image } from 'astro:assets';
 import type { CollectionEntry } from 'astro:content';
 
@@ -14,21 +12,14 @@ const { items } = Astro.props;
 ---
 
 <ul class="bento">
-  {items.map((item, i) => (
-    <li class:list={['tile', { wide: item.wide, statement: item.text && !item.image }]}>
-      {item.image ? (
-        <Image
-          src={item.image}
-          alt={item.alt ?? ''}
-          widths={[340, 680, 1360]}
-          sizes={item.wide ? '(max-width: 728px) 100vw, 680px' : '(max-width: 480px) 100vw, 340px'}
-        />
-      ) : item.text ? (
-        <p>{item.text}</p>
-      ) : (
-        // Alternate the phone's position so the grid has rhythm
-        <span class:list={['phone', i % 2 ? 'from-bottom' : 'from-top']} role="img" aria-label={item.alt ?? 'Placeholder'} />
-      )}
+  {items.map((item) => (
+    <li class:list={['tile', { wide: item.wide }]}>
+      <Image
+        src={item.image}
+        alt={item.alt}
+        widths={[340, 680, 1360]}
+        sizes={item.wide ? '(max-width: 728px) 100vw, 680px' : '(max-width: 480px) 100vw, 340px'}
+      />
     </li>
   ))}
 </ul>
@@ -48,33 +39,6 @@ const { items } = Astro.props;
   }
   .tile.wide { grid-column: span 2; aspect-ratio: var(--ratio-golden); }
   .tile :global(img) { width: 100%; height: 100%; object-fit: cover; }
-
-  /* Statement tile: a short line set large in the serif */
-  .statement { display: grid; place-items: center; padding: var(--space-32); }
-  .statement p {
-    font-family: var(--serif);
-    font-size: var(--text-xl); line-height: var(--leading-xl);
-    letter-spacing: var(--tracking-tight);
-    text-align: center; text-wrap: balance;
-  }
-
-  /* Placeholder phone (same look as the cover placeholder in global.css) */
-  .phone {
-    position: absolute; left: 50%; width: 48%; aspect-ratio: 9 / 19.5;
-    translate: -50% 0;
-    border: calc(var(--space-2) * 3) solid var(--device);
-    border-radius: 16% / 7.4%;
-    background: var(--bg);
-    box-shadow: 0 var(--space-24) var(--space-64) rgb(0 0 0 / .18);
-  }
-  .phone.from-top { bottom: 30%; }   /* hangs in from the top edge */
-  .phone.from-bottom { top: 30%; }   /* rises from the bottom edge */
-  /* Dynamic Island, only visible on the phone rising from the bottom */
-  .phone.from-bottom::before {
-    content: ''; position: absolute; left: 50%; top: 3.5%;
-    width: 30%; aspect-ratio: 3.4 / 1; translate: -50% 0;
-    border-radius: var(--radius-full); background: var(--device);
-  }
 
   @media (max-width: 480px) {
     .bento { grid-template-columns: 1fr; }

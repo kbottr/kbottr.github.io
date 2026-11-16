@@ -6,11 +6,6 @@ summary: "Small business finances at a glance: balance, invoices and bills combi
 role: Senior Product Designer
 team: 3 designers, 8 engineers
 colors: ['#0d3b3a', '#3fb8ff', '#0b1f5c']
-details:
-  - alt: Placeholder — a detail screen
-  - alt: Placeholder — another detail screen
-  - alt: Placeholder — a moment in the flow
-  - text: Placeholder — one short line about a key idea
 ---
 
 ## The problem

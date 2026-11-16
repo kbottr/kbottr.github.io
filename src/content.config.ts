@@ -29,18 +29,10 @@ const projects = defineCollection({
       colors: z.tuple([z.string(), z.string(), z.string()]),
       // Title at the top of the case study: 'static' (default) or 'marquee' (scrolling)
       headline: z.enum(['static', 'marquee']).default('static'),
-      // Detail images shown in a bento grid on the case study. Each tile is an
-      // image (relative to the Markdown file), a short statement (text), or
-      // left empty for a grey phone placeholder. wide: spans both columns.
+      // Detail images shown in a bento grid on the case study, relative to the
+      // Markdown file. wide: spans both columns.
       details: z
-        .array(
-          z.object({
-            image: image().optional(),
-            alt: z.string().optional(),
-            text: z.string().optional(),
-            wide: z.boolean().default(false),
-          }),
-        )
+        .array(z.object({ image: image(), alt: z.string(), wide: z.boolean().default(false) }))
         .optional(),
       draft: z.boolean().default(false),
     }),
