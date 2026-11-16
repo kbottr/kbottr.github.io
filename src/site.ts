@@ -6,7 +6,7 @@ export const site = {
   name: 'Klaus Wilhelm Böttger',
   title: 'wilhelm — Klaus Wilhelm Böttger, Designer',
   // One sentence on the home page.
-  intro: 'I design digital products that feel obvious, and lead the teams that build them.',
+  intro: 'I design digital products that feel obvious, and lead the teams that build them. I care about clarity, craft and close collaboration, from the first sketch to the shipped product.',
   // Paragraphs on the About page.
   about: [
     'Placeholder: a few sentences about where you grew up, how you got into design and what you care about.',
