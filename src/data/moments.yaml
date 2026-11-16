@@ -2,11 +2,8 @@
 # image:  a file in src/assets/moments/, e.g. image: berlin.jpg
 #         (leave out to show a grey placeholder)
 # alt:    describes the photo for screen readers
-- title: Placeholder — a place I love
-  text: A short story about this photo. Where it was taken, what was happening, why it matters to you.
-- title: Placeholder — side project
-  text: Something you made outside of work, and what you learned from it.
-- title: Placeholder — team offsite
-  text: The people you work with, a moment from a workshop or a trip together.
-- title: Placeholder — on the road
-  text: Travel, a run, a record shop — whatever says something about you.
+# text:   one short line under the photo (cut off with … if it's longer)
+- text: Placeholder — a place I love, and why
+- text: Placeholder — a side project and what I learned
+- text: Placeholder — a moment with the team
+- text: Placeholder — on the road

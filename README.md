@@ -15,7 +15,7 @@ Personal portfolio built with [Astro](https://astro.build), deployed to GitHub P
 | Write a journal post | Add a Markdown file to `src/content/journal/` |
 | Hide a project or post | Set `draft: true` in its frontmatter |
 | Add your portrait | Save it as `src/assets/portrait.jpg`; the image revealed when it's flipped goes in `src/assets/portrait-back.jpg` |
-| Add photos to the photo slider (About) | Put images in `src/assets/moments/` and list them in `src/data/moments.yaml` with a title, text and `alt` |
+| Add photos to the photo slider (About) | Put images in `src/assets/moments/` and list them in `src/data/moments.yaml` with a one-line caption (`text`) and `alt` |
 | Change the current role (footer) | It's the entry without an `end` in `src/data/experience.yaml` |
 | Update experience / music / challenges | Edit the lists in `src/data/*.yaml` (shown in file order). For music, paste share links as `spotify:` and `apple:` |
 | Add or change an icon | Pick one on [lucide.dev/icons](https://lucide.dev/icons/), then add it in `src/components/Icon.astro` |

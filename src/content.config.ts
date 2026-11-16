@@ -83,8 +83,7 @@ const moments = defineCollection({
   loader: yamlList('src/data/moments.yaml'),
   schema: z.object({
     order: z.number(),
-    title: z.string(),
-    text: z.string(),
+    text: z.string(), // one-line caption
     image: z.string().optional(), // file name in src/assets/moments/
     alt: z.string().optional(), // describes the photo for screen readers
   }),
