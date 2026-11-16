@@ -152,7 +152,10 @@ const coords = `${Math.abs(lat).toFixed(4)}° ${lat >= 0 ? 'N' : 'S'}, ${Math.ab
     font-weight: var(--weight-semibold);
     letter-spacing: var(--tracking-tighter);
   }
-  main { min-height: 60vh; }
+  /* Header, content, footer: the content grows, so on short pages the
+     footer still sits at the bottom of the window */
+  body { display: flex; flex-direction: column; min-height: 100svh; }
+  main { flex: 1; }
   .site-footer {
     padding-top: var(--space-96);
     padding-bottom: var(--space-128); /* room for the dock */
