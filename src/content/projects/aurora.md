@@ -9,6 +9,11 @@ quote:
 role: Lead Product Designer
 team: 2 designers, 5 engineers
 colors: ['#1b2b4a', '#5fe3c0', '#7b5cff']
+details:
+  - alt: Placeholder — a detail screen
+  - alt: Placeholder — another detail screen
+  - alt: Placeholder — a moment in the flow
+  - text: Placeholder — one short line about a key idea
 ---
 
 ## The problem

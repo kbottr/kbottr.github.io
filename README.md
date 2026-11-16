@@ -11,6 +11,7 @@ Personal portfolio built with [Astro](https://astro.build), deployed to GitHub P
 | Run locally | `npm run dev` → http://localhost:4321 |
 | Edit name, role, intro, about text, email, socials | `src/site.ts` |
 | Add a case study | Add a Markdown file to `src/content/projects/` (copy an existing one) — it appears on Home (list) and Work (feed) |
+| Add detail images to a case study (bento grid) | In the project's Markdown, list them under `details:` — each with `image: ./file.jpg` and `alt`, or `text:` for a short statement tile; `wide: true` spans both columns |
 | Add a cover image | Put the image next to the Markdown file and set `cover: ./my-image.jpg` |
 | Write a journal post | Add a Markdown file to `src/content/journal/` |
 | Hide a project or post | Set `draft: true` in its frontmatter |

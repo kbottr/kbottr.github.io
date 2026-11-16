@@ -6,6 +6,11 @@ summary: "A calmer place to think out loud. No streaks, no counters — just 30-
 role: Product Designer
 team: Solo, with 2 engineers
 colors: ['#e9d9c3', '#f2a65a', '#b6523a']
+details:
+  - alt: Placeholder — a detail screen
+  - alt: Placeholder — another detail screen
+  - alt: Placeholder — a moment in the flow
+  - text: Placeholder — one short line about a key idea
 ---
 
 ## The problem
