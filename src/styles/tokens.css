@@ -14,6 +14,7 @@
   --accent: #2f6bff;
   --accent-bg: #2f6bff1a;
   --dock-bg: #ffffffcc;
+  --device: #1c1c1e;   /* phone frame in placeholder images */
   /* Dock shadow. It sits 16px above the screen edge, so nothing may reach
      further than 16px below it: a tight shadow underneath (2 + 12 = 14px)
      plus a soft one lifted upward (24 − 8 = 16px). */
@@ -114,6 +115,7 @@
     --accent: #7aa2ff;
     --accent-bg: #7aa2ff24;
     --dock-bg: #161616cc;
+    --device: #3a3a3c;
     color-scheme: dark;
   }
 }
