@@ -9,6 +9,7 @@ import Section from '../components/Section.astro';
 import ListRow from '../components/ListRow.astro';
 import MoreLink from '../components/MoreLink.astro';
 import Link from '../components/Link.astro';
+import Pill from '../components/Pill.astro';
 import Icon from '../components/Icon.astro';
 import type { IconName } from '../components/Icon.astro';
 import { site, url } from '../site';
@@ -25,18 +26,16 @@ const years = await getYearsOfExperience();
 const expertise = (await getCollection('expertise')).sort(byOrder)
   .map((e) => ({ ...e.data, text: e.data.text.replaceAll('{years}', `${years}+`) }));
 
-// "11 / 2023" → 2023
-const year = (date: string) => Number(date.split('/').pop()?.trim());
-
-// One row per company: roles there (newest first) and the years they span
-const companies: { name: string; roles: string[]; from: number; to?: number }[] = [];
+// One row per company: roles there (newest first) and the time they span,
+// e.g. "09 / 2022 – present" (dates as written in experience.yaml)
+const companies: { name: string; roles: string[]; from: string; to?: string }[] = [];
 for (const e of experience) {
   const last = companies[companies.length - 1];
   if (last?.name === e.company) {
     last.roles.push(e.role);
-    last.from = year(e.start);
+    last.from = e.start;
   } else {
-    companies.push({ name: e.company, roles: [e.role], from: year(e.start), to: e.end ? year(e.end) : undefined });
+    companies.push({ name: e.company, roles: [e.role], from: e.start, to: e.end });
   }
 }
 ---
@@ -86,7 +85,7 @@ for (const e of experience) {
             <ListRow>
               <span class="company">{c.name}</span>
               <span class="roles muted">{c.roles.join(', ')}</span>
-              <span slot="meta" class="mono muted">{c.from === c.to ? c.from : `${c.from} – ${c.to ?? 'now'}`}</span>
+              <span slot="meta" class="mono muted">{c.from} – {c.to ?? <Pill>present</Pill>}</span>
             </ListRow>
           ))}
         </ul>
