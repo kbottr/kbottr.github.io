@@ -50,7 +50,7 @@ const moments = (await getCollection('moments')).sort(byOrder).map((m) => m.data
               <span class="block">{data.role}</span>
               <span class="block muted">{data.company}</span>
               <span slot="meta" class="mono muted">
-                {data.start} – {data.end ?? <Pill>present</Pill>}
+                {data.start} – {data.end ?? <Pill>now</Pill>}
               </span>
             </ListRow>
           ))}

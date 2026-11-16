@@ -27,7 +27,7 @@ const expertise = (await getCollection('expertise')).sort(byOrder)
   .map((e) => ({ ...e.data, text: e.data.text.replaceAll('{years}', `${years}+`) }));
 
 // One row per company: roles there (newest first) and the time they span,
-// e.g. "09 / 2022 – present" (dates as written in experience.yaml)
+// e.g. "09 / 2022 – now" (dates as written in experience.yaml)
 const companies: { name: string; roles: string[]; from: string; to?: string }[] = [];
 for (const e of experience) {
   const last = companies[companies.length - 1];
@@ -85,7 +85,7 @@ for (const e of experience) {
             <ListRow>
               <span class="company">{c.name}</span>
               <span class="roles muted">{c.roles.join(', ')}</span>
-              <span slot="meta" class="mono muted">{c.from} – {c.to ?? <Pill>present</Pill>}</span>
+              <span slot="meta" class="mono muted">{c.from} – {c.to ?? <Pill>now</Pill>}</span>
             </ListRow>
           ))}
         </ul>
