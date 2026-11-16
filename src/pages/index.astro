@@ -1,6 +1,5 @@
 ---
-// Home: who you are and why to hire you — intro and contact, selected work,
-// expertise together with the companies you've worked for.
+// Home: who you are — intro and contact — and your selected work.
 // (The current role sits in the footer, see components/CurrentRole.astro.)
 import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
@@ -9,34 +8,12 @@ import Section from '../components/Section.astro';
 import ListRow from '../components/ListRow.astro';
 import MoreLink from '../components/MoreLink.astro';
 import Link from '../components/Link.astro';
-import Pill from '../components/Pill.astro';
-import Icon from '../components/Icon.astro';
-import type { IconName } from '../components/Icon.astro';
 import { site, url } from '../site';
-import { getExperience, getYearsOfExperience, yearOf } from '../lib/career';
 
 const byDateDesc = (a: { data: { date: Date } }, b: { data: { date: Date } }) =>
   b.data.date.valueOf() - a.data.date.valueOf();
-const byOrder = (a: { data: { order: number } }, b: { data: { order: number } }) => a.data.order - b.data.order;
 
 const projects = (await getCollection('projects', ({ data }) => !data.draft)).sort(byDateDesc);
-const experience = await getExperience();
-const years = await getYearsOfExperience();
-// "{years}" in expertise.yaml becomes e.g. "10+"
-const expertise = (await getCollection('expertise')).sort(byOrder)
-  .map((e) => ({ ...e.data, text: e.data.text.replaceAll('{years}', `${years}+`) }));
-
-// One row per company: the latest role there and the years the company spans,
-// e.g. "2022 – now" (years taken from the dates in experience.yaml)
-const companies: { name: string; role: string; from: string; to?: string }[] = [];
-for (const e of experience) {
-  const last = companies[companies.length - 1];
-  if (last?.name === e.company) {
-    last.from = yearOf(e.start); // earlier role at the same company: only extend the span
-  } else {
-    companies.push({ name: e.company, role: e.role, from: yearOf(e.start), to: e.end && yearOf(e.end) });
-  }
-}
 ---
 
 <Base>
@@ -65,31 +42,6 @@ for (const e of experience) {
         </ul>
         <MoreLink href={url('/work/')}>all work</MoreLink>
       </Section>
-
-      {/* What you're good at, then where you've done it */}
-      <Section label="experience" icon="briefcase">
-        {expertise.length > 0 && (
-          <ul class="expertise">
-            {expertise.map((e) => (
-              <li>
-                <Icon name={e.icon as IconName} class="expertise-icon" />
-                <h3>{e.title}</h3>
-                <p>{e.text}</p>
-              </li>
-            ))}
-          </ul>
-        )}
-        <ul class="companies">
-          {companies.map((c) => (
-            <ListRow>
-              <span class="company">{c.name}</span>
-              <span class="roles muted">{c.role}</span>
-              <span slot="meta" class="mono muted">{c.from} – {c.to ?? <Pill>now</Pill>}</span>
-            </ListRow>
-          ))}
-        </ul>
-        <MoreLink href={url('/about/')}>more about me</MoreLink>
-      </Section>
     </div>
   </div>
 </Base>
@@ -105,21 +57,4 @@ for (const e of experience) {
   }
 
   .kind { margin-left: var(--space-4); } /* + the space character ≈ 8px */
-
-  /* Expertise: two columns of icon + title + one sentence */
-  .expertise {
-    display: grid; grid-template-columns: repeat(2, 1fr);
-    gap: var(--space-32) var(--space-24);
-  }
-  .expertise :global(.expertise-icon) { color: var(--muted); margin-bottom: var(--space-8); }
-  .expertise h3 { font-size: var(--text-base); line-height: var(--leading-base); font-weight: var(--weight-medium); }
-  .expertise p { color: var(--fg-soft); }
-
-  .companies { display: grid; gap: var(--space-16); }
-  .expertise + .companies { margin-top: var(--space-48); }
-  .company, .roles { display: block; }
-
-  @media (max-width: 480px) {
-    .expertise { grid-template-columns: 1fr; }
-  }
 </style>

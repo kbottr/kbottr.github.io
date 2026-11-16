@@ -12,14 +12,5 @@ export async function getCurrentRole() {
   return experience.find((e) => !e.end) ?? experience[0];
 }
 
-/** Whole years since the first job started, e.g. 10 */
-export async function getYearsOfExperience(now = new Date()) {
-  const experience = await getExperience();
-  const first = experience[experience.length - 1];
-  if (!first) return 0;
-  const [month, year] = first.start.split('/').map((n) => Number(n.trim())); // "04 / 2016"
-  return Math.floor((now.getFullYear() * 12 + now.getMonth() + 1 - (year * 12 + month)) / 12);
-}
-
 /** "09 / 2022" → "2022" */
 export const yearOf = (date: string) => date.split('/').pop()?.trim() ?? date;
