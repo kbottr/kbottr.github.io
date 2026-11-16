@@ -1,7 +1,7 @@
 ---
 // Bento grid of detail images for a case study (set `details` in the
 // project's Markdown). Two columns of square tiles; `wide` tiles span both
-// columns in the golden ratio (automatically for a tile that would be alone in
+// columns at the same height (automatically for a tile that would be alone in
 // its row). Tiles without an image show a numbered grey placeholder.
 import { Image } from 'astro:assets';
 import type { CollectionEntry } from 'astro:content';
@@ -46,23 +46,28 @@ if (column === 1 && items[items.length - 1]?.wide === undefined) wide[items.leng
 
 <style>
   .bento {
+    --gap: var(--space-16);
+    container-type: inline-size;
     display: grid; grid-template-columns: repeat(2, 1fr);
-    gap: var(--space-16);
+    gap: var(--gap);
     margin-top: var(--space-48);
   }
   .tile {
     position: relative; overflow: hidden;
-    aspect-ratio: 1 / 1;
+    /* Every row is one square high: a wide tile is two squares plus the gap
+       wide, at the same height, so all rows line up */
+    height: calc((100cqi - var(--gap)) / 2);
     border-radius: var(--radius-lg);
     background: var(--subtle);
     box-shadow: inset 0 0 0 var(--border) var(--line);
   }
-  .tile.wide { grid-column: span 2; aspect-ratio: var(--ratio-golden); }
+  .tile.wide { grid-column: span 2; }
   .tile :global(img) { width: 100%; height: 100%; object-fit: cover; }
   .placeholder { display: grid; place-items: center; height: 100%; color: var(--muted); }
 
   @media (max-width: 480px) {
     .bento { grid-template-columns: 1fr; }
+    .tile { height: 100cqi; }          /* one column: every tile square */
     .tile.wide { grid-column: auto; }
   }
 </style>
