@@ -82,7 +82,9 @@ const coords = `${Math.abs(lat).toFixed(4)}° ${lat >= 0 ? 'N' : 'S'}, ${Math.ab
       <div class="footer-row copyright">
         <span>© {new Date().getFullYear()} {site.name}</span>
         <span class="links">
-          {site.socials.map((s) => <Link href={s.href} rel="noopener me">{s.label.toLowerCase()}</Link>)}
+          {site.socials
+            .filter((s) => s.label !== 'LinkedIn') // LinkedIn is on the About page
+            .map((s) => <Link href={s.href} rel="noopener me">{s.label.toLowerCase()}</Link>)}
         </span>
       </div>
     </footer>
