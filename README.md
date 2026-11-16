@@ -1,6 +1,6 @@
 # Portfolio
 
-**Pages:** Home (`/`: intro, latest journal posts, work list, short about) · Work (`/work/`: project feed + case studies) · Journal (`/journal/`) · About (`/about/`)
+**Pages:** Home (`/`: intro with contact links, selected work) · Work (`/work/`: project feed + case studies) · Journal (`/journal/`) · About (`/about/`)
 
 Personal portfolio built with [Astro](https://astro.build), deployed to GitHub Pages.
 
@@ -11,11 +11,13 @@ Personal portfolio built with [Astro](https://astro.build), deployed to GitHub P
 | Run locally | `npm run dev` → http://localhost:4321 |
 | Edit name, role, intro, about text, email, socials | `src/site.ts` |
 | Add a case study | Add a Markdown file to `src/content/projects/` (copy an existing one) — it appears on Home (list) and Work (feed) |
+| Add detail images to a case study (bento grid) | In the project's Markdown, list them under `details:`, each with `image: ./file.jpg` and `alt`; `wide: true` spans both columns (a tile left alone in its row does this automatically; `wide: false` keeps it square). Entries without an image show as numbered grey placeholders |
 | Add a cover image | Put the image next to the Markdown file and set `cover: ./my-image.jpg` |
 | Write a journal post | Add a Markdown file to `src/content/journal/` |
 | Hide a project or post | Set `draft: true` in its frontmatter |
 | Add your portrait | Save it as `src/assets/portrait.jpg`; the image revealed when it's flipped goes in `src/assets/portrait-back.jpg` |
-| Add photos to the "moments" stack (About) | Put images in `src/assets/moments/` and list them in `src/data/moments.yaml` with a title, text and `alt` |
+| Add photos to the photo slider (About) | Put images in `src/assets/moments/` and list them in `src/data/moments.yaml` with a one-line caption (`text`) and `alt` |
+| Change the current role (footer) | It's the entry without an `end` in `src/data/experience.yaml` |
 | Update experience / music / challenges | Edit the lists in `src/data/*.yaml` (shown in file order). For music, paste share links as `spotify:` and `apple:` |
 | Add or change an icon | Pick one on [lucide.dev/icons](https://lucide.dev/icons/), then add it in `src/components/Icon.astro` |
 | Check for errors | `npm run check` (types, content, components) |
@@ -25,7 +27,7 @@ Personal portfolio built with [Astro](https://astro.build), deployed to GitHub P
 ## Speed & search
 
 - **CSS** is inlined into every page (`build.inlineStylesheets` in `astro.config.mjs`), so nothing blocks the first paint.
-- **Fonts:** only the Latin files of Geist / Geist Mono are declared (`src/styles/fonts.css`) and both are preloaded in `Base.astro`.
+- **Fonts:** Geist (sans), Geist Mono and Source Serif 4 (journal post text, `--serif`). Only the Latin files are declared (`src/styles/fonts.css`); the two Geist fonts are preloaded on every page, the serif only on journal posts.
 - **Prefetching:** internal pages are fetched in the background once a link to them is on screen, so navigating feels instant.
 - **Search engines & link previews:** `sitemap-index.xml` (generated), `public/robots.txt`, Open Graph tags in `Base.astro`. A custom `src/pages/404.astro` is shown for unknown addresses.
 
@@ -34,7 +36,7 @@ Personal portfolio built with [Astro](https://astro.build), deployed to GitHub P
 - **Page transitions:** `@view-transition { navigation: auto; }` in `src/styles/global.css`.
   Project images morph between the home feed and the case study (shared `view-transition-name`).
 - **Line-by-line text reveal:** add `data-lines` to any plain-text element (script in `src/layouts/Base.astro`).
-- **Scrolling title:** `src/components/Marquee.astro`, used at the top of each case study.
+- **Case-study title:** a big static title (`src/components/Headline.astro`) by default; set `headline: marquee` in a project's Markdown for the scrolling `src/components/Marquee.astro` instead.
 - **Link underlines, dock hover:** CSS transitions.
 - **Light / dark:** follows the visitor's system setting automatically (`prefers-color-scheme` in `global.css`).
 - Everything is switched off for users with "reduce motion" enabled.

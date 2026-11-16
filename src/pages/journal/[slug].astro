@@ -4,6 +4,8 @@ import Base from '../../layouts/Base.astro';
 import DateLabel from '../../components/DateLabel.astro';
 import Pager from '../../components/Pager.astro';
 import { url } from '../../site';
+// The reading serif, preloaded because the post text needs it straight away
+import serif from '@fontsource-variable/source-serif-4/files/source-serif-4-latin-wght-normal.woff2?url';
 
 export async function getStaticPaths() {
   const posts = await getCollection('journal', ({ data }) => !data.draft);
@@ -16,10 +18,11 @@ const { Content } = await render(post);
 ---
 
 <Base title={title} description={description}>
+  <link slot="head" rel="preload" href={serif} as="font" type="font/woff2" crossorigin />
   <article class="wrap">
     <DateLabel date={date} />
     <h1 data-lines>{title}</h1>
-    <div class="prose fade-in">
+    <div class="prose reading fade-in">
       <Content />
     </div>
     <Pager back={{ href: url('/journal/'), label: 'all posts' }} />
@@ -29,8 +32,8 @@ const { Content } = await render(post);
 <style>
   h1 {
     margin: var(--space-4) 0 var(--space-32);
-    font-size: var(--text-lg);
-    line-height: var(--leading-lg);
+    font-size: var(--text-xl); /* one step above the 22px reading text */
+    line-height: var(--leading-xl);
     font-weight: var(--weight-medium);
     letter-spacing: var(--tracking-tighter);
   }

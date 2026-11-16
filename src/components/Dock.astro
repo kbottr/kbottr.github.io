@@ -57,6 +57,8 @@ const items = [
     box-shadow: inset 0 0 0 var(--border) var(--line), var(--shadow);
     animation: dock-in var(--duration-slow) var(--delay) var(--ease) both;
   }
+  /* Only on arrival: when moving between pages the dock just stays put */
+  :global(.internal-nav) .dock { animation: none; }
   @keyframes dock-in { from { opacity: 0; translate: -50% var(--space-24); } }
 
   .btn {
@@ -70,16 +72,6 @@ const items = [
   }
   .btn:hover { background: var(--subtle); color: var(--fg); transform: translateY(calc(-1 * var(--space-2))); }
   .btn.active { background: var(--subtle); color: var(--fg); }
-
-  /* Active page: icon moves up and a dot sits just below it, inside the circle */
-  .btn :global(svg) { transition: translate var(--duration) var(--ease); }
-  .btn.active :global(svg) { translate: 0 calc(-1 * var(--space-2)); }
-  .btn.active::after {
-    content: ''; position: absolute; left: 50%; bottom: var(--space-4);
-    width: var(--dot); height: var(--dot); translate: -50% 0;
-    border-radius: var(--radius-full);
-    background: var(--fg);
-  }
 
   /* Tooltip label */
   .btn::before {

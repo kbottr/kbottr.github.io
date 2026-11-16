@@ -4,20 +4,22 @@ export const site = {
   brand: 'wilhelm',
   // Your real name: used in the footer, on the About page and for search engines.
   name: 'Klaus Wilhelm Böttger',
-  role: 'Product Designer',
-  title: 'wilhelm — Klaus Wilhelm Böttger, Product Designer',
+  title: 'wilhelm — Klaus Wilhelm Böttger, Designer',
   // One sentence on the home page.
-  intro: 'Designing products that feel obvious — currently working on mobility, finance and everyday tools.',
+  intro: 'I design digital products that feel obvious, and lead the teams that build them. I care about clarity, craft and close collaboration, from the first sketch to the shipped product.',
   // Paragraphs on the About page.
   about: [
     'Placeholder: a few sentences about where you grew up, how you got into design and what you care about.',
     'Placeholder: what you are working on now, and what kind of problems you like to solve.',
   ],
   email: 'hello@example.com',
+  // Shown in the footer: where you're based, as map coordinates (Munich)
+  location: { name: 'Munich', lat: 48.1374, lon: 11.5755 },
   cosmos: 'https://www.cosmos.so/wilhelm',
   socials: [
     { label: 'LinkedIn', href: 'https://www.linkedin.com/in/wilhelmboettger' },
     { label: 'GitHub', href: 'https://github.com/kbottr' },
+    { label: 'Instagram', href: 'https://www.instagram.com/wilhelm__/' },
   ],
 };
 

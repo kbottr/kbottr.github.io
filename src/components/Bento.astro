@@ -1,0 +1,73 @@
+---
+// Bento grid of detail images for a case study (set `details` in the
+// project's Markdown). Two columns of square tiles; `wide` tiles span both
+// columns at the same height (automatically for a tile that would be alone in
+// its row). Tiles without an image show a numbered grey placeholder.
+import { Image } from 'astro:assets';
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  items: NonNullable<CollectionEntry<'projects'>['data']['details']>;
+}
+const { items } = Astro.props;
+
+// A square tile that would sit alone in its row (odd count, or right before a
+// wide tile) spans the full width instead, so the grid never has a gap.
+// An explicit `wide: false` keeps it square.
+const wide = items.map((item) => item.wide === true);
+let column = 0; // 0 = left, 1 = right
+items.forEach((item, i) => {
+  if (wide[i]) {
+    if (column === 1 && items[i - 1].wide === undefined) wide[i - 1] = true;
+    column = 0;
+  } else {
+    column = 1 - column;
+  }
+});
+if (column === 1 && items[items.length - 1]?.wide === undefined) wide[items.length - 1] = true;
+---
+
+<ul class="bento">
+  {items.map((item, i) => (
+    <li class:list={['tile', { wide: wide[i] }]}>
+      {item.image ? (
+        <Image
+          src={item.image}
+          alt={item.alt ?? ''}
+          widths={[340, 680, 1360]}
+          sizes={wide[i] ? '(max-width: 728px) 100vw, 680px' : '(max-width: 480px) 100vw, 340px'}
+        />
+      ) : (
+        <span class="placeholder mono" aria-hidden="true">{i + 1}</span>
+      )}
+    </li>
+  ))}
+</ul>
+
+<style>
+  .bento {
+    --gap: var(--space-16);
+    container-type: inline-size;
+    display: grid; grid-template-columns: repeat(2, 1fr);
+    gap: var(--gap);
+    margin-top: var(--space-48);
+  }
+  .tile {
+    position: relative; overflow: hidden;
+    /* Every row is one square high: a wide tile is two squares plus the gap
+       wide, at the same height, so all rows line up */
+    height: calc((100cqi - var(--gap)) / 2);
+    border-radius: var(--radius-lg);
+    background: var(--subtle);
+    box-shadow: inset 0 0 0 var(--border) var(--line);
+  }
+  .tile.wide { grid-column: span 2; }
+  .tile :global(img) { width: 100%; height: 100%; object-fit: cover; }
+  .placeholder { display: grid; place-items: center; height: 100%; color: var(--muted); }
+
+  @media (max-width: 480px) {
+    .bento { grid-template-columns: 1fr; }
+    .tile { height: 100cqi; }          /* one column: every tile square */
+    .tile.wide { grid-column: auto; }
+  }
+</style>

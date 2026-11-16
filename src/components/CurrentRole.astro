@@ -1,0 +1,9 @@
+---
+// Current job, shown in the footer.
+// Comes from the role without an end date in src/data/experience.yaml.
+import { getCurrentRole } from '../lib/career';
+
+const current = await getCurrentRole();
+---
+
+{current && <p>{current.role} at {current.company}</p>}

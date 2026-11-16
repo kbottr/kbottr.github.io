@@ -2,6 +2,7 @@
 import '../styles/global.css';
 import Dock from '../components/Dock.astro';
 import Link from '../components/Link.astro';
+import CurrentRole from '../components/CurrentRole.astro';
 import { site, url } from '../site';
 // The two font files every page needs; preloaded so text can show sooner
 import geist from '@fontsource-variable/geist/files/geist-latin-wght-normal.woff2?url';
@@ -17,6 +18,9 @@ interface Props {
 const { title, description = site.intro, noindex = false } = Astro.props;
 const pageTitle = title ? `${title} — ${site.brand}` : site.title;
 const canonical = Astro.site && new URL(Astro.url.pathname, Astro.site).href;
+// e.g. "48.1374° N, 11.5755° E"
+const { lat, lon } = site.location;
+const coords = `${Math.abs(lat).toFixed(4)}° ${lat >= 0 ? 'N' : 'S'}, ${Math.abs(lon).toFixed(4)}° ${lon >= 0 ? 'E' : 'W'}`;
 ---
 
 <!doctype html>
@@ -31,6 +35,8 @@ const canonical = Astro.site && new URL(Astro.url.pathname, Astro.site).href;
 
     <link rel="preload" href={geist} as="font" type="font/woff2" crossorigin />
     <link rel="preload" href={geistMono} as="font" type="font/woff2" crossorigin />
+    {/* Pages can add their own preloads etc. with slot="head" */}
+    <slot name="head" />
 
     {/* Browser chrome (e.g. Safari's toolbar) matches the page in light and dark mode */}
     <meta name="color-scheme" content="light dark" />
@@ -48,12 +54,18 @@ const canonical = Astro.site && new URL(Astro.url.pathname, Astro.site).href;
     {canonical && <meta property="og:url" content={canonical} />}
     <meta name="twitter:card" content="summary" />
 
-    <script is:inline>document.documentElement.classList.add('js');</script>
+    <script is:inline>
+      document.documentElement.classList.add('js');
+      // Coming from another page of this site: things that stay on screen
+      // (like the dock) shouldn't play their entrance animation again
+      try {
+        if (new URL(document.referrer).origin === location.origin) document.documentElement.classList.add('internal-nav');
+      } catch {}
+    </script>
   </head>
   <body>
     <header class="wrap site-header">
       <a href={url('/')} class="brand">{site.brand}</a>
-      <span class="muted">{site.role}</span>
     </header>
 
     <main>
@@ -62,12 +74,19 @@ const canonical = Astro.site && new URL(Astro.url.pathname, Astro.site).href;
 
     <footer class="wrap site-footer muted">
       <div class="footer-row">
+        <CurrentRole />
+        <p class="mono" title={site.location.name}>
+          <span class="sr-only">Based in {site.location.name}, </span>{coords}
+        </p>
+      </div>
+      <div class="footer-row copyright">
         <span>© {new Date().getFullYear()} {site.name}</span>
         <span class="links">
-          {site.socials.map((s) => <Link href={s.href} rel="noopener me">{s.label.toLowerCase()}</Link>)}
+          {site.socials
+            .filter((s) => s.label !== 'LinkedIn') // LinkedIn is on the About page
+            .map((s) => <Link href={s.href} rel="noopener me">{s.label.toLowerCase()}</Link>)}
         </span>
       </div>
-      <p class="credit">Icons by <Link href="https://lucide.dev">lucide</Link></p>
     </footer>
 
     <Dock />
@@ -135,7 +154,10 @@ const canonical = Astro.site && new URL(Astro.url.pathname, Astro.site).href;
     font-weight: var(--weight-semibold);
     letter-spacing: var(--tracking-tighter);
   }
-  main { min-height: 60vh; }
+  /* Header, content, footer: the content grows, so on short pages the
+     footer still sits at the bottom of the window */
+  body { display: flex; flex-direction: column; min-height: 100svh; }
+  main { flex: 1; }
   .site-footer {
     padding-top: var(--space-96);
     padding-bottom: var(--space-128); /* room for the dock */
@@ -144,7 +166,7 @@ const canonical = Astro.site && new URL(Astro.url.pathname, Astro.site).href;
   }
   .footer-row { display: flex; justify-content: space-between; gap: var(--space-16); flex-wrap: wrap; }
   .links { display: flex; gap: var(--space-16); }
-  .credit {
+  .copyright {
     margin-top: var(--space-24);
   }
 </style>

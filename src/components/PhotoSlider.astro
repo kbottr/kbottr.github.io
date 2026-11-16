@@ -1,0 +1,236 @@
+---
+// Photo slider spanning the full window width, with a caption for each photo.
+// The current photo lines up with the text column; its neighbours peek in
+// from the sides. Swipe / scroll sideways, drag with the mouse, use the
+// arrows, or click a photo at the side to move to it.
+// Content: src/data/moments.yaml, images in src/assets/moments/.
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import type { CollectionEntry } from 'astro:content';
+import Icon from './Icon.astro';
+
+interface Props {
+  items: CollectionEntry<'moments'>['data'][];
+}
+const { items } = Astro.props;
+
+const files = import.meta.glob<{ default: ImageMetadata }>('../assets/moments/*.{jpg,jpeg,png,webp}', { eager: true });
+const imageFor = (name?: string) => (name ? files[`../assets/moments/${name}`]?.default : undefined);
+---
+
+<div class="photo-slider">
+  <div class="track" tabindex="0" role="group" aria-roledescription="carousel" aria-label="Photos">
+    {items.map((item, i) => {
+      const image = imageFor(item.image);
+      return (
+        <div
+          class:list={['slide', { active: i === 0 }]}
+          role="group"
+          aria-roledescription="slide"
+          aria-label={`${i + 1} of ${items.length}`}
+        >
+          {image ? (
+            <Image src={image} alt={item.alt ?? ''} widths={[680, 1360]} sizes="(max-width: 728px) 100vw, 680px" loading={i === 0 ? 'eager' : 'lazy'} />
+          ) : (
+            <span class="placeholder" aria-hidden="true" />
+          )}
+        </div>
+      );
+    })}
+  </div>
+
+  {/* One-line caption on the left, arrows at the right edge of the photo */}
+  <div class="wrap bar">
+    <div class="captions" aria-live="polite">
+      {items.map((item, i) => (
+        <p class:list={['caption', { active: i === 0 }]} aria-hidden={i === 0 ? undefined : 'true'}>{item.text}</p>
+      ))}
+    </div>
+
+    {items.length > 1 && (
+      <div class="controls">
+        <button type="button" class="arrow prev" aria-label="Previous photo"><Icon name="arrow-left" size="sm" /></button>
+        <button type="button" class="arrow next" aria-label="Next photo"><Icon name="arrow-right" size="sm" /></button>
+      </div>
+    )}
+  </div>
+</div>
+
+<style>
+  .photo-slider {
+    /* Each photo is as wide as the text column; the space either side of
+       the column lets the neighbouring photos show */
+    --slide: min(100vw - 2 * var(--gutter), var(--col));
+    --edge: calc((100vw - var(--slide)) / 2);
+    --gap: var(--space-16);
+    /* Break out of the column to the full window width */
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+    padding-block: var(--space-32);
+  }
+
+  .track {
+    display: flex; gap: var(--gap);
+    overflow-x: auto;
+    padding-inline: var(--edge);
+    scroll-padding-inline: var(--edge);
+    scroll-snap-type: x mandatory;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+  }
+  .track::-webkit-scrollbar { display: none; }
+  /* Mouse dragging (script below): grab cursor, and no snapping mid-drag */
+  @media (hover: hover) { .track { cursor: grab; } }
+  .track.dragging { cursor: grabbing; user-select: none; }
+  /* Snapping stays off from the start of a drag until the photos have
+     finished gliding into place, so it can't jump in halfway */
+  .track.free { scroll-snap-type: none; }
+  .track :global(img) { -webkit-user-drag: none; }
+  .track:focus-visible { outline-offset: calc(-1 * var(--space-4)); }
+
+  .slide {
+    flex: 0 0 var(--slide);
+    aspect-ratio: 3 / 2;
+    scroll-snap-align: start;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    opacity: .35;
+    transition: opacity var(--duration) var(--ease);
+  }
+  .slide.active { opacity: 1; }
+  .slide:not(.active):hover { opacity: .6; }
+  .slide :global(img) { width: 100%; height: 100%; object-fit: cover; }
+  .placeholder {
+    display: block; width: 100%; height: 100%;
+    background: var(--subtle); /* grey until a photo is added; follows light / dark mode */
+  }
+
+  /* Arrows between the photos and the caption, centred */
+  .bar {
+    display: flex; align-items: center; justify-content: space-between; gap: var(--space-24);
+    margin-top: var(--space-8);
+  }
+  .controls {
+    display: flex; gap: var(--space-4); flex-shrink: 0;
+    /* the arrows' round hover area sticks out; this lines the icon up with the photo's edge */
+    margin-right: calc(-1 * (var(--control) - var(--icon-sm)) / 2);
+  }
+  .arrow {
+    display: grid; place-items: center;
+    width: var(--control); height: var(--control);
+    padding: 0; border: 0; border-radius: var(--radius-full);
+    background: transparent; color: var(--muted);
+    cursor: pointer;
+    transition: background var(--duration-fast), color var(--duration-fast), opacity var(--duration-fast);
+  }
+  .arrow:hover { background: var(--subtle); color: var(--fg); }
+  .arrow:disabled { opacity: .3; cursor: default; background: transparent; color: var(--muted); }
+
+  /* All captions share one grid cell, so the box keeps the height of the
+     longest one and nothing below jumps when switching */
+  .captions {
+    display: grid; min-width: 0;
+    font-size: var(--text-sm); line-height: var(--leading-sm);
+  }
+  .caption {
+    grid-area: 1 / 1;
+    opacity: 0; visibility: hidden;
+    translate: 0 var(--space-8);
+    transition: opacity var(--duration) var(--ease), translate var(--duration) var(--ease), visibility var(--duration);
+  }
+  .caption.active { opacity: 1; visibility: visible; translate: none; transition-delay: var(--duration-fast); }
+  /* One line only: longer text is cut off with "…" */
+  .caption { color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+</style>
+
+<script>
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  document.querySelectorAll<HTMLElement>('.photo-slider').forEach((root) => {
+    const track = root.querySelector<HTMLElement>('.track')!;
+    const slides = [...root.querySelectorAll<HTMLElement>('.slide')];
+    const captions = [...root.querySelectorAll<HTMLElement>('.caption')];
+    const prev = root.querySelector<HTMLButtonElement>('.prev');
+    const next = root.querySelector<HTMLButtonElement>('.next');
+    let current = 0;
+
+    // Distance from one photo to the next (photo width + gap)
+    const step = () => (slides[1] ? slides[1].offsetLeft - slides[0].offsetLeft : track.clientWidth);
+
+    function show(i: number) {
+      current = i;
+      slides.forEach((s, j) => s.classList.toggle('active', j === i));
+      captions.forEach((c, j) => {
+        c.classList.toggle('active', j === i);
+        c.toggleAttribute('aria-hidden', j !== i);
+      });
+      if (prev) prev.disabled = i === 0;
+      if (next) next.disabled = i === slides.length - 1;
+    }
+
+    const go = (i: number) =>
+      track.scrollTo({ left: Math.max(0, Math.min(i, slides.length - 1)) * step(), behavior: reduced ? 'auto' : 'smooth' });
+
+    // Follow the scroll position, whether it came from a swipe or the arrows
+    let frame = 0;
+    track.addEventListener('scroll', () => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => {
+        const i = Math.round(track.scrollLeft / step());
+        if (i !== current) show(i);
+      });
+    }, { passive: true });
+
+    prev?.addEventListener('click', () => go(current - 1));
+    next?.addEventListener('click', () => go(current + 1));
+
+    // Mouse drag: the photos follow the pointer; on release, a pull of more
+    // than a sixth of a photo (or a quick flick) moves to the next one,
+    // otherwise it springs back. Touch already swipes natively.
+    let drag: { x: number; left: number; time: number; moved: boolean } | null = null;
+    let glide = 0; // counts releases, so an old glide can't re-enable snapping mid-drag
+    track.addEventListener('pointerdown', (e) => {
+      if (e.pointerType !== 'mouse' || e.button !== 0) return;
+      drag = { x: e.clientX, left: track.scrollLeft, time: e.timeStamp, moved: false };
+    });
+    track.addEventListener('pointermove', (e) => {
+      if (!drag) return;
+      const dx = e.clientX - drag.x;
+      if (!drag.moved && Math.abs(dx) > 4) {
+        drag.moved = true;
+        track.classList.add('dragging', 'free');
+        track.setPointerCapture(e.pointerId);
+      }
+      if (drag.moved) track.scrollLeft = drag.left - dx;
+    });
+    const release = (e: PointerEvent) => {
+      if (!drag) return;
+      const { moved, x, left, time } = drag;
+      drag = null;
+      if (!moved) return;
+      const dx = e.clientX - x;
+      const fast = Math.abs(dx) / Math.max(1, e.timeStamp - time) > 0.5; // px per ms
+      const from = Math.round(left / step());
+      const target = Math.abs(dx) > step() / 6 || fast ? from - Math.sign(dx) : from;
+      track.classList.remove('dragging');
+      go(target);
+      // Turn snapping back on once the glide has finished (unless a new
+      // drag has started in the meantime)
+      const id = ++glide;
+      const resnap = () => {
+        if (id === glide && !drag) track.classList.remove('free');
+      };
+      track.addEventListener('scrollend', resnap, { once: true });
+      setTimeout(resnap, 1000); // for browsers without the scrollend event
+      // Swallow the click that follows a drag, so it doesn't select a photo
+      const swallow = (c: Event) => c.stopPropagation();
+      track.addEventListener('click', swallow, { capture: true });
+      setTimeout(() => track.removeEventListener('click', swallow, { capture: true }));
+    };
+    track.addEventListener('pointerup', release);
+    track.addEventListener('pointercancel', release);
+
+    slides.forEach((s, i) => s.addEventListener('click', () => i !== current && go(i)));
+    show(0);
+  });
+</script>

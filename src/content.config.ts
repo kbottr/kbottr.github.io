@@ -27,6 +27,15 @@ const projects = defineCollection({
       cover: image().optional(),
       // Gradient colours used when there is no cover
       colors: z.tuple([z.string(), z.string(), z.string()]),
+      // Title at the top of the case study: 'static' (default) or 'marquee' (scrolling)
+      headline: z.enum(['static', 'marquee']).default('static'),
+      // Detail images shown in a bento grid on the case study, relative to the
+      // Markdown file. Without `image`, a numbered grey placeholder is shown.
+      // wide: true spans both columns. A tile left alone in its row goes wide
+      // automatically; set wide: false to keep it square.
+      details: z
+        .array(z.object({ image: image().optional(), alt: z.string().optional(), wide: z.boolean().optional() }))
+        .optional(),
       draft: z.boolean().default(false),
     }),
 });
@@ -76,16 +85,14 @@ const challenges = defineCollection({
   }),
 });
 
-// Photo stack on the About page
+// Photo slider on the About page
 const moments = defineCollection({
   loader: yamlList('src/data/moments.yaml'),
   schema: z.object({
     order: z.number(),
-    title: z.string(),
-    text: z.string(),
+    text: z.string(), // one-line caption
     image: z.string().optional(), // file name in src/assets/moments/
     alt: z.string().optional(), // describes the photo for screen readers
-    colors: z.tuple([z.string(), z.string()]).default(['#e2e1dd', '#ebebe8']),
   }),
 });
 

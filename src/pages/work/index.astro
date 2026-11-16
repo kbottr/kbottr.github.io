@@ -53,7 +53,7 @@ const projects = (await getCollection('projects', ({ data }) => !data.draft))
     letter-spacing: var(--tracking-tighter);
   }
   .media-link { display: block; }
-  .media-link :global(.media) { aspect-ratio: 1 / 1; } /* square thumbnails; case-study hero stays 16:9 */
+  .media-link :global(.media) { aspect-ratio: var(--ratio-golden); } /* golden-ratio thumbnails; case-study hero stays 16:9 */
   .media-link :global(.media-inner) { transition: transform var(--duration-slow) var(--ease); }
   .media-link:hover :global(.media-inner) { transform: scale(1.025); }
   .summary { margin-top: var(--space-16); color: var(--fg-soft); }
