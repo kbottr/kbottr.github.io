@@ -26,16 +26,15 @@ const years = await getYearsOfExperience();
 const expertise = (await getCollection('expertise')).sort(byOrder)
   .map((e) => ({ ...e.data, text: e.data.text.replaceAll('{years}', `${years}+`) }));
 
-// One row per company: roles there (newest first) and the years they span,
+// One row per company: the latest role there and the years the company spans,
 // e.g. "2022 – now" (years taken from the dates in experience.yaml)
-const companies: { name: string; roles: string[]; from: string; to?: string }[] = [];
+const companies: { name: string; role: string; from: string; to?: string }[] = [];
 for (const e of experience) {
   const last = companies[companies.length - 1];
   if (last?.name === e.company) {
-    last.roles.push(e.role);
-    last.from = yearOf(e.start);
+    last.from = yearOf(e.start); // earlier role at the same company: only extend the span
   } else {
-    companies.push({ name: e.company, roles: [e.role], from: yearOf(e.start), to: e.end && yearOf(e.end) });
+    companies.push({ name: e.company, role: e.role, from: yearOf(e.start), to: e.end && yearOf(e.end) });
   }
 }
 ---
@@ -84,7 +83,7 @@ for (const e of experience) {
           {companies.map((c) => (
             <ListRow>
               <span class="company">{c.name}</span>
-              <span class="roles muted">{c.roles.join(', ')}</span>
+              <span class="roles muted">{c.role}</span>
               <span slot="meta" class="mono muted">{c.from} – {c.to ?? <Pill>now</Pill>}</span>
             </ListRow>
           ))}
