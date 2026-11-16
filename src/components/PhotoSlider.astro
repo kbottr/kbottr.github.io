@@ -39,22 +39,23 @@ const imageFor = (name?: string) => (name ? files[`../assets/moments/${name}`]?.
     })}
   </div>
 
-  <div class="wrap">
+  {/* Small caption on the left, arrows at the right edge of the photo */}
+  <div class="wrap bar">
+    <div class="captions" aria-live="polite">
+      {items.map((item, i) => (
+        <p class:list={['caption', { active: i === 0 }]} aria-hidden={i === 0 ? undefined : 'true'}>
+          <span class="title">{item.title}</span>
+          <span class="text">{item.text}</span>
+        </p>
+      ))}
+    </div>
+
     {items.length > 1 && (
       <div class="controls">
         <button type="button" class="arrow prev" aria-label="Previous photo"><Icon name="arrow-left" size="sm" /></button>
         <button type="button" class="arrow next" aria-label="Next photo"><Icon name="arrow-right" size="sm" /></button>
       </div>
     )}
-
-    <div class="captions" aria-live="polite">
-      {items.map((item, i) => (
-        <div class:list={['caption', { active: i === 0 }]} aria-hidden={i === 0 ? undefined : 'true'}>
-          <p class="title">{item.title}</p>
-          <p class="text">{item.text}</p>
-        </div>
-      ))}
-    </div>
   </div>
 </div>
 
@@ -108,9 +109,14 @@ const imageFor = (name?: string) => (name ? files[`../assets/moments/${name}`]?.
   }
 
   /* Arrows between the photos and the caption, centred */
+  .bar {
+    display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-24);
+    margin-top: var(--space-16);
+  }
   .controls {
-    display: flex; justify-content: center; gap: var(--space-4);
-    margin: var(--space-24) 0 var(--space-16);
+    display: flex; gap: var(--space-4); flex-shrink: 0;
+    /* the arrows' round hover area sticks out; this lines the icon up with the photo's edge */
+    margin: calc(-1 * var(--space-8)) calc(-1 * (var(--control) - var(--icon-sm)) / 2) 0 0;
   }
   .arrow {
     display: grid; place-items: center;
@@ -125,7 +131,10 @@ const imageFor = (name?: string) => (name ? files[`../assets/moments/${name}`]?.
 
   /* All captions share one grid cell, so the box keeps the height of the
      longest one and nothing below jumps when switching */
-  .captions { display: grid; }
+  .captions {
+    display: grid; min-width: 0;
+    font-size: var(--text-sm); line-height: var(--leading-sm);
+  }
   .caption {
     grid-area: 1 / 1;
     opacity: 0; visibility: hidden;
@@ -133,8 +142,9 @@ const imageFor = (name?: string) => (name ? files[`../assets/moments/${name}`]?.
     transition: opacity var(--duration) var(--ease), translate var(--duration) var(--ease), visibility var(--duration);
   }
   .caption.active { opacity: 1; visibility: visible; translate: none; transition-delay: var(--duration-fast); }
-  .title { font-weight: var(--weight-medium); }
-  .text { color: var(--fg-soft); }
+  .caption > span { display: block; }
+  .title { color: var(--fg); }
+  .text { color: var(--muted); }
 </style>
 
 <script>
