@@ -91,7 +91,6 @@
   --control: 40px;              /* dock buttons */
   --thumb: 48px;                /* music covers */
   --avatar: 112px;
-  --dot: 4px;
 
   /* ---------- Motion ---------- */
   --ease: cubic-bezier(.2, .8, .2, 1);
