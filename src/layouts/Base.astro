@@ -54,7 +54,14 @@ const coords = `${Math.abs(lat).toFixed(4)}° ${lat >= 0 ? 'N' : 'S'}, ${Math.ab
     {canonical && <meta property="og:url" content={canonical} />}
     <meta name="twitter:card" content="summary" />
 
-    <script is:inline>document.documentElement.classList.add('js');</script>
+    <script is:inline>
+      document.documentElement.classList.add('js');
+      // Coming from another page of this site: things that stay on screen
+      // (like the dock) shouldn't play their entrance animation again
+      try {
+        if (new URL(document.referrer).origin === location.origin) document.documentElement.classList.add('internal-nav');
+      } catch {}
+    </script>
   </head>
   <body>
     <header class="wrap site-header">
