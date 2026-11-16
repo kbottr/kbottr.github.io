@@ -1,8 +1,8 @@
 ---
 // Bento grid of detail images for a case study (set `details` in the
 // project's Markdown). Two columns of square tiles; `wide` tiles span both
-// columns in the golden ratio. Tiles without an image show a numbered
-// grey placeholder.
+// columns in the golden ratio (automatically for a tile that would be alone in
+// its row). Tiles without an image show a numbered grey placeholder.
 import { Image } from 'astro:assets';
 import type { CollectionEntry } from 'astro:content';
 
@@ -10,17 +10,32 @@ interface Props {
   items: NonNullable<CollectionEntry<'projects'>['data']['details']>;
 }
 const { items } = Astro.props;
+
+// A square tile that would sit alone in its row (odd count, or right before a
+// wide tile) spans the full width instead, so the grid never has a gap.
+// An explicit `wide: false` keeps it square.
+const wide = items.map((item) => item.wide === true);
+let column = 0; // 0 = left, 1 = right
+items.forEach((item, i) => {
+  if (wide[i]) {
+    if (column === 1 && items[i - 1].wide === undefined) wide[i - 1] = true;
+    column = 0;
+  } else {
+    column = 1 - column;
+  }
+});
+if (column === 1 && items[items.length - 1]?.wide === undefined) wide[items.length - 1] = true;
 ---
 
 <ul class="bento">
   {items.map((item, i) => (
-    <li class:list={['tile', { wide: item.wide }]}>
+    <li class:list={['tile', { wide: wide[i] }]}>
       {item.image ? (
         <Image
           src={item.image}
           alt={item.alt ?? ''}
           widths={[340, 680, 1360]}
-          sizes={item.wide ? '(max-width: 728px) 100vw, 680px' : '(max-width: 480px) 100vw, 340px'}
+          sizes={wide[i] ? '(max-width: 728px) 100vw, 680px' : '(max-width: 480px) 100vw, 340px'}
         />
       ) : (
         <span class="placeholder mono" aria-hidden="true">{i + 1}</span>

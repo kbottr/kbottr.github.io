@@ -31,9 +31,10 @@ const projects = defineCollection({
       headline: z.enum(['static', 'marquee']).default('static'),
       // Detail images shown in a bento grid on the case study, relative to the
       // Markdown file. Without `image`, a numbered grey placeholder is shown.
-      // wide: spans both columns.
+      // wide: true spans both columns. A tile left alone in its row goes wide
+      // automatically; set wide: false to keep it square.
       details: z
-        .array(z.object({ image: image().optional(), alt: z.string().optional(), wide: z.boolean().default(false) }))
+        .array(z.object({ image: image().optional(), alt: z.string().optional(), wide: z.boolean().optional() }))
         .optional(),
       draft: z.boolean().default(false),
     }),
