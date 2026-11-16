@@ -87,7 +87,6 @@ const moments = defineCollection({
     text: z.string(),
     image: z.string().optional(), // file name in src/assets/moments/
     alt: z.string().optional(), // describes the photo for screen readers
-    colors: z.tuple([z.string(), z.string()]).default(['#e2e1dd', '#ebebe8']),
   }),
 });
 
