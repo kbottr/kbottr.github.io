@@ -10,6 +10,7 @@ import Track from '../components/Track.astro';
 import Challenge from '../components/Challenge.astro';
 import PhotoSlider from '../components/PhotoSlider.astro';
 import { site } from '../site';
+import { yearOf } from '../lib/career';
 
 
 const byOrder = (a: { data: { order: number } }, b: { data: { order: number } }) => a.data.order - b.data.order;
@@ -50,7 +51,7 @@ const moments = (await getCollection('moments')).sort(byOrder).map((m) => m.data
               <span class="block">{data.role}</span>
               <span class="block muted">{data.company}</span>
               <span slot="meta" class="mono muted">
-                {data.start} – {data.end ?? <Pill>now</Pill>}
+                {yearOf(data.start)} – {data.end ? yearOf(data.end) : <Pill>now</Pill>}
               </span>
             </ListRow>
           ))}

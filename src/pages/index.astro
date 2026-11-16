@@ -13,7 +13,7 @@ import Pill from '../components/Pill.astro';
 import Icon from '../components/Icon.astro';
 import type { IconName } from '../components/Icon.astro';
 import { site, url } from '../site';
-import { getExperience, getYearsOfExperience } from '../lib/career';
+import { getExperience, getYearsOfExperience, yearOf } from '../lib/career';
 
 const byDateDesc = (a: { data: { date: Date } }, b: { data: { date: Date } }) =>
   b.data.date.valueOf() - a.data.date.valueOf();
@@ -28,15 +28,14 @@ const expertise = (await getCollection('expertise')).sort(byOrder)
 
 // One row per company: roles there (newest first) and the years they span,
 // e.g. "2022 – now" (years taken from the dates in experience.yaml)
-const year = (date: string) => date.split('/').pop()?.trim() ?? date; // "09 / 2022" → "2022"
 const companies: { name: string; roles: string[]; from: string; to?: string }[] = [];
 for (const e of experience) {
   const last = companies[companies.length - 1];
   if (last?.name === e.company) {
     last.roles.push(e.role);
-    last.from = year(e.start);
+    last.from = yearOf(e.start);
   } else {
-    companies.push({ name: e.company, roles: [e.role], from: year(e.start), to: e.end && year(e.end) });
+    companies.push({ name: e.company, roles: [e.role], from: yearOf(e.start), to: e.end && yearOf(e.end) });
   }
 }
 ---

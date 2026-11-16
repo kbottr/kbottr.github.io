@@ -20,3 +20,6 @@ export async function getYearsOfExperience(now = new Date()) {
   const [month, year] = first.start.split('/').map((n) => Number(n.trim())); // "04 / 2016"
   return Math.floor((now.getFullYear() * 12 + now.getMonth() + 1 - (year * 12 + month)) / 12);
 }
+
+/** "09 / 2022" → "2022" */
+export const yearOf = (date: string) => date.split('/').pop()?.trim() ?? date;
