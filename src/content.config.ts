@@ -30,9 +30,10 @@ const projects = defineCollection({
       // Title at the top of the case study: 'static' (default) or 'marquee' (scrolling)
       headline: z.enum(['static', 'marquee']).default('static'),
       // Detail images shown in a bento grid on the case study, relative to the
-      // Markdown file. wide: spans both columns.
+      // Markdown file. Without `image`, a numbered grey placeholder is shown.
+      // wide: spans both columns.
       details: z
-        .array(z.object({ image: image(), alt: z.string(), wide: z.boolean().default(false) }))
+        .array(z.object({ image: image().optional(), alt: z.string().optional(), wide: z.boolean().default(false) }))
         .optional(),
       draft: z.boolean().default(false),
     }),

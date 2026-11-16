@@ -6,6 +6,13 @@ summary: "Small business finances at a glance: balance, invoices and bills combi
 role: Senior Product Designer
 team: 3 designers, 8 engineers
 colors: ['#0d3b3a', '#3fb8ff', '#0b1f5c']
+details: # detail images 1–6; add `image: ./folder/file.jpg` and `alt` to each
+  - alt: Detail 1
+  - alt: Detail 2
+  - alt: Detail 3
+  - alt: Detail 4
+  - alt: Detail 5
+  - alt: Detail 6
 ---
 
 ## The problem

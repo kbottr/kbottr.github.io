@@ -6,6 +6,13 @@ summary: "A calmer place to think out loud. No streaks, no counters — just 30-
 role: Product Designer
 team: Solo, with 2 engineers
 colors: ['#e9d9c3', '#f2a65a', '#b6523a']
+details: # detail images 1–6; add `image: ./folder/file.jpg` and `alt` to each
+  - alt: Detail 1
+  - alt: Detail 2
+  - alt: Detail 3
+  - alt: Detail 4
+  - alt: Detail 5
+  - alt: Detail 6
 ---
 
 ## The problem

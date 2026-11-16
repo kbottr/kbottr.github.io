@@ -9,6 +9,13 @@ quote:
 role: Lead Product Designer
 team: 2 designers, 5 engineers
 colors: ['#1b2b4a', '#5fe3c0', '#7b5cff']
+details: # detail images 1–6; add `image: ./folder/file.jpg` and `alt` to each
+  - alt: Detail 1
+  - alt: Detail 2
+  - alt: Detail 3
+  - alt: Detail 4
+  - alt: Detail 5
+  - alt: Detail 6
 ---
 
 ## The problem

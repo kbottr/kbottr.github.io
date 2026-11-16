@@ -1,7 +1,8 @@
 ---
 // Bento grid of detail images for a case study (set `details` in the
 // project's Markdown). Two columns of square tiles; `wide` tiles span both
-// columns in the golden ratio.
+// columns in the golden ratio. Tiles without an image show a numbered
+// grey placeholder.
 import { Image } from 'astro:assets';
 import type { CollectionEntry } from 'astro:content';
 
@@ -12,14 +13,18 @@ const { items } = Astro.props;
 ---
 
 <ul class="bento">
-  {items.map((item) => (
+  {items.map((item, i) => (
     <li class:list={['tile', { wide: item.wide }]}>
-      <Image
-        src={item.image}
-        alt={item.alt}
-        widths={[340, 680, 1360]}
-        sizes={item.wide ? '(max-width: 728px) 100vw, 680px' : '(max-width: 480px) 100vw, 340px'}
-      />
+      {item.image ? (
+        <Image
+          src={item.image}
+          alt={item.alt ?? ''}
+          widths={[340, 680, 1360]}
+          sizes={item.wide ? '(max-width: 728px) 100vw, 680px' : '(max-width: 480px) 100vw, 340px'}
+        />
+      ) : (
+        <span class="placeholder mono" aria-hidden="true">{i + 1}</span>
+      )}
     </li>
   ))}
 </ul>
@@ -39,6 +44,7 @@ const { items } = Astro.props;
   }
   .tile.wide { grid-column: span 2; aspect-ratio: var(--ratio-golden); }
   .tile :global(img) { width: 100%; height: 100%; object-fit: cover; }
+  .placeholder { display: grid; place-items: center; height: 100%; color: var(--muted); }
 
   @media (max-width: 480px) {
     .bento { grid-template-columns: 1fr; }
