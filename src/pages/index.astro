@@ -4,7 +4,6 @@
 import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import Lead from '../components/Lead.astro';
-import Section from '../components/Section.astro';
 import ProjectMedia from '../components/ProjectMedia.astro';
 import MoreLink from '../components/MoreLink.astro';
 import Link from '../components/Link.astro';
@@ -28,7 +27,7 @@ const projects = (await getCollection('projects', ({ data }) => !data.draft)).so
     </section>
 
     <div class="fade-in">
-      <Section label="selected work" icon="work">
+      <section class="work" aria-label="Selected work">
         <ul class="projects">
           {projects.map((project, i) => (
             <li>
@@ -43,7 +42,7 @@ const projects = (await getCollection('projects', ({ data }) => !data.draft)).so
           ))}
         </ul>
         <MoreLink href={url('/work/')}>all work</MoreLink>
-      </Section>
+      </section>
     </div>
   </div>
 </Base>
@@ -59,6 +58,7 @@ const projects = (await getCollection('projects', ({ data }) => !data.draft)).so
   }
 
   /* Selected work: golden-ratio image with title, type and year below */
+  .work { padding-block: var(--space-32); }
   .projects { display: grid; gap: var(--space-48); }
   .project { display: block; }
   .project :global(.thumb) { aspect-ratio: var(--ratio-golden); }
